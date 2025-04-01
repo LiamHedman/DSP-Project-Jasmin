@@ -1,4 +1,5 @@
 "use strict";
+// Enable strict typing on row 88 in the tsconfig file!
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const ws_1 = require("ws");
