@@ -8,8 +8,9 @@ let messages: string[] = [];
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World! The server is working.');
+  //res.send({test: "first test"});
 });
-
+/* 
 app.post('/send', (req: Request, res: Response) => {
   const { message } = req.body as { message?: unknown };
   if (!message || typeof message !== 'string') {
@@ -18,7 +19,9 @@ app.post('/send', (req: Request, res: Response) => {
   console.log('Received from client:', message);
   messages.push(message);
   res.json({ status: 'Message received', message });
-});
+}); */
+
+
 
 app.get('/messages', (req: Request, res: Response) => {
   res.json(messages);

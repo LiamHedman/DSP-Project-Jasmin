@@ -8,6 +8,7 @@ const PORT = 3000;
 // Handle requests to "/"
 app.get('/', (req, res) => {
     res.send('Hello, World! The server is working.');
+    //res.send({test: "first test"});
   });
 
 // Start the server
@@ -26,7 +27,8 @@ wss.on('connection', (ws) => {
     // Broadcast the message to all connected clients
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === 1) {
-        client.send(message.toString());
+        //client.send(message.toString());
+        client.send(JSON.stringify({"name": "Alice", "age": 25}));
       }
     });
   });
