@@ -5,9 +5,9 @@
       "strict": true,                  // Enforce strict typing
       "esModuleInterop": true,         // Allow default imports from CommonJS modules
       "skipLibCheck": true,            // Speed up compilation
-      "outDir": "./",                  // Output compiled JS in the same directory
-      "rootDir": "./",                 // Source directory
+      "outDir": "./dist",                  // Output compiled JS in the same directory
+      "rootDir": "./src",                 // Source directory
       "types": ["node"]                // Include Node.js types
     },
-    "include": ["server_axios.ts"]
+    "include": ["src/server_axios.ts"]
   }
