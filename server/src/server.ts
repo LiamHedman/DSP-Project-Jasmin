@@ -6,6 +6,8 @@ import { WebSocketServer } from 'ws';
 const app = express();
 const PORT = 3000;
 
+let active_clients: number = 0;
+
 // Handle requests to "/"
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World! The server is working.');
@@ -22,20 +24,25 @@ const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
   console.log('A new client connected.');
+  console.log(`Number of active clients: ${++active_clients}`);
+
 
   ws.on('message', (message: string) => {
-    //console.log('Received from client:', message.toString());
 
     try {
-      console.log("progress");
       const parsed_message = JSON.parse(message);
       if(parsed_message) {
-        console.log("inside if parserd msg");
         switch (parsed_message.type) {
-          case "login":
-            console.log("SUCCESSFULL PARSE OF LOGIN");
-            console.log(`Username: ${parsed_message.data.username}`);
-            console.log(`Password: ${parsed_message.data.password}`);
+          case "new_ad":
+            console.log(`title: ${parsed_message.data.title}`);
+            console.log(`bio: ${parsed_message.data.bio}`);
+
+            wss.clients.forEach((client) => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(message);
+              }
+            });
+            
         }
       } else {
         console.log("PARSED MESSAGE TYPE NOT SPECIFIED");
@@ -57,5 +64,6 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     console.log('A client disconnected.');
+    console.log(`Number of active clients: ${--active_clients}`);
   });
 });

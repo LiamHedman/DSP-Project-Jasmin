@@ -1,37 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { getWebSocket } from './connection';
 
+/* let webSocket: WebSocket; */
 
 export default function LoginScreen() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   
-  useEffect(() => {
-    const webSocket = new WebSocket('ws://localhost:3000');
+/*   useEffect(() => {
+    webSocket = new WebSocket('ws://localhost:3000');
 
-    webSocket.onopen = () => {
-      console.log('WebSocket connected');
-    };
-
-    webSocket.onmessage = (e) => {
-      console.log('Message received:', e.data);
-    };
-
-    webSocket.onerror = (e) => {
-      console.log('WebSocket error:', e);
-    };
-
-    webSocket.onclose = (e) => {
-      console.log('WebSocket closed:', e.code, e.reason);
-    };
+    webSocket.onopen = () => console.log('WebSocket connected');
+    webSocket.onmessage = (e) => console.log('Message received:', e.data);
+    webSocket.onerror = (e) => console.log('WebSocket error:', e);
+    webSocket.onclose = (e) => console.log('WebSocket closed:', e.code, e.reason);
 
     setWs(webSocket); // Save WebSocket instance
 
-    return () => {
-      webSocket.close(); // Cleanup on unmount
-    };
-  }, []); // Empty dependency array ensures it runs once
+    return () => webSocket.close(); // Cleanup on unmount
+    
+  }, []); // Empty dependency array ensures it runs once */
+
+
+  useEffect(() => {
+    console.log("USEEFFECT");
+    const webSocket = getWebSocket(); // Get the shared WebSocket instance
+    setWs(webSocket);
+
+    return () => webSocket.close();
+  }, []);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -64,7 +63,7 @@ export default function LoginScreen() {
         onChangeText={setPassword} // Updates state
       />
       <Button 
-      title="Log In" 
+      title="Log in" 
       onPress={handleLogin
         
       } />
