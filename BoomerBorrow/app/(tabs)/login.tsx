@@ -5,27 +5,33 @@ import { router } from 'expo-router';
 
 
 export default function LoginScreen() {
-var ws = new WebSocket('ws://localhost:3000');
+  const [ws, setWs] = useState<WebSocket | null>(null);
+  
+  useEffect(() => {
+    const webSocket = new WebSocket('ws://localhost:3000');
 
-ws.onopen = () => {
-  // connection opened
-  ws.send('something'); // send a message
-};
+    webSocket.onopen = () => {
+      console.log('WebSocket connected');
+    };
 
-ws.onmessage = (e) => {
-  // a message was received
-  console.log(e.data);
-};
+    webSocket.onmessage = (e) => {
+      console.log('Message received:', e.data);
+    };
 
-ws.onerror = (e) => {
-  // an error occurred
-  //console.log(e.message);
-};
+    webSocket.onerror = (e) => {
+      console.log('WebSocket error:', e);
+    };
 
-ws.onclose = (e) => {
-  // connection closed
-  console.log(e.code, e.reason);
-};
+    webSocket.onclose = (e) => {
+      console.log('WebSocket closed:', e.code, e.reason);
+    };
+
+    setWs(webSocket); // Save WebSocket instance
+
+    return () => {
+      webSocket.close(); // Cleanup on unmount
+    };
+  }, []); // Empty dependency array ensures it runs once
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -33,11 +39,12 @@ ws.onclose = (e) => {
   const handleLogin = () => {
     console.log('Username:', username);
     console.log('Password:', password);
-    router.push('/');
+    router.push('/marketplace');
     const login = {"username" : username,
                    "password" : password
     };
-    ws.send(JSON.stringify(login));
+    if(ws!==null)
+      ws.send(JSON.stringify(login));
   };
 
   return (
