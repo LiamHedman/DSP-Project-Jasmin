@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+/* import axios, { AxiosResponse } from 'axios';
 
 async function sendMessage(message: string): Promise<void> {
   try {
@@ -28,4 +28,4 @@ async function pollMessages(): Promise<void> {
   }
 }
 
-setInterval(pollMessages, 2000);
+setInterval(pollMessages, 2000); */

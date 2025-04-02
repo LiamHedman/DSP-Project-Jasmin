@@ -7,6 +7,16 @@ process.stdin.on('data', (input) => {
   const message = input.toString().trim();
   if (message) {
     ws.send(message);
+
+    const login = {
+      "type": "login",
+      "data": {
+        "username": "Anders",
+        "password": "superanders"
+      }
+    };
+    
+    ws.send(JSON.stringify(login));
   }
 });
 

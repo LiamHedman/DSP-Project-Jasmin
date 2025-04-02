@@ -9,5 +9,4 @@
       "rootDir": "./src",                 // Source directory
       "types": ["node"]                // Include Node.js types
     },
-    "include": ["src/server_axios.ts"]
   }
