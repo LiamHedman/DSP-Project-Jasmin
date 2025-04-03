@@ -100,6 +100,9 @@ export default function MarketplaceScreen(){
           onPress={send_data
             
           } />
+          <View>
+
+
           {ads.map((ad: AD) => {
             return (
               <View>
@@ -107,6 +110,7 @@ export default function MarketplaceScreen(){
               </View>
             );
           })}
+          </View>
 
           
         </SafeAreaView>
