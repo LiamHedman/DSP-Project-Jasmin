@@ -29,105 +29,126 @@ import { getWebSocket } from './connection';
 }); */
 
 type AD = {
-  title: string;
-  bio: string;
+    title: string;
+    bio: string;
 };
 type incoming_ad = {
-  type: string;
-  data: AD;
+    type: string;
+    data: AD;
 };
 
-export default function MarketplaceScreen(){
-  const ws = getWebSocket();
-  
-  const [title, set_title] = useState('');
-  const [bio, set_bio] = useState('');
-  const [ads, set_ads] = useState<AD[]>([]);
+export default function MarketplaceScreen() {
+    const ws = getWebSocket();
 
-  const login = {
-    "type": "new_ad",
-    "data": {
-      "title": title,
-      "bio": bio
+    const [title, set_title] = useState('');
+    const [bio, set_bio] = useState('');
+    const [ads, set_ads] = useState<AD[]>([]);
+
+    const login = {
+        "type": "new_ad",
+        "data": {
+            "title": title,
+            "bio": bio
+        }
+    };
+
+    const add_ad = async (new_item: incoming_ad) => {
+        const updated = [...ads, new_item.data];
+        set_ads(updated);
     }
-  };
 
-  const add_ad = async (new_item: incoming_ad) => {
-    const updated = [...ads, new_item.data];
-    set_ads(updated);
-  }
-  
-  const send_data = () => {
-    console.log("sending data");
-    if(ws!==null)
-      ws.send(JSON.stringify(login));
-  }
-
-  ws.onmessage = async (event) => {
-    console.log('Message received:', event.data);
-    try {
-      console.log(`Received JSON in client: ${event.data}`)
-      //const text = await event.data.text();
-      const data:incoming_ad = JSON.parse(event.data);
-      console.log(data);
-      
-      add_ad(data);
-      //set_title(data.data.title);
-
-    } catch {
-      console.error('Failed to handle message in client:');
+    const send_data = () => {
+        console.log("sending data");
+        if (ws !== null)
+            ws.send(JSON.stringify(login));
     }
-  };
-  
+
+    ws.onmessage = async (event) => {
+        console.log('Message received:', event.data);
+        try {
+            console.log(`Received JSON in client: ${event.data}`)
+            //const text = await event.data.text();
+            const data: incoming_ad = JSON.parse(event.data);
+            console.log(data);
+
+            add_ad(data);
+            //set_title(data.data.title);
+
+        } catch {
+            console.error('Failed to handle message in client:');    
+        }
+    };    
     
-    return (    
+    
+    return (
+        
+        <SafeAreaView style={styles.container}>
+            <View style={styles.posts_container}>
+                {ads.map((ad: AD) => {
+                    return (
+                        <View style={styles.post}>
+                            <Text style={styles.input}> {ad.title} HEJ {ad.bio} </Text>
+                        </View>
+                    );
+                })}
+            </View>
+    
+            <TextInput
+                style={styles.input}
+                placeholder="Titel"
+                value={title}
+                onChangeText={set_title} // Updates state
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Beskrivning"
+                value={bio}
+                onChangeText={set_bio} // Updates state
+            />
+            <Button
+                title="Skapa annons"
+                onPress={send_data
+        
+                } />
 
-    <SafeAreaView style={styles.container}>
-          <TextInput
-            style={styles.input}
-            placeholder="Titel"
-            value={title}
-            onChangeText={set_title} // Updates state
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Beskrivning"
-            value={bio}
-            onChangeText={set_bio} // Updates state
-          />
-          <Button 
-          title="Skapa annons" 
-          onPress={send_data
-            
-          } />
-          {ads.map((ad: AD) => {
-            return (
-              <View>
-                <Text> {ad.title} HEJ {ad.bio} </Text>
-              </View>
-            );
-          })}
-
-          
         </SafeAreaView>
-        
-        
 
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'green'
     },
     input: {
-      height: 40,
-      width: '80%',
-      margin: 12,
-      borderWidth: 1,
-      padding: 10,
-      borderRadius: 5,
+        height: 40,
+        width: '80%',
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        backgroundColor: 'white'
     },
-  });
+    post: {
+        height: 40,
+        width: '80%',
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        backgroundColor: 'white',
+        borderBlockColor: 'black'
+    },
+    posts_container: {
+        height: 200,
+        width: '80%',
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        backgroundColor: 'white'
+    }
+});
