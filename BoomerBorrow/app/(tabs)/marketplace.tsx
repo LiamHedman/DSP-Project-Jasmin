@@ -4,9 +4,6 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { getWebSocket } from './connection';
 
-const ws = getWebSocket();
-
-
 /* ws.on('message', (message: string) => {
 
   try {
@@ -31,10 +28,22 @@ const ws = getWebSocket();
   }
 }); */
 
+type AD = {
+  title: string;
+  bio: string;
+};
+type incoming_ad = {
+  type: string;
+  data: AD;
+};
+
 export default function MarketplaceScreen(){
+
+  const ws = getWebSocket();
   
   const [title, set_title] = useState('');
   const [bio, set_bio] = useState('');
+  const [ads, set_ads] = useState<AD[]>([]);
   
   const login = {
     "type": "new_ad",
@@ -43,6 +52,11 @@ export default function MarketplaceScreen(){
       "bio": bio
     }
   };
+
+  const add_ad = async (new_item: incoming_ad) => {
+    const updated = [...ads, new_item.data];
+    set_ads(updated);
+  }
   
   const send_data = () => {
     console.log("sending data");
@@ -54,9 +68,12 @@ export default function MarketplaceScreen(){
     console.log('Message received:', event.data);
     try {
       console.log(`Received JSON in client: ${event.data}`)
-      const text = await event.data.text();
-      const data = JSON.parse(text);
-      set_title(data.data.title);
+      //const text = await event.data.text();
+      const data:incoming_ad = JSON.parse(event.data);
+      console.log(data);
+      
+      add_ad(data);
+      //set_title(data.data.title);
 
     } catch {
       console.error('Failed to handle message in client:');
@@ -73,7 +90,6 @@ export default function MarketplaceScreen(){
             value={title}
             onChangeText={set_title} // Updates state
           />
-    
           <TextInput
             style={styles.input}
             placeholder="Beskrivning"
