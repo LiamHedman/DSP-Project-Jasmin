@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { router } from 'expo-router';
 import { getWebSocket } from './connection';
 
@@ -38,13 +38,12 @@ type incoming_ad = {
 };
 
 export default function MarketplaceScreen(){
-
   const ws = getWebSocket();
   
   const [title, set_title] = useState('');
   const [bio, set_bio] = useState('');
   const [ads, set_ads] = useState<AD[]>([]);
-  
+
   const login = {
     "type": "new_ad",
     "data": {
@@ -101,6 +100,15 @@ export default function MarketplaceScreen(){
           onPress={send_data
             
           } />
+          {ads.map((ad: AD) => {
+            return (
+              <View>
+                <Text> {ad.title} HEJ {ad.bio} </Text>
+              </View>
+            );
+          })}
+
+          
         </SafeAreaView>
         
         
