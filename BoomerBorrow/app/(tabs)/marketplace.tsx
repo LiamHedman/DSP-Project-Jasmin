@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { getWebSocket } from './connection';
 
@@ -58,6 +58,8 @@ export default function MarketplaceScreen() {
     }
 
     const send_data = () => {
+        set_title('');
+        set_bio('');
         console.log("sending data");
         if (ws !== null)
             ws.send(JSON.stringify(login));
@@ -84,13 +86,16 @@ export default function MarketplaceScreen() {
         
         <SafeAreaView style={styles.container}>
             <View style={styles.posts_container}>
-                {ads.map((ad: AD) => {
-                    return (
-                        <View style={styles.post}>
-                            <Text style={styles.input}> {ad.title} HEJ {ad.bio} </Text>
-                        </View>
-                    );
-                })}
+                <ScrollView>
+                    {ads.map((ad: AD) => {
+                        return (
+                            <View style={styles.post}>
+                                <Text> {ad.title} </Text>
+                                <Text> {ad.bio} </Text>
+                            </View>
+                        );
+                    })}
+                </ScrollView>
             </View>
     
             <TextInput
@@ -107,14 +112,16 @@ export default function MarketplaceScreen() {
             />
             <Button
                 title="Skapa annons"
-                onPress={send_data
-        
+                onPress={
+                    send_data
                 } />
-
         </SafeAreaView>
 
     )
 }
+
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -133,8 +140,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     post: {
-        height: 40,
-        width: '80%',
+        height: 80,
+        width: '95%',
         margin: 12,
         borderWidth: 1,
         padding: 10,
@@ -143,8 +150,8 @@ const styles = StyleSheet.create({
         borderBlockColor: 'black'
     },
     posts_container: {
-        height: 200,
-        width: '80%',
+        height: 300,
+        width: '90%',
         margin: 12,
         borderWidth: 1,
         padding: 10,
