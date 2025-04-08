@@ -1,4 +1,14 @@
+
 {
+  "scripts": {
+    "start expo": "expo start",
+    "reset-project": "node ./scripts/reset-project.js",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "jest --watchAll",
+    "lint": "expo lint"
+  },
   "dependencies": {
     "@types/ws": "^8.18.0",
     "axios": "^1.8.4",

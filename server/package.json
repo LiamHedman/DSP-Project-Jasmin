@@ -1,4 +1,11 @@
 {
+  "scripts": {
+    "compile": "tsc",
+    "start_server": "node ./dist/server.js",
+    "test": "jest ./tests/ --watchAll",
+    "lint": "expo lint"
+  },
+
   "dependencies": {
     "@types/ws": "^8.18.0",
     "express": "^4.21.2",
