@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744127719151" clover="3.2.0">
-  <project timestamp="1744127719151" name="All files">
+<coverage generated="1744194209766" clover="3.2.0">
+  <project timestamp="1744194209766" name="All files">
     <metrics statements="33" coveredstatements="5" conditionals="4" coveredconditionals="0" methods="9" coveredmethods="3" elements="46" coveredelements="8" complexity="0" loc="33" ncloc="33" packages="1" files="2" classes="2"/>
     <file name="example_tests_src.ts" path="C:\Users\klasw\OneDrive\Documents\GitHub\DSP-Project-Jasmin\server\src\example_tests_src.ts">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>

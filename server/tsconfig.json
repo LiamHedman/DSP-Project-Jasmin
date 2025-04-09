@@ -9,5 +9,5 @@
       "rootDir": "./src",                 // Source directory
       "types": ["node", "jest"]                // Include Node.js types
     },
-    "include": ["src/**/*.ts", "tests/**/*.ts"]
+    "include": ["src/**/*.ts"]
   }
