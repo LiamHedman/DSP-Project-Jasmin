@@ -17,7 +17,7 @@ export const pool = new Pool({
     connectionTimeoutMillis: 2000,
     ssl: {
         rejectUnauthorized: true,
-        ca: fs.readFileSync("./ca.pem").toString(),
+        ca: fs.readFileSync("./config/ca.pem").toString(),
     },
 });
 
