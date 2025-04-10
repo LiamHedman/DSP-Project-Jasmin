@@ -20,6 +20,7 @@ const main = async () => {
         const tableName = "example_table";
 
         // Insertion of the data into the table specified
+        // use AWAIT!
         await insert_data(tableName, data);
 
     } catch (err) {
