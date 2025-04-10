@@ -1,4 +1,4 @@
-import insert_data from './data_insertion.js';
+import insert_data from '../data_insertion.js';
 
 
 // Function MUST be async to not block the programs event loop,

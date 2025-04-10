@@ -1,4 +1,4 @@
-import retrieve_data from './data_retrieval.js';
+import retrieve_data from '../data_retrieval.js';
 
 // Function MUST be async to not block the programs event loop,
 // very important

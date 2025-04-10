@@ -1,4 +1,4 @@
-import { pool } from './connection.js';
+import { pool } from './pool_config.js';
 
 const insert_data = async (table: string, data: any) => {
     try {

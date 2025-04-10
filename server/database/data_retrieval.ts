@@ -1,4 +1,4 @@
-import { pool } from './connection.js';
+import { pool } from './pool_config.js';
 
 
 const retrieve_data = async (table: string, conditions: any = {}) => {
