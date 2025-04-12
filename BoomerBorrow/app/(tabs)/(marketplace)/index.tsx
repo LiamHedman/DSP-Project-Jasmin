@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { getWebSocket } from './connection';
+import { getWebSocket } from '../connection';
 
 /* ws.on('message', (message: string) => {
 
