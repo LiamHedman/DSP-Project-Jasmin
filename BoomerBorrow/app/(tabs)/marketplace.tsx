@@ -83,7 +83,6 @@ export default function MarketplaceScreen() {
     
     
     return (
-        
         <SafeAreaView style={styles.container}>
             <View style={styles.posts_container}>
                 <ScrollView>
@@ -119,9 +118,6 @@ export default function MarketplaceScreen() {
 
     )
 }
-
-
-
 
 const styles = StyleSheet.create({
     container: {
