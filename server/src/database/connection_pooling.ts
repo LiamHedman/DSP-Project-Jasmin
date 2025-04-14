@@ -1,12 +1,15 @@
 const fs = require('fs');
 const { Pool } = require('pg');
 require('dotenv').config();
+import path from "path";
 
+// resolves the path the the certificate (ca.pem)
+const caPath = path.resolve(__dirname, "../../src/database/config/ca.pem");
 
 // Connection Pool Configuration
 export const pool = new Pool({
     // For security, dont hard code the connection data
-    // To change the connection data, change the values in the .dotenv file
+    // To change the connection data, change the values in the .env file
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
@@ -17,9 +20,12 @@ export const pool = new Pool({
     connectionTimeoutMillis: 2000,
     ssl: {
         rejectUnauthorized: true,
-        ca: fs.readFileSync("./config/ca.pem").toString(),
+        ca: fs.readFileSync(caPath).toString(),
     },
 });
+
+
+// TODO: Move this out into a separate file
 
 // Test queries to check that the database has been connected to
 const check_connection = async () => {
@@ -42,4 +48,4 @@ const check_connection = async () => {
 };
 
 // Run the queries
-check_connection();
+//check_connection();

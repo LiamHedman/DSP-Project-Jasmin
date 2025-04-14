@@ -38,7 +38,7 @@ export default function LoginScreen() {
   const handleLogin = () => {
     console.log('Username:', username);
     console.log('Password:', password);
-    router.push('/marketplace');
+    router.push('../(marketplace)');
     const login = {"username" : username,
                    "password" : password
     };

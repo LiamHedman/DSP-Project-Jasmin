@@ -1,4 +1,4 @@
-import { pool } from './pool_config.js';
+import { pool } from './connection_pooling';
 
 const delete_data = async (table: string, condition: any) => {
     try {
@@ -16,8 +16,7 @@ const delete_data = async (table: string, condition: any) => {
             console.log(`[INFO]: No matching data found in table "${table}" to delete.`);
         }
 
-    } catch (err) {
-
+    } catch (err: any) {
         switch (err.code) {
             case "42703":   // Undefined column
                 console.error(`[ERROR]: Column does not exist in table "${table}". Check the column names in your condition: ${Object.keys(condition).join(", ")}`);

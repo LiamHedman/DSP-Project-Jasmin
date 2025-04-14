@@ -16,7 +16,7 @@ export default function Index() {
           <View style={styles.container}>
             
             <Text>WELCOME TO BOOMERBORROW</Text>
-            <Link href = '/login'> Login</Link>
+            <Link href="/(tabs)/(login)"> Login</Link>
           </View>
         </ImageBackground>
       </SafeAreaView>

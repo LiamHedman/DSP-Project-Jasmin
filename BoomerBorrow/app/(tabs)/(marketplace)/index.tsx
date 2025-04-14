@@ -54,6 +54,7 @@ export default function MarketplaceScreen() {
 
     const add_ad = async (new_item: incoming_ad) => {
         const updated = [...ads, new_item.data];
+        console.log("Add_ad");
         set_ads(updated);
     }
 
@@ -68,18 +69,17 @@ export default function MarketplaceScreen() {
     ws.onmessage = async (event) => {
         console.log('Message received:', event.data);
         try {
-            console.log(`Received JSON in client: ${event.data}`)
-            //const text = await event.data.text();
-            const data: incoming_ad = JSON.parse(event.data);
-            console.log(data);
-
+            // Turns the "blob" data into a string
+            const text_data: string = await event.data.text();
+            console.log(`Received JSON in client: ${text_data}`);
+    
+            const data: incoming_ad = JSON.parse(text_data);
+    
             add_ad(data);
-            //set_title(data.data.title);
-
-        } catch {
-            console.error('Failed to handle message in client:');    
+        } catch (err) {
+            console.error('Failed to handle message in client:', err);
         }
-    };    
+    };  
     
     
     return (

@@ -1,4 +1,4 @@
-import { pool } from './pool_config.js';
+import { pool } from './connection_pooling';
 
 
 const retrieve_data = async (table: string, conditions: any = {}) => {
@@ -27,7 +27,7 @@ const retrieve_data = async (table: string, conditions: any = {}) => {
 
         // Returns ALL matching rows
         return result.rows;
-    } catch (err) {
+    } catch (err: any) {
         switch (err.code) {
             case "42P01":   // Undefined table
                 console.error(`[ERROR]: Table "${table}" not found.`);

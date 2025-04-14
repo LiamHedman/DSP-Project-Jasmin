@@ -1,4 +1,4 @@
-import { pool } from './pool_config.js';
+import { pool } from './connection_pooling';
 
 const modify_data = async (table: string, data: any, condition: any) => {
     try {
@@ -22,8 +22,7 @@ const modify_data = async (table: string, data: any, condition: any) => {
 
         console.log(`[SUCCESS]: Data updated in table "${table}", updated data: ${JSON.stringify(result.rows[0])}`);
 
-    } catch (err) {
-
+    } catch (err: any) {
         switch (err.code) {
             case "42703":   // undefined_column
                 console.error(`[ERROR]: Column does not exist in table "${table}". Check the column names: ${Object.keys(data).join(", ")}`);

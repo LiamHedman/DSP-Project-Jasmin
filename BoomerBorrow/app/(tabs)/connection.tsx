@@ -1,3 +1,4 @@
+import React from "react";
 
 
 let webSocket: WebSocket | null = null;
@@ -14,3 +15,8 @@ export const getWebSocket = () => {
   return webSocket;
 };
 
+const ConnectionScreen = () => {
+  return <div>Connection Screen</div>;
+};
+
+export default ConnectionScreen;
