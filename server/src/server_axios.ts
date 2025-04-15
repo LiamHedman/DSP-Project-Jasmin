@@ -1,47 +1,72 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
 
+// Middleware which enables automatic JSON parsing
 app.use(express.json());
+// Enables cross-origin resource sharing
+// i.e. enables the front end (different port) to communicate
+// to the server
+app.use(cors());	// TODO: this is not safe in production
 
-let ads: { title: string; bio: string }[] = [];
+type Post = {
+    type: string,
+    data: {
+        title: string,
+        bio: string
+    }
+};
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World! The server is working.');
+// Array of ads
+let posts_array: Post[] = [];	// TODO: should be the database
+
+// Handles login requests from the client
+// Listens to all axios.post(`${SERVER_URL}/login` from the client
+app.post("/login", (req: Request, res: Response) => {
+	const { username } = req.body;
+
+	console.log(`User "${username}" connected`);
+
+	// status(200) is the success message thats get sent back
+	// to the client, i.e. communicates that the connections was successful
+	res.status(200).json({ status: "Connection successful" });
 });
 
-app.post('/login', (req: Request, res: Response) => {
-  const { username, password } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Missing username or password' });
-  }
+// Listens for a new post from a client. 
+app.post("/new_post", (req: Request, res: Response) => {
+	const { type, data } = req.body;
 
-  console.log(`User logged in: ${username}`);
+	if (type !== "new_post" || !data?.title || !data?.bio) {
+		return res.status(400).json({ error: "Invalid request format or missing title/bio" });
+	}
+	
+	console.log(`title: ${data.title}`);
+	console.log(`bio: ${data.bio}`);
 
-  res.status(200).json({ status: 'Login successful' });
+	const post_data = {
+		"type": type,
+		"data": {
+			"title": data.title,
+			"bio": data.bio
+		}
+	};
+	
+	posts_array.push(post_data);
+
+	res.status(200).json({ status: "Post received successfully" });
 });
 
-app.post('/new_ad', (req: Request, res: Response) => {
-  const { title, bio } = req.body;
-
-  if (!title || !bio) {
-    return res.status(400).json({ error: 'Missing title or bio' });
-  }
-
-  console.log(`title: ${title}`);
-  console.log(`bio: ${bio}`);
-
-  ads.push({ title, bio });
-
-  res.status(200).json({ status: 'Ad received successfully' });
+// Is a GET request handles, i.e. used by the client to retrieve data from the server
+// Handles all await axios.get(`${SERVER_URL}/retrieve_posts`);
+app.get("/fetch_posts", (req: Request, res: Response) => {
+	// Returns the posts_array
+	res.json(posts_array);
 });
 
-app.get('/ads', (req: Request, res: Response) => {
-  res.json(ads);
-});
-
+// Listens on the port 3000
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

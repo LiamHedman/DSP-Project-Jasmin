@@ -1,88 +1,76 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { router } from 'expo-router';
-import { getWebSocket } from '../connection';
-
-/* let webSocket: WebSocket; */
+import React, { useState, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { TextInput, Button, StyleSheet } from "react-native";
+import { router } from "expo-router";
+import axios from "axios";
 
 export default function LoginScreen() {
-  const [ws, setWs] = useState<WebSocket | null>(null);
-  
-/*   useEffect(() => {
-    webSocket = new WebSocket('ws://localhost:3000');
+	const SERVER_URL = "http://localhost:3000";
 
-    webSocket.onopen = () => console.log('WebSocket connected');
-    webSocket.onmessage = (e) => console.log('Message received:', e.data);
-    webSocket.onerror = (e) => console.log('WebSocket error:', e);
-    webSocket.onclose = (e) => console.log('WebSocket closed:', e.code, e.reason);
+	// use set_username() or set_password() if you want to update the username or password 
+	const [username, set_username] = useState("");
+	const [password, set_password] = useState("");
 
-    setWs(webSocket); // Save WebSocket instance
+	// If you need to execute something on page mount (when you load the page)
+	useEffect(() => {
+		
+	}, []);
 
-    return () => webSocket.close(); // Cleanup on unmount
-    
-  }, []); // Empty dependency array ensures it runs once */
+	async function login(username: string) {
+		try {
+			const response = await axios.post(`${SERVER_URL}/login`, {
+			username: username,
+			});
+		} catch (error: any) {
+			console.error("Login failed:", error.message);
+		}
+	}
 
+	// Handles a clients login when the login button is pressed
+	const handle_login = async () => {
+		console.log("Username:", username);
+		console.log("Password:", password);
+		await login(username);
+		// Sends the client to the marketplace page
+		router.push("../(marketplace)");
+	};
 
-  useEffect(() => {
-    console.log("USEEFFECT");
-    const webSocket = getWebSocket(); // Get the shared WebSocket instance
-    setWs(webSocket);
+	return (
+	<SafeAreaView style={styles.container}>
+		<TextInput
+		style={styles.input}
+		placeholder="Enter username"
+		value={username}
+		onChangeText={set_username} // Updates state
+		/>
 
-    return () => webSocket.close();
-  }, []);
+		<TextInput
+		style={styles.input}
+		placeholder="Enter password"
+		value={password}
+		secureTextEntry
+		onChangeText={set_password} // Updates state
+		/>
+		<Button 
+		title="Log in" 
+		onPress={handle_login}
+		/>
+	</SafeAreaView>
+	);
+	}
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    console.log('Username:', username);
-    console.log('Password:', password);
-    router.push('../(marketplace)');
-    const login = {"username" : username,
-                   "password" : password
-    };
-    if(ws!==null)
-      ws.send(JSON.stringify(login));
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter username"
-        value={username}
-        onChangeText={setUsername} // Updates state
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Enter password"
-        value={password}
-        secureTextEntry
-        onChangeText={setPassword} // Updates state
-      />
-      <Button 
-      title="Log in" 
-      onPress={handleLogin
-        
-      } />
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    height: 40,
-    width: '80%',
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-  },
+	const styles = StyleSheet.create({
+	container: {
+	flex: 1,
+	justifyContent: "center",
+	alignItems: "center",
+	},
+	input: {
+	height: 40,
+	width: "80%",
+	margin: 12,
+	borderWidth: 1,
+	padding: 10,
+	borderRadius: 5,
+	},
 });
