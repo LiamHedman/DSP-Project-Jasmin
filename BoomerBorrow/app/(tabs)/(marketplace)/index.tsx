@@ -1,96 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
-import { router } from 'expo-router';
-import { getWebSocket } from '../connection';
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, TextInput, Button, StyleSheet, Text, ScrollView } from "react-native";
+import axios from "axios";
 
-/* ws.on('message', (message: string) => {
-
-  try {
-    const parsed_message = JSON.parse(message);
-    if(parsed_message) {
-      switch (parsed_message.type) {
-        case "new_ad":
-          console.log(`title: ${parsed_message.data.title}`);
-          console.log(`bio: ${parsed_message.data.bio}`);
-
-          wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(message);
-            }
-          });
-      }
-    } else {
-      console.log("PARSED MESSAGE TYPE NOT SPECIFIED");
+type Post = {
+    type: string,
+    data: {
+        title: string,
+        bio: string
     }
-  } catch {
-    console.log("ERROR UPON RECEIVING DATA FROM USER");      
-  }
-}); */
-
-type AD = {
-    title: string;
-    bio: string;
-};
-type incoming_ad = {
-    type: string;
-    data: AD;
 };
 
 export default function MarketplaceScreen() {
-    const ws = getWebSocket();
+    const SERVER_URL = "http://localhost:3000";
 
-    const [title, set_title] = useState('');
-    const [bio, set_bio] = useState('');
-    const [ads, set_ads] = useState<AD[]>([]);
+	// use set_title() etc. if you want to update the username or password 
+    const [title, set_title] = useState("");
+    const [bio, set_bio] = useState("");
+    const [posts, set_posts] = useState<Post[]>([]);
 
-    const login = {
-        "type": "new_ad",
+    const post_data = {
+        "type": "new_post",
         "data": {
             "title": title,
             "bio": bio
         }
     };
 
-    const add_ad = async (new_item: incoming_ad) => {
-        const updated = [...ads, new_item.data];
-        console.log("Add_ad");
-        set_ads(updated);
-    }
-
-    const send_data = () => {
-        set_title('');
-        set_bio('');
-        console.log("sending data");
-        if (ws !== null)
-            ws.send(JSON.stringify(login));
-    }
-
-    ws.onmessage = async (event) => {
-        console.log('Message received:', event.data);
-        try {
-            // Turns the "blob" data into a string
-            const text_data: string = await event.data.text();
-            console.log(`Received JSON in client: ${text_data}`);
-    
-            const data: incoming_ad = JSON.parse(text_data);
-    
-            add_ad(data);
-        } catch (err) {
-            console.error('Failed to handle message in client:', err);
+    useEffect(() => {
+        // Fetches all the posts upon mount (page load)
+        async function fetch_posts() {
+            try {
+                const response = await axios.get(`${SERVER_URL}/fetch_posts`);
+                set_posts(response.data);
+            } catch (error: any) {
+                console.error("Failed to fetch posts:", error.message);
+            }
         }
-    };  
+        
+        fetch_posts();
+    }, []);
+
+    async function send_post() {
+        try {
+            // Sends the post to the server
+            await axios.post(`${SERVER_URL}/new_post`, post_data);
+            console.log("post_data (the new post) sent to the server");
+
+            // Fetches updated posts list
+            const response = await axios.get(`${SERVER_URL}/fetch_posts`);
+            set_posts(response.data);
+        } catch (error: any) {
+            console.error("new_post failed:", error.message);
+        }
+    }
     
+    const handle_new_post = async () => {
+        await send_post();
+    }
     
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.posts_container}>
                 <ScrollView>
-                    {ads.map((ad: AD) => {
+                    {posts.map((post_data: Post) => {
                         return (
                             <View style={styles.post}>
-                                <Text> {ad.title} </Text>
-                                <Text> {ad.bio} </Text>
+                                <Text> {post_data.data?.title} </Text>
+                                <Text> {post_data.data?.bio} </Text>
                             </View>
                         );
                     })}
@@ -111,9 +88,8 @@ export default function MarketplaceScreen() {
             />
             <Button
                 title="Skapa annons"
-                onPress={
-                    send_data
-                } />
+                onPress={ handle_new_post } 
+            />
         </SafeAreaView>
 
     )
@@ -122,36 +98,36 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'green'
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "green"
     },
     input: {
         height: 40,
-        width: '80%',
+        width: "80%",
         margin: 12,
         borderWidth: 1,
         padding: 10,
         borderRadius: 5,
-        backgroundColor: 'white'
+        backgroundColor: "white"
     },
     post: {
         height: 80,
-        width: '95%',
+        width: "95%",
         margin: 12,
         borderWidth: 1,
         padding: 10,
         borderRadius: 5,
-        backgroundColor: 'white',
-        borderBlockColor: 'black'
+        backgroundColor: "white",
+        borderBlockColor: "black"
     },
     posts_container: {
         height: 300,
-        width: '90%',
+        width: "90%",
         margin: 12,
         borderWidth: 1,
         padding: 10,
         borderRadius: 5,
-        backgroundColor: 'white'
+        backgroundColor: "white"
     }
 });

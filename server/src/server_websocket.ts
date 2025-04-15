@@ -52,14 +52,6 @@ wss.on('connection', (ws) => {
       console.log("ERROR UPON RECEIVING DATA FROM USER");      
     }
 
-
-    // Broadcast the message to all connected clients
-/*     wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === 1) {
-        //client.send(message.toString());
-        client.send(JSON.stringify({"name": "Alice", "age": 25}));
-      }
-    }); */
   });
 
   ws.on('close', () => {
