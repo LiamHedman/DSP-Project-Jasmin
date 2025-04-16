@@ -3,6 +3,7 @@ import retrieve_data from "../src/database/data_retrieval";
 import modify_data from "../src/database/data_modification";
 import delete_data from "../src/database/data_deletion";
 import clear_table from "../src/database/table_clearing";
+import { pool } from "../src/database/connection_pooling";
 
 const tableName = "test_table";
 
@@ -22,6 +23,10 @@ beforeEach(async () => {
     await clear_table(tableName);
 });
 
+afterAll(async () => {
+    await pool.end();
+});
+  
 test("Retrieve inserted data", async () => {
     await insert_data(tableName, insertion_data);
     const retrieved_data = await retrieve_data(tableName, insertion_data);
