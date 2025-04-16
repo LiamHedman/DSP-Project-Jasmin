@@ -1,4 +1,17 @@
 
+### Viktigt
+
+0. Lägg till följande i mappen config:
+   ca.pem   pgConnect.json
+
+   Lägg till följande i database:
+   .env
+
+   (Se till att den verkligen heter .env)
+
+   I och med att dessa innehåller känslig info om databasen
+   så kommer de att ignoreras vid varje commit, alltså behöver
+   man lägga till dem varje gång man hämtar hem repo:t på nytt :(
 
 ### Övergripande info
 
