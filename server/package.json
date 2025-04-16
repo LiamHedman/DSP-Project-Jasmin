@@ -2,7 +2,7 @@
   "scripts": {
     "compile": "tsc",
     "start_server": "node ./dist/server.js",
-    "test": "jest",
+    "test": "jest ./tests",
     "lint": "expo lint"
   },
   "dependencies": {
