@@ -4,7 +4,7 @@
 0. Lägg till följande i mappen config:
    ca.pem   pgConnect.json
 
-   Lägg till följande i database:
+   Lägg till följande i server:
    .env
 
    (Se till att den verkligen heter .env)
