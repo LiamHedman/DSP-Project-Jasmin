@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from "react-native";
 import axios from "axios";
-import MapView from './MapView'; // Import from same directory
+import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
+
+// Set the Mapbox access token
+Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 
 type Post = {
   type: string;
@@ -60,7 +63,12 @@ export default function MarketplaceScreen() {
     <SafeAreaView style={styles.container}>
       {/* Map Section */}
       <View style={styles.mapContainer}>
-        <MapView />
+        <MapView style={styles.map}>
+          <Camera
+            zoomLevel={14}
+            centerCoordinate={[18.063240, 59.334591]} // Longitude, Latitude
+          />
+        </MapView>
       </View>
 
       {/* Posts List */}
@@ -108,6 +116,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     alignSelf: "center", // Ensure map is centered
+  },
+  map: {
+    flex: 1,
   },
   postsContainer: {
     width: "90%", // Match other components
