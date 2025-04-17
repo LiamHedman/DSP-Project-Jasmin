@@ -1,37 +1,60 @@
-import React from 'react';
-import { View, Text, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Platform, StyleSheet } from 'react-native';
+import MapboxGL from '@rnmapbox/maps';
 
-// The mapbox token generated on mapbox official website
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibWFxZGEiLCJhIjoiY20zbnVkNG80MTZxOTJqczV0OXUxaGI2dyJ9.CsQOcikMeIMQt1kSEM9WNA';
+MapboxGL.setAccessToken(
+  'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA'
+);
 
-// Style the map 
 export default function MapScreen() {
-  if (Platform.OS === 'web') {
-    const Map = require('react-map-gl').default;
-    const { NavigationControl } = require('react-map-gl');
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      const script = document.createElement('script');
+      script.src = 'https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js';
+      script.onload = () => {
+        const mapboxgl = (window as any).mapboxgl;
+        mapboxgl.accessToken =
+          'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA';
+        const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [18.063240, 59.334591],
+          zoom: 12,
+        });
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      };
+      document.body.appendChild(script);
+    }
+  }, []);
 
-    return (
-      <View style={{ flex: 1 }}>
-        <Map
-          initialViewState={{
-            longitude: 18.063240,
-            latitude: 59.334591,
-            zoom: 14,
-          }}
-          style={{ width: '100%', height: '100%' }}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-          mapboxAccessToken={MAPBOX_TOKEN}
-        >
-          <NavigationControl position="top-right" />
-        </Map>
-      </View>
-    );
+  if (Platform.OS === 'web') {
+    return <div id="map" style={{ height: '100vh', width: '100%' }} />;
   }
 
-  // Native fallback
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Map not supported on native yet.</Text>
+    <View style={styles.container}>
+      <MapboxGL.MapView style={styles.map}>
+        <MapboxGL.Camera
+          zoomLevel={12}
+          centerCoordinate={[18.063240, 59.334591]}
+        />
+      </MapboxGL.MapView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: 200,
+    width: '90%',
+    borderRadius: 5,
+    marginVertical: 12,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  map: {
+    flex: 1,
+  },
+});
