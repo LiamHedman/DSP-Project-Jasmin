@@ -20,7 +20,7 @@ const retrieve_data = async (table: string, conditions: any = {}) => {
         const result = await pool.query(query, values);
 
         if (result.rows.length > 0) {
-            console.log(`[SUCCESS]: Data retrieved from table "${table}": ${JSON.stringify(result.rows)}`);
+            //console.log(`[SUCCESS]: Data retrieved from table "${table}": ${JSON.stringify(result.rows)}`);
         } else {
             console.log(`[INFO]: No matching data found in table "${table}" with given conditions.`);
         }

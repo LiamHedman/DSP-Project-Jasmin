@@ -18,9 +18,7 @@ export default function LoginScreen() {
 
 	async function login(username: string) {
 		try {
-			const response = await axios.post(`${SERVER_URL}/login`, {
-			username: username,
-			});
+			await axios.post(`${SERVER_URL}/login`, {username: username,});
 		} catch (error: any) {
 			console.error("Login failed:", error.message);
 		}
@@ -32,7 +30,7 @@ export default function LoginScreen() {
 		console.log("Password:", password);
 		await login(username);
 		// Sends the client to the marketplace page
-		router.push("../(marketplace)");
+		router.push("/(tabs)/(marketplace)");
 	};
 
 	return (

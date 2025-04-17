@@ -1,20 +1,20 @@
 
 
 // The user class
-class User {
-    private id: number;
-    private role: string;
-    private name: string;
-    private mail: string;
-    private phone_number: string;
-    private biography: string;
-    private address: string;
-    private date_of_birth: string;
-    private profile_picture_url: string;
-    private password: string;
-    private created_at: string;
-    private supply_post_ids: string[];
-    private demand_post_ids: string[];
+export class User {
+    public id: number;
+    public role: string;
+    public name: string;
+    public mail: string;
+    public phone_number: string;
+    public biography: string;
+    public address: string;
+    public date_of_birth: string;
+    public profile_picture_url: string;
+    public password: string;
+    public created_at: string;
+    public supply_post_ids: string[];
+    public demand_post_ids: string[];
 
     constructor(
         id: number,
@@ -49,24 +49,24 @@ class User {
 
 // The class for supply posts, i.e. posts/ads where users
 // want to LEND stuff
-class Supply_post {
+export class Supply_post {
 
-    private id: number;
-    private owner_id: number;
-    private title: string;
-    private description: string;
-    private price: number;
-    private category: string;
-    private location: string;
-    private post_picture_url: string;
-    private created_at: string;
+    public id: number;
+    public owner_id: number;
+    public title: string;
+    public description: string;
+    public price: string;
+    public category: string;
+    public location: string;
+    public post_picture_url: string;
+    public created_at: string;
 
     constructor(
         id: number,
         owner_id: number,
         title: string,
         description: string,
-        price: number,
+        price: string,
         category: string,
         location: string,
         post_picture_url: string,
@@ -87,14 +87,14 @@ class Supply_post {
 // The class for demand posts, i.e. posts/ads where users
 // want to RENT stuff
 class Demand_post {
-    private id: number;
-    private owner_id: number;
-    private title: string;
-    private description: string;
-    private price: number;
-    private category: string;
-    private location: string;
-    private created_at: string;
+    public id: number;
+    public owner_id: number;
+    public title: string;
+    public description: string;
+    public price: number;
+    public category: string;
+    public location: string;
+    public created_at: string;
 
     constructor(
         id: number,

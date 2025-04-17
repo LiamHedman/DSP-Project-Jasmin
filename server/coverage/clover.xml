@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744641106359" clover="3.2.0">
-  <project timestamp="1744641106359" name="All files">
-    <metrics statements="95" coveredstatements="65" conditionals="18" coveredconditionals="4" methods="14" coveredmethods="13" elements="127" coveredelements="82" complexity="0" loc="95" ncloc="95" packages="2" files="7" classes="7"/>
+<coverage generated="1744823005347" clover="3.2.0">
+  <project timestamp="1744823005347" name="All files">
+    <metrics statements="102" coveredstatements="68" conditionals="21" coveredconditionals="6" methods="14" coveredmethods="12" elements="137" coveredelements="86" complexity="0" loc="102" ncloc="102" packages="2" files="7" classes="7"/>
     <package name="src">
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
       <file name="example_tests_src.ts" path="C:\Users\Schonning\Documents\GitHub\DSP-Project-Jasmin\server\src\example_tests_src.ts">
@@ -14,43 +14,51 @@
       </file>
     </package>
     <package name="src.database">
-      <metrics statements="90" coveredstatements="60" conditionals="18" coveredconditionals="4" methods="11" coveredmethods="10"/>
+      <metrics statements="97" coveredstatements="63" conditionals="21" coveredconditionals="6" methods="11" coveredmethods="9"/>
       <file name="connection_pooling.ts" path="C:\Users\Schonning\Documents\GitHub\DSP-Project-Jasmin\server\src\database\connection_pooling.ts">
-        <metrics statements="14" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="17" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
         <line num="38" count="0" type="stmt"/>
         <line num="41" count="0" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
       </file>
       <file name="data_deletion.ts" path="C:\Users\Schonning\Documents\GitHub\DSP-Project-Jasmin\server\src\database\data_deletion.ts">
-        <metrics statements="17" coveredstatements="10" conditionals="5" coveredconditionals="1" methods="2" coveredmethods="2"/>
+        <metrics statements="22" coveredstatements="11" conditionals="8" coveredconditionals="3" methods="2" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="6" count="3" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="14" count="1" type="stmt"/>
+        <line num="11" count="1" type="cond" truecount="2" falsecount="1"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
         <line num="16" count="0" type="stmt"/>
-        <line num="20" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="36" count="0" type="cond" truecount="0" falsecount="3"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
       </file>
       <file name="data_insertion.ts" path="C:\Users\Schonning\Documents\GitHub\DSP-Project-Jasmin\server\src\database\data_insertion.ts">
         <metrics statements="16" coveredstatements="10" conditionals="3" coveredconditionals="0" methods="2" coveredmethods="2"/>
@@ -95,7 +103,7 @@
         <line num="39" count="1" type="stmt"/>
       </file>
       <file name="data_retrieval.ts" path="C:\Users\Schonning\Documents\GitHub\DSP-Project-Jasmin\server\src\database\data_retrieval.ts">
-        <metrics statements="18" coveredstatements="14" conditionals="7" coveredconditionals="3" methods="2" coveredmethods="2"/>
+        <metrics statements="17" coveredstatements="13" conditionals="7" coveredconditionals="3" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="4" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="5" count="3" type="stmt"/>
@@ -106,7 +114,6 @@
         <line num="17" count="3" type="stmt"/>
         <line num="20" count="3" type="stmt"/>
         <line num="22" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="23" count="2" type="stmt"/>
         <line num="25" count="1" type="stmt"/>
         <line num="29" count="3" type="stmt"/>
         <line num="31" count="0" type="cond" truecount="0" falsecount="2"/>

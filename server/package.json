@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "compile": "tsc",
+    "compile": "tsc && xcopy src\\database\\config dist\\server\\src\\database\\config /E /I /Y",
     "start_server": "node ./dist/server.js",
     "test": "jest",
     "lint": "expo lint"
