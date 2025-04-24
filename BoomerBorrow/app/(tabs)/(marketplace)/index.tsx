@@ -5,7 +5,7 @@ import axios from "axios";
 import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 
 // Set the Mapbox access token
-Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
+Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 
 type Post = {
   type: string;

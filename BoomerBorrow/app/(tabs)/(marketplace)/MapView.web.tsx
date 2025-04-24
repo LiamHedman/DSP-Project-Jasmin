@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibWFxZGEiLCJhIjoiY20zbnVkNG80MTZxOTJqczV0OXUxaGI2dyJ9.CsQOcikMeIMQt1kSEM9WNA';
+const MAPBOX_TOKEN = 'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA';
 
 export default function MapViewWeb() {
   React.useEffect(() => {
