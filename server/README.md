@@ -1,15 +1,18 @@
 
 
-### File structure
+### General
+Info about the database can be found in the README in "src -> database -> README"
 
-src/: Source files, i.e. .ts (or .js if written in it).
+### How to
 
-dist/: Compiled and transpiled code, i.e. .js.
+# Install dependencies
+npm install
 
-lib/: modules (node.js, express.js, etc.).
+# Compile
+npm run compile
 
-tests/: test files.
+# Run the server
+npm run start_server
 
-logs/: Generated log files.
-
-temp/: Temporary files.
+# Run the tests
+npm run test
