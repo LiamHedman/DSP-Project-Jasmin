@@ -1,192 +1,202 @@
-import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
-
-
-
-import { Tabs } from "expo-router";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
-import React from "react";
-
-type CustomTabButtonProps = BottomTabBarButtonProps & {
-  icon: React.ReactNode;
-  label: string;
-  color: string;
-};
-
-const CustomTabButton: React.FC<CustomTabButtonProps> = ({icon, label, color, onPress,}) => {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 15,
-      }}
-    >
-      {icon}
-      <Text
-        style={{
-          color: color,
-          fontSize: 18,
-          fontWeight: "bold",
-          maxWidth: 140,
-          marginTop: 5,
-        }}
-      >
-      {label}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+import React, { useLayoutEffect } from "react";
+import { View, Text, TouchableOpacity, SafeAreaView, ColorValue, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { Stack, Tabs } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useIsFocused } from "@react-navigation/native";
 
 type TabItem = {
   name: string;
   label: string;
-  icon: React.ReactNode;
+  icon: (color: string, size: number, marginLeft: number) => React.ReactNode;
 };
 
 const tabItems: TabItem[] = [
   {
-    name: "index",
-    label: "Home",
-    icon: <FontAwesome name="home" size={28} color="gray" />,
+    name: "(marketplace)",
+    label: "SE ANDRAS\nANONSER ",
+    icon: (color, size, marginLeft) => <FontAwesome name="shopping-cart" size={size} color={color} style={{marginLeft: marginLeft}}/>,
+  },
+  {
+    name: "connection",
+    label: "Connection",
+    icon: (color, size, marginLeft) => <FontAwesome name="wifi" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
     name: "(login)",
-    label: "Logga in",
-    icon: <FontAwesome name="user-circle" size={28} color="gray" />,
+    label: "DIN \nPROFIL",
+    icon: (color, size, marginLeft) => <FontAwesome name="user-circle" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(marketplace)",
-    label: "Lägg till annons",
-    icon: <FontAwesome name="calendar" size={28} color="gray" />,
+    name: "create_posts",
+    label: "LÄGG\nUP\nANONS",
+    icon: (color, size, marginLeft) => <FontAwesome name="plus-square" size={size} color={color} style={{marginLeft: marginLeft}} />,
   },
 ];
 
+const topRowCount = 2;
+
 export default function TabLayout() {
   return (
-    <SafeAreaView style = {{flex:1}}>
-      <Tabs screenOptions={{
-          tabBarActiveTintColor: "white",
-          tabBarStyle: {
-            position: "absolute",
-            height: 80,
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
-            backgroundColor: "black",
-            borderTopWidth: 0,
-          },
-          headerShown: false,
-        }} >
-          {tabItems.map((item) => (
-            <Tabs.Screen
-              key={item.name}
-              name={item.name}
-              options={{
-                tabBarButton: (props) => (
-                  <CustomTabButton
-                    {...props}
-                    icon={item.icon}
-                    label={item.label}
-                    color={props.accessibilityState?.selected ? "white" : "gray"}
-                  />
-                ),
-              }}
-
-              />
-            ))}
-        </Tabs>
-    </SafeAreaView>
+      <Tabs
+      screenOptions={({ navigation, route }) => ({
+        headerStyle: {
+          backgroundColor: getHeaderBackgroundColor(route.name),
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerTitle: getHeaderTitle(route.name),
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FontAwesome name="arrow-left" size={24} color="white" style={{ marginLeft: 15 }} />
+          </TouchableOpacity>
+        )
+      })}
+      tabBar={(props) => <CustomTabBar {...props} />}
+    />
   );
-  /*
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
-    <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: "white",
-          tabBarStyle: {
-            position: "absolute",
-            height: 80,
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
-            backgroundColor: "black",
-            borderTopWidth: 0,
-          },
-          headerShown: false,
-        }}
-        >
-        
-        <Tabs.Screen
-        name="index"
-        options={{
-          tabBarButton: (buttonProps) => (
-            <CustomTabButton
-            {...buttonProps}
-            icon={
-              <FontAwesome
-              size={28}
-              name="home"
-              color={
-                buttonProps.accessibilityState?.selected ? "white" : "gray"
-              }
-              />
-            }
-            label="Home"
-            color={
-              buttonProps.accessibilityState?.selected ? "white" : "gray"
-            }
-            />
-
-
-          ),
-        }}
-        />
-        <Tabs.Screen
-        name="marketplace"
-        options={{
-          tabBarButton: (buttonProps) => (
-            <CustomTabButton
-            {...buttonProps}
-            icon={
-              <FontAwesome
-              size={28}
-              name="calendar"
-              color={
-                buttonProps.accessibilityState?.selected ? "white" : "gray"
-              }
-              />
-            }
-            label="Lägg till annons"
-            color={
-              buttonProps.accessibilityState?.selected ? "white" : "gray"
-            }
-            />
-          ),
-        }}
-        />
-        <Tabs.Screen
-        name="login"
-        options={{
-          tabBarButton: (buttonProps) => (
-            <CustomTabButton
-            {...buttonProps}
-            icon={
-              <FontAwesome
-              size={28}
-              name="user-circle"
-              color={
-                buttonProps.accessibilityState?.selected ? "white" : "gray"
-              }
-              />
-            }
-            label="Logga in"
-            color={buttonProps.accessibilityState?.selected ? "white" : "gray"}
-            />
-          ),
-        }}
-        />
-        </Tabs>
-        </SafeAreaView>
-      );
-      */
 }
+
+const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  const renderTabButton = (route: any, onPress: () => void, color: ColorValue) => {
+    const item = tabItems.find((t) => t.name === route.name);
+    if (!item) return null;
+
+    return (
+      <TouchableOpacity
+        key={route.key}
+        onPress={onPress}
+        style={getButtonStyle(color)}
+      >
+        {item.icon("black", 50, 15)} 
+        <Text
+          numberOfLines={3}
+          adjustsFontSizeToFit
+          style={getTextStyle()}
+        >
+          {item.label}
+       </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <View style={getBackgroundStyle(state.routeNames[state.index])}>
+      {/* Left column */}
+      <View style={{ flexDirection: "column", flex: 1 }}>
+        {state.routes.slice(0, topRowCount).map((route, index) => {
+          const isFocused = state.index === index;
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+          return renderTabButton(route, onPress, isFocused ? "#91B788" : "#B8E4AE");
+        })}
+      </View>
+
+      {/* Right column */}
+      <View style={{ flexDirection: "column", flex: 1 }}>
+        {state.routes.slice(topRowCount).map((route, index) => {
+          const isFocused = state.index === index + topRowCount;
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+          return renderTabButton(route, onPress, isFocused ? "#DDDA6F" : "#FFFB9F");
+        })}
+      </View>
+    </View>
+  );
+};
+
+
+
+const getButtonStyle = (color: ColorValue): ViewStyle => ({
+  flex: 1,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  paddingVertical: 15,
+  backgroundColor: color,
+  margin: 8,
+  borderRadius: 55,
+  shadowColor: "black",
+  shadowRadius: 5
+});
+const getBackgroundStyle = (routeName: String): ViewStyle => ({
+  backgroundColor: getBackgroundColor(routeName), 
+  flexDirection: "row", 
+  justifyContent: "center", 
+  borderTopLeftRadius: 25,  
+  borderTopRightRadius: 25,
+  shadowColor: "black", 
+  shadowRadius: 15 
+});
+
+const getBackgroundColor = (routeName: String): ColorValue => {
+  switch (routeName) {
+    case "(login)":
+      return "#D2F8B8";
+    case "(marketplace)":
+      return "#D2F8B8";
+    case "connection":
+      return "#FFFB9F";
+    case "create_posts":
+      return "#FFFB9F";
+    default:
+      return "red";
+}
+};
+
+const getTextStyle = (): TextStyle => ({
+  color: "black",
+  flexShrink: 0,
+  marginLeft: 8,
+  marginRight: 40,
+  fontSize: 20,
+  fontWeight: "bold",
+});
+
+const getHeaderBackgroundColor = (routeName: string): string => {
+  switch (routeName) {
+    case "(marketplace)":
+      return "#f4511e"; // Orange
+    case "(login)":
+      return "#4CAF50"; // Green
+    case "connection":
+      return "#2196F3"; // Blue
+    case "create_posts":
+      return "#FFC107"; // Yellow
+    default:
+      return "#000";    // Default black
+  }
+};
+
+const getHeaderTitle = (routeName: string): string => {
+  switch (routeName) {
+    case "(marketplace)":
+      return "Marketplace";
+    case "(login)":
+      return "Profile";
+    case "connection":
+      return "Connection";
+    case "create_posts":
+      return "Create Post";
+    default:
+      return "App";
+  }
+};

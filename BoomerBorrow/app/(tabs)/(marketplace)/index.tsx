@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from "react-native";
 import axios from "axios";
-import MapView from './MapView'; // Import from same directory
 
 type Post = {
   type: string;
@@ -58,11 +57,6 @@ export default function MarketplaceScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Map Section */}
-      <View style={styles.mapContainer}>
-        <MapView />
-      </View>
-
       {/* Posts List */}
       <View style={styles.postsContainer}>
         <ScrollView>
