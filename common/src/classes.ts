@@ -203,8 +203,6 @@ export class User {
         }
 
         const index = this.supply_post_ids.indexOf(removeId);
-        console.log(this.supply_post_ids);
-        console.log("Index: " + index);
         if (index != -1) {
             this.supply_post_ids.splice(index, 1);
         } else {
@@ -213,7 +211,7 @@ export class User {
     }
 
     public addDemandPostId(newPostId: string) {
-        this.supply_post_ids.push(newPostId);
+        this.demand_post_ids.push(newPostId);
     }
 
     public removeDemandPostId(removeId: string) {
@@ -222,7 +220,7 @@ export class User {
         }
 
         const index = this.demand_post_ids.indexOf(removeId);
-        if (index) {
+        if (index != -1) {
             this.demand_post_ids.splice(index, 1);
         } else {
             throw new Error("Requested id is not included in user's demand posts.")
