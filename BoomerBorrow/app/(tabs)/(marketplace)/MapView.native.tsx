@@ -1,28 +1,38 @@
-// app/(tabs)/(marketplace)/MapView.native.tsx
-import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapboxGL from '@rnmapbox/maps';
-
-MapboxGL.setAccessToken('pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA');
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
 export default function MapViewNative() {
-  useEffect(() => {
-    MapboxGL.requestAndroidLocationPermissions();
-  }, []);
-
   return (
-    <View style={styles.page}>
-      <MapboxGL.MapView style={styles.map}>
-        <MapboxGL.Camera
-          zoomLevel={12}
-          centerCoordinate={[18.063240, 59.334591]}
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 59.334591,
+          longitude: 18.063240,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }}
+      >
+        <Marker
+          coordinate={{ latitude: 59.334591, longitude: 18.063240 }}
+          title="Stockholm"
         />
-      </MapboxGL.MapView>
+      </MapView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1 },
-  map: { flex: 1 },
+  container: {
+    height: 200,
+    width: "100%",
+    borderRadius: 5,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  map: {
+    flex: 1,
+  },
 });

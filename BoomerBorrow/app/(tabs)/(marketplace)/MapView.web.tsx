@@ -1,34 +1,31 @@
-import React from 'react';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import MapboxGL from "@rnmapbox/maps";
 
-declare global {
-  interface Window {
-    mapboxgl: any;
-  }
-}
+MapboxGL.setAccessToken('pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA');
 
-const MAPBOX_TOKEN = 'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA';
+const MapViewWeb = () => {
+  return (
+    <View style={styles.container}>
+      <MapboxGL.MapView style={styles.map}>
+        <MapboxGL.Camera zoomLevel={14} centerCoordinate={[18.063240, 59.334591]} />
+      </MapboxGL.MapView>
+    </View>
+  );
+};
 
-export default function MapViewWeb() {
-  React.useEffect(() => {
-    // Dynamically load the Mapbox GL JS script for web
-    const script = document.createElement('script');
-    script.src = 'https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js';
-    script.onload = () => {
-      // Initialize Mapbox map once the script is loaded
-      const mapboxgl = window.mapboxgl;
+const styles = StyleSheet.create({
+  container: {
+    height: 200,
+    width: "100%",
+    borderRadius: 5,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  map: {
+    flex: 1,
+  },
+});
 
-      const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [18.063240, 59.334591], // Stockholm
-        zoom: 12,
-        accessToken: MAPBOX_TOKEN,
-      });
-
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    };
-    document.body.appendChild(script);
-  }, []);
-
-  return <div id="map" style={{ height: '100vh' }} />;
-}
+export default MapViewWeb;

@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from "react-native";
 import axios from "axios";
-import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
-
-// Set the Mapbox access token
-Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
+import MapView from "./MapView"; // Automatically resolves to MapView.web.tsx or MapView.native.tsx
 
 type Post = {
   type: string;
@@ -24,10 +21,7 @@ export default function MarketplaceScreen() {
 
   const post_data = {
     type: "new_post",
-    data: {
-      title: title,
-      bio: bio,
-    },
+    data: { title, bio },
   };
 
   useEffect(() => {
@@ -39,39 +33,26 @@ export default function MarketplaceScreen() {
         console.error("Failed to fetch posts:", error.message);
       }
     }
-
     fetch_posts();
   }, []);
 
   async function send_post() {
     try {
       await axios.post(`${SERVER_URL}/new_post`, post_data);
-      console.log("post_data (the new post) sent to the server");
-
+      console.log("Post sent to server");
       const response = await axios.get(`${SERVER_URL}/fetch_posts`);
       set_posts(response.data);
     } catch (error: any) {
-      console.error("new_post failed:", error.message);
+      console.error("Sending post failed:", error.message);
     }
   }
 
-  const handle_new_post = async () => {
-    await send_post();
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      {/* Map Section */}
       <View style={styles.mapContainer}>
-        <MapView style={styles.map}>
-          <Camera
-            zoomLevel={14}
-            centerCoordinate={[18.063240, 59.334591]} // Longitude, Latitude
-          />
-        </MapView>
+        <MapView />
       </View>
 
-      {/* Posts List */}
       <View style={styles.postsContainer}>
         <ScrollView>
           {posts.map((post_data: Post, index: number) => (
@@ -83,20 +64,9 @@ export default function MarketplaceScreen() {
         </ScrollView>
       </View>
 
-      {/* Input Fields and Button */}
-      <TextInput
-        style={styles.input}
-        placeholder="Titel"
-        value={title}
-        onChangeText={set_title}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Beskrivning"
-        value={bio}
-        onChangeText={set_bio}
-      />
-      <Button title="Skapa annons" onPress={handle_new_post} />
+      <TextInput style={styles.input} placeholder="Titel" value={title} onChangeText={set_title} />
+      <TextInput style={styles.input} placeholder="Beskrivning" value={bio} onChangeText={set_bio} />
+      <Button title="Skapa annons" onPress={send_post} />
     </SafeAreaView>
   );
 }
@@ -105,7 +75,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "green",
-    alignItems: "center", // Center children horizontally
+    alignItems: "center",
   },
   mapContainer: {
     width: "90%",
@@ -115,40 +85,36 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#ccc",
-    alignSelf: "center", // Ensure map is centered
-  },
-  map: {
-    flex: 1,
+    alignSelf: "center",
   },
   postsContainer: {
-    width: "90%", // Match other components
+    width: "90%",
     height: 300,
     margin: 12,
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",
-    alignSelf: "center", // Ensure posts are centered
+    alignSelf: "center",
   },
   post: {
-    width: "95%", // Relative to postsContainer
+    width: "95%",
     height: 80,
     margin: 12,
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",
-    borderBlockColor: "black",
-    alignSelf: "center", // Center individual posts
+    alignSelf: "center",
   },
   input: {
-    width: "90%", // Match other components
+    width: "90%",
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",
-    alignSelf: "center", // Ensure inputs are centered
+    alignSelf: "center",
   },
 });
