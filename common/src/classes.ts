@@ -2,7 +2,7 @@
 
 // The user class
 export class User {
-    public id: number;
+    public id: string;
     public role: string;
     public name: string;
     public mail: string;
@@ -17,7 +17,7 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
-        id: number,
+        id: string,
         role: string,
         name: string,
         mail: string,
@@ -51,8 +51,8 @@ export class User {
 // want to LEND stuff
 export class Supply_post {
 
-    public id: number;
-    public owner_id: number;
+    public id: string;
+    public owner_id: string;
     public title: string;
     public description: string;
     public price: string;
@@ -62,8 +62,8 @@ export class Supply_post {
     public created_at: string;
 
     constructor(
-        id: number,
-        owner_id: number,
+        id: string,
+        owner_id: string,
         title: string,
         description: string,
         price: string,
@@ -87,8 +87,8 @@ export class Supply_post {
 // The class for demand posts, i.e. posts/ads where users
 // want to RENT stuff
 class Demand_post {
-    public id: number;
-    public owner_id: number;
+    public id: string;
+    public owner_id: string;
     public title: string;
     public description: string;
     public price: number;
@@ -97,8 +97,8 @@ class Demand_post {
     public created_at: string;
 
     constructor(
-        id: number,
-        owner_id: number,
+        id: string,
+        owner_id: string,
         title: string,
         description: string,
         price: number,

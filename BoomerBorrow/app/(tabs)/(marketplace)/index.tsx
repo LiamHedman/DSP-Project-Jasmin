@@ -41,8 +41,8 @@ export default function MarketplaceScreen() {
 	
 	  // TODO: need unique ID:s for every post
       supply_post = new Supply_post(
-        20,    // ID
-        10,    // Owner ID
+        "20",    // ID
+        "10",    // Owner ID
         title,   // title
         description,    // description
         price,    // price
@@ -80,11 +80,9 @@ export default function MarketplaceScreen() {
     await reset_table_content();
   };
 
-  // TODO: post_title should be post_id
-  async function delete_supply_post(post_title: string) {
+  async function delete_supply_post(post_id: string) {
     try {
-      console.log(`post title: ${title}`)
-      const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { title: post_title });
+      const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { title: post_id });
       
       if (response.status === 200) {
         await fetch_active_supply_posts();
@@ -95,11 +93,39 @@ export default function MarketplaceScreen() {
     }
   }
 
-  // TODO: post_title should be post_id
-  const handle_supply_post_deletion = async (post_title: string) => {
-    await delete_supply_post(post_title);
+  const handle_supply_post_deletion = async (post_id: string) => {
+    await delete_supply_post(post_id);
   };
   
+  async function edit_supply_post(post_id: string) {
+    try {
+
+      const new_post_data = {
+        id: post_id,    // ID
+        owner_id: "10",    // Owner ID
+        title: title,   // title
+        description: description,    // description
+        price: price,    // price
+        category: category,   // category
+        location: location,   // location
+        post_picture_url: post_picture_url,   // post_picture_url
+        created_at: "tmp"    // 
+      };
+
+      const response = await axios.post(`${SERVER_URL}/edit_supply_post`, new_post_data);
+      
+      if (response.status === 200) {
+        await fetch_active_supply_posts();
+      }
+
+    } catch(error: any) {
+      console.error("Failed to delete post");
+    }
+  }
+
+  const handle_supply_post_editing = async (post_id: string) => {
+    await edit_supply_post(post_id);
+  };
 
 
   return (
@@ -117,7 +143,7 @@ export default function MarketplaceScreen() {
               <Text style={{ fontWeight: "bold" }}>{supply_post.title}</Text>
               <Text>{supply_post.description}</Text>
 			        <Text>{supply_post.price}</Text>
-			        <Text>{supply_post.category}</Text>
+			        <Text>{supply_post.category}</Text>                   {/*   // TODO: post_title should be post_id */}
               <TouchableOpacity style={styles.minibutton} onPress={() => handle_supply_post_deletion(supply_post.title)}>
               <Text>Radera</Text>
               </TouchableOpacity>

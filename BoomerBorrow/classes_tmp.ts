@@ -1,7 +1,7 @@
 export class Supply_post {
 
-    public id: number;
-    public owner_id: number;
+    public id: string;
+    public owner_id: string;
     public title: string;
     public description: string;
     public price: string;
@@ -11,8 +11,8 @@ export class Supply_post {
     public created_at: string;
 
     constructor(
-        id: number,
-        owner_id: number,
+        id: string,
+        owner_id: string,
         title: string,
         description: string,
         price: string,
