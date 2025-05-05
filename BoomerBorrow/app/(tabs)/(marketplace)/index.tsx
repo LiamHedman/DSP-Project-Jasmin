@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, TextInput, Button, StyleSheet, Text, ScrollView } from "react-native";
+import { View, TextInput, Button, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
+import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
+import { linkTo, navigate } from "expo-router/build/global-state/routing";
+import { useNavigation, useRouter } from "expo-router";
+
+// Set the Mapbox access token
+Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 
 type Post = {
   type: string;
@@ -12,19 +18,9 @@ type Post = {
 };
 
 export default function MarketplaceScreen() {
+  const router = useRouter();
   const SERVER_URL = "http://localhost:3000";
-
-  const [title, set_title] = useState("");
-  const [bio, set_bio] = useState("");
   const [posts, set_posts] = useState<Post[]>([]);
-
-  const post_data = {
-    type: "new_post",
-    data: {
-      title: title,
-      bio: bio,
-    },
-  };
 
   useEffect(() => {
     async function fetch_posts() {
@@ -39,27 +35,25 @@ export default function MarketplaceScreen() {
     fetch_posts();
   }, []);
 
-  async function send_post() {
-    try {
-      await axios.post(`${SERVER_URL}/new_post`, post_data);
-      console.log("post_data (the new post) sent to the server");
-
-      const response = await axios.get(`${SERVER_URL}/fetch_posts`);
-      set_posts(response.data);
-    } catch (error: any) {
-      console.error("new_post failed:", error.message);
-    }
-  }
-
-  const handle_new_post = async () => {
-    await send_post();
-  };
-
   return (
     <SafeAreaView style={styles.container}>
+      {/* Map Section */}
+      <View style={styles.mapContainer}>
+        <MapView style={styles.map}>
+          <Camera
+            zoomLevel={14}
+            centerCoordinate={[18.063240, 59.334591]} // Longitude, Latitude
+          />
+        </MapView>
+      </View>
+
       {/* Posts List */}
       <View style={styles.postsContainer}>
         <ScrollView>
+          <TouchableOpacity style={styles.post} key = {0} onPress={() => router.push('/post')}>
+            <Text> Verktygaren</Text>
+            <Text> Motorsåg </Text>
+          </TouchableOpacity>
           {posts.map((post_data: Post, index: number) => (
             <View style={styles.post} key={index}>
               <Text>{post_data.data?.title}</Text>
@@ -68,21 +62,6 @@ export default function MarketplaceScreen() {
           ))}
         </ScrollView>
       </View>
-
-      {/* Input Fields and Button */}
-      <TextInput
-        style={styles.input}
-        placeholder="Titel"
-        value={title}
-        onChangeText={set_title}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Beskrivning"
-        value={bio}
-        onChangeText={set_bio}
-      />
-      <Button title="Skapa annons" onPress={handle_new_post} />
     </SafeAreaView>
   );
 }
@@ -102,6 +81,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     alignSelf: "center", // Ensure map is centered
+  },
+  map: {
+    flex: 1,
   },
   postsContainer: {
     width: "90%", // Match other components

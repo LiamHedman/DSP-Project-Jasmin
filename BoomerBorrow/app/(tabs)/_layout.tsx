@@ -41,16 +41,17 @@ export default function TabLayout() {
       <Tabs
       screenOptions={({ navigation, route }) => ({
         headerStyle: {
-          backgroundColor: getHeaderBackgroundColor(route.name),
+          backgroundColor: getBackgroundColor(route.name),
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
           fontWeight: 'bold',
+          color: "black"
         },
         headerTitle: getHeaderTitle(route.name),
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" size={24} color="white" style={{ marginLeft: 15 }} />
+            <FontAwesome name="arrow-left" size={24} color="black" style={{ marginLeft: 15 }} />
           </TouchableOpacity>
         )
       })}
@@ -170,21 +171,6 @@ const getTextStyle = (): TextStyle => ({
   fontSize: 20,
   fontWeight: "bold",
 });
-
-const getHeaderBackgroundColor = (routeName: string): string => {
-  switch (routeName) {
-    case "(marketplace)":
-      return "#f4511e"; // Orange
-    case "(login)":
-      return "#4CAF50"; // Green
-    case "connection":
-      return "#2196F3"; // Blue
-    case "create_posts":
-      return "#FFC107"; // Yellow
-    default:
-      return "#000";    // Default black
-  }
-};
 
 const getHeaderTitle = (routeName: string): string => {
   switch (routeName) {
