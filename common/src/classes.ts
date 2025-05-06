@@ -28,7 +28,7 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
-        id: number,
+        // id: string,
         role: string,
         name: string,
         mail: string,
@@ -39,7 +39,7 @@ export class User {
         profile_picture_url: string,
         password: string,
     ) {
-        this.id = Date.now(); // Unique ID
+        this.id = Date.now().toString(); // Unique ID
 
         this.role = role ? role : "user";
 
@@ -244,7 +244,7 @@ export class User {
 
     // Getter functions for attributes of class User
 
-    public getId(): number {
+    public getId(): string {
         return this.id;
     }
 
