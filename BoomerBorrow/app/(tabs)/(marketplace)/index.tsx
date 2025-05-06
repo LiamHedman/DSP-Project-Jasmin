@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import axios from "axios";
 import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";
 import * as Location from "expo-location";
@@ -22,6 +22,9 @@ export default function MarketplaceScreen() {
   const SERVER_URL = "http://localhost:3000";
   const [posts, setPosts] = useState<Post[]>([]);
   const [location, setLocation] = useState<[number, number] | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [cameraCoords, setCameraCoords] = useState<[number, number] | null>(null);
+  const [cameraKey, setCameraKey] = useState(0);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -43,7 +46,9 @@ export default function MarketplaceScreen() {
 
         const userLocation = await Location.getCurrentPositionAsync({});
         const { longitude, latitude } = userLocation.coords;
-        setLocation([longitude, latitude]);
+        const coords: [number, number] = [longitude, latitude];
+        setLocation(coords);
+        setCameraCoords(coords); // Initial map center on user
       } catch (error) {
         console.error("Error getting user location:", error);
       }
@@ -64,29 +69,68 @@ export default function MarketplaceScreen() {
     },
   ];
 
+  const handleCitySearch = async () => {
+    if (!searchText) return;
+
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          searchText
+        )}.json?access_token=pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA`
+      );
+      const features = response.data.features;
+      if (features.length > 0) {
+        const [lon, lat] = features[0].center;
+        setCameraCoords([lon, lat]);
+        setCameraKey((prev) => prev + 1); // Force Camera re-render
+      }
+    } catch (error) {
+      console.error("Error searching city:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Sök efter stad..."
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={handleCitySearch}
+        />
+        <TouchableOpacity onPress={handleCitySearch} style={styles.searchButton}>
+          <Text style={{ color: "white" }}>Sök</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Map */}
       <View style={styles.mapContainer}>
         <MapView style={styles.map}>
+          {cameraCoords && (
+            <Camera
+              key={cameraKey}
+              zoomLevel={14}
+              centerCoordinate={cameraCoords}
+              animationMode="flyTo"
+              animationDuration={1000}
+            />
+          )}
+
           {location && (
-            <>
-              <Camera
-                zoomLevel={14}
-                centerCoordinate={location}
-                animationMode="flyTo"
-                animationDuration={1000}
-              />
-              <Mapbox.MarkerView coordinate={location}>
-                <View style={{
+            <MarkerView coordinate={location}>
+              <View
+                style={{
                   width: 20,
                   height: 20,
                   borderRadius: 10,
-                  backgroundColor: 'red',
+                  backgroundColor: "red",
                   borderWidth: 2,
-                  borderColor: 'white'
-                }} />
-              </Mapbox.MarkerView>
-            </>
+                  borderColor: "white",
+                }}
+              />
+            </MarkerView>
           )}
 
           <MarkerView coordinate={[17.6389, 59.8586]} key="motorsag">
@@ -99,6 +143,7 @@ export default function MarketplaceScreen() {
         </MapView>
       </View>
 
+      {/* Posts */}
       <View style={styles.postsContainer}>
         <ScrollView>
           <TouchableOpacity
@@ -122,12 +167,32 @@ export default function MarketplaceScreen() {
   );
 }
 
-// Stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "green",
     alignItems: "center",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    marginTop: 10,
+  },
+  searchInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 8,
+    backgroundColor: "white",
+  },
+  searchButton: {
+    marginLeft: 8,
+    backgroundColor: "#007AFF",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
   },
   mapContainer: {
     width: "90%",
@@ -144,9 +209,7 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     width: "90%",
-
     flex: 1,
-
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -174,6 +237,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
-
-
