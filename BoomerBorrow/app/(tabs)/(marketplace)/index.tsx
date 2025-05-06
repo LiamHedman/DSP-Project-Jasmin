@@ -112,10 +112,11 @@ export default function MarketplaceScreen() {
   );
 }
 
+// Stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "beige ",
+    backgroundColor: "green",
     alignItems: "center",
   },
   mapContainer: {
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     width: "90%",
-    flex: 1, 
+    height: 300,
     margin: 12,
     borderWidth: 1,
     padding: 10,
