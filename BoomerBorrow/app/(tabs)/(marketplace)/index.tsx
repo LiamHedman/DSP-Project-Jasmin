@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
-import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
+import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";  // Use MarkerView from MapboxGL
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 
@@ -14,6 +14,7 @@ type Post = {
   data: {
     title: string;
     bio: string;
+    location: [number, number]; // Location property now correctly typed as a tuple
   };
 };
 
@@ -21,7 +22,7 @@ export default function MarketplaceScreen() {
   const router = useRouter();
   const SERVER_URL = "http://localhost:3000";
   const [posts, setPosts] = useState<Post[]>([]);
-  const [location, setLocation] = useState<[number, number] | null>(null); // [longitude, latitude]
+  const [location, setLocation] = useState<[number, number] | null>(null); // User's location ([longitude, latitude])
 
   useEffect(() => {
     async function fetchPosts() {
@@ -53,6 +54,19 @@ export default function MarketplaceScreen() {
     fetchUserLocation();
   }, []);
 
+  // Example posts with location for "Motorsåg" in Uppsala
+  const examplePosts: Post[] = [
+    {
+      type: "advertisement",
+      data: {
+        title: "Motorsåg",
+        bio: "Väldigt härlig motorsåg, kan skära upp allting",
+        location: [17.6389, 59.8586], // Uppsala coordinates as a tuple
+      },
+    },
+    // You can add more posts here with different locations
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Map Section */}
@@ -66,6 +80,22 @@ export default function MarketplaceScreen() {
               animationDuration={1000}
             />
           )}
+
+          {/* Add Marker for "Motorsåg" in Uppsala */}
+          <MarkerView coordinate={[17.6389, 59.8586]} key="motorsag">
+            <View style={styles.annotationContainer}>
+              <Text style={styles.annotationText}>Motorsåg</Text>
+            </View>
+          </MarkerView>
+
+          {/* Add more Markers if you have other posts with locations */}
+          {examplePosts.map((postData: Post, index: number) => (
+            <MarkerView key={index} coordinate={postData.data.location}>
+              <View style={styles.annotationContainer}>
+                <Text style={styles.annotationText}>{postData.data.title}</Text>
+              </View>
+            </MarkerView>
+          ))}
         </MapView>
       </View>
 
@@ -76,7 +106,7 @@ export default function MarketplaceScreen() {
             <Text>Verktygaren</Text>
             <Text>Motorsåg</Text>
           </TouchableOpacity>
-          {posts.map((postData: Post, index: number) => (
+          {examplePosts.map((postData: Post, index: number) => (
             <View style={styles.post} key={index}>
               <Text>{postData.data?.title}</Text>
               <Text>{postData.data?.bio}</Text>
@@ -127,5 +157,14 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderBlockColor: "black",
     alignSelf: "center",
+  },
+  annotationContainer: {
+    backgroundColor: "red",
+    padding: 5,
+    borderRadius: 5,
+  },
+  annotationText: {
+    color: "white",
+    fontSize: 12,
   },
 });
