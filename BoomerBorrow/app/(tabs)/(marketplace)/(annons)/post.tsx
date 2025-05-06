@@ -1,23 +1,26 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // För ikoner som stjärnor
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams } from 'expo-router'; // <-- Import this hook
 
-const MotorSawCard = () => {
+const PostScreen = () => {
+  const { title, bio } = useLocalSearchParams(); // Extract params from URL
+
   return (
     <View style={styles.container}>
-      {/* Titel */}
-      <Text style={styles.title}>Motorsåg</Text>
+      {/* Title */}
+      <Text style={styles.title}>{title || 'Inget namn'}</Text>
 
-      {/* Bild */}
+      {/* Image */}
       <Image
-        source={{ uri: 'https://your-image-url.com' }} // Byt till korrekt URL om du har den
+        source={{ uri: 'https://your-image-url.com' }}
         style={styles.image}
       />
 
-      {/* Användarinfo */}
+      {/* User Info */}
       <View style={styles.userContainer}>
         <Image
-          source={{ uri: 'https://your-user-image-url.com' }} // Byt till korrekt URL
+          source={{ uri: 'https://your-user-image-url.com' }}
           style={styles.userImage}
         />
         <View style={styles.userInfo}>
@@ -31,7 +34,12 @@ const MotorSawCard = () => {
         </View>
       </View>
 
-      {/* Pris */}
+      {/* Bio */}
+      <Text style={styles.price}>
+        <Text style={{ fontWeight: 'bold' }}>Beskrivning:</Text> {bio || 'Ingen beskrivning'}
+      </Text>
+
+      {/* Price */}
       <Text style={styles.price}>
         <Text style={{ fontWeight: 'bold' }}>Pris:</Text> 70 kr / dag
       </Text>
@@ -39,7 +47,7 @@ const MotorSawCard = () => {
   );
 };
 
-export default MotorSawCard;
+export default PostScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -85,29 +93,5 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     marginVertical: 12,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  greenButton: {
-    backgroundColor: '#C8FCEA',
-    padding: 12,
-    borderRadius: 12,
-    width: '45%',
-    alignItems: 'center',
-  },
-  yellowButton: {
-    backgroundColor: '#FFF68F',
-    padding: 12,
-    borderRadius: 12,
-    width: '45%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
 });
