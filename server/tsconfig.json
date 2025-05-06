@@ -7,7 +7,7 @@
       "esModuleInterop": true,         // Allow default imports from CommonJS modules
       "skipLibCheck": true,            // Speed up compilation
       "outDir": "./dist",                  // Output compiled JS in the same directory
-      "rootDir": "./src",                 // Source directory
+      // "rootDir": "./src",                 // Source directory
       "types": ["node", "jest"]                // Include Node.js types
     },
     "include": ["src/**/*.ts"]

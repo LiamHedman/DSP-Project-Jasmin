@@ -17,11 +17,23 @@ const main = async () => {
             column_3: 99,
         };
 
-        const tableName = "example_table";
+        const supply_post = {
+            id: 20,    // ID
+            owner_id: 10,    // Owner ID
+            title: "title",   // title
+            description: "bio",    // description
+            price: 199,    // price
+            category: "category",   // category
+            location: "location",   // location
+            post_picture_url: "post_picture_url",   // post_picture_url
+            created_at: "created_at"    // created at
+        };
+
+        const tableName = "active_supply_posts";
 
         // Insertion of the data into the table specified
         // use AWAIT!
-        await insert_data(tableName, data);
+        await insert_data(tableName, supply_post);
 
     } catch (err) {
         console.error("[ERROR]: Error at insertion of example", err);
