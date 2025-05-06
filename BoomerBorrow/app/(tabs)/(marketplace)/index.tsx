@@ -59,7 +59,7 @@ export default function MarketplaceScreen() {
       data: {
         title: "Motorsåg",
         bio: "Väldigt härlig motorsåg, kan skära upp allting",
-        location: [17.6389, 59.8586], // Uppsala
+        location: [17.6389, 59.8586],
       },
     },
   ];
@@ -77,7 +77,6 @@ export default function MarketplaceScreen() {
             />
           )}
 
-          {/* Clickable Motorsåg Marker */}
           <MarkerView coordinate={[17.6389, 59.8586]} key="motorsag">
             <TouchableOpacity onPress={() => router.push("/(tabs)/(marketplace)/(annons)/post")}>
               <View style={styles.annotationContainer}>
@@ -88,7 +87,6 @@ export default function MarketplaceScreen() {
         </MapView>
       </View>
 
-      {/* Posts List */}
       <View style={styles.postsContainer}>
         <ScrollView>
           <TouchableOpacity
@@ -162,5 +160,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
 
 
