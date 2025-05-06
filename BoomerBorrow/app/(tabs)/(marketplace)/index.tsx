@@ -131,9 +131,6 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  map: {
-    flex: 1,
-  },
   postsContainer: {
     width: "90%",
     height: 300,
