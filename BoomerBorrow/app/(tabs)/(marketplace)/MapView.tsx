@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 
-MapboxGL.setAccessToken('pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA');
+MapboxGL.setAccessToken('pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA');
 
 export default function MapView() {
   useEffect(() => {
