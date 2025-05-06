@@ -69,12 +69,24 @@ export default function MarketplaceScreen() {
       <View style={styles.mapContainer}>
         <MapView style={styles.map}>
           {location && (
-            <Camera
-              zoomLevel={14}
-              centerCoordinate={location}
-              animationMode="flyTo"
-              animationDuration={1000}
-            />
+            <>
+              <Camera
+                zoomLevel={14}
+                centerCoordinate={location}
+                animationMode="flyTo"
+                animationDuration={1000}
+              />
+              <Mapbox.MarkerView coordinate={location}>
+                <View style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 10,
+                  backgroundColor: 'red',
+                  borderWidth: 2,
+                  borderColor: 'white'
+                }} />
+              </Mapbox.MarkerView>
+            </>
           )}
 
           {/* Clickable Motorsåg Marker */}
@@ -133,7 +145,7 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     width: "90%",
-    flex: 1, 
+    flex: 1,
     margin: 12,
     borderWidth: 1,
     padding: 10,
