@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "compile": "tsc",
-    "start_server": "node ./dist/server.js",
-    "test": "jest ./tests",
+    "compile": "tsc && xcopy src\\database\\config dist\\server\\src\\database\\config /E /I /Y",
+    "start_server": "node ./dist/server/src/server_axios.js",
+    "test": "jest",
     "lint": "expo lint"
   },
   "dependencies": {
@@ -11,8 +11,7 @@
     "express": "^4.21.2",
     "fastify": "^5.2.2",
     "pg": "^8.14.1",
-    "ws": "^8.18.1",
-
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@testing-library/jest-native": "^5.4.3",

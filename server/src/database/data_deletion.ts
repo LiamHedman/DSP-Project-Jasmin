@@ -2,18 +2,29 @@ import { pool } from './connection_pooling';
 
 const delete_data = async (table: string, condition: any) => {
     try {
-        // Bulds a DELETE query dynamically
-        const keys = Object.keys(condition).map((key, index) => `${key} = $${index + 1}`).join(" AND ");
-        const values = Object.values(condition);
 
-        const query = `DELETE FROM ${table} WHERE ${keys} RETURNING *`;
+
+        // Bulds a DELETE query dynamically
+        let query = `DELETE FROM ${table}`;
+        let values: any[] = [];
+
+        if (condition && Object.keys(condition).length > 0) {
+            const keys = Object.keys(condition)
+                .map((key, index) => `${key} = $${index + 1}`)
+                .join(" AND ");
+            values = Object.values(condition);
+            query += ` WHERE ${keys}`;
+        }
+
+        query += " RETURNING *";
 
         // Executes the query using the pool
         const result = await pool.query(query, values);
         if (result.rows.length > 0) {
-            console.log(`[SUCCESS]: Data deleted from table "${table}", data deleted: ${JSON.stringify(result.rows)}`);
+            // console.log(`[SUCCESS]: Data deleted from table "${table}", data deleted: ${JSON.stringify(result.rows)}`);
         } else {
             console.log(`[INFO]: No matching data found in table "${table}" to delete.`);
+            console.log(`[INFO]: condition/criteria used:" ${JSON.stringify(condition)}".`);
         }
 
     } catch (err: any) {
