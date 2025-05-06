@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
-import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";  // Use MarkerView from MapboxGL
+import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 
-// Set the Mapbox access token
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 
 type Post = {
@@ -14,7 +13,7 @@ type Post = {
   data: {
     title: string;
     bio: string;
-    location: [number, number]; // Location property now correctly typed as a tuple
+    location: [number, number];
   };
 };
 
@@ -22,7 +21,7 @@ export default function MarketplaceScreen() {
   const router = useRouter();
   const SERVER_URL = "http://localhost:3000";
   const [posts, setPosts] = useState<Post[]>([]);
-  const [location, setLocation] = useState<[number, number] | null>(null); // User's location ([longitude, latitude])
+  const [location, setLocation] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -54,22 +53,19 @@ export default function MarketplaceScreen() {
     fetchUserLocation();
   }, []);
 
-  // Example posts with location for "Motorsåg" in Uppsala
   const examplePosts: Post[] = [
     {
       type: "advertisement",
       data: {
         title: "Motorsåg",
         bio: "Väldigt härlig motorsåg, kan skära upp allting",
-        location: [17.6389, 59.8586], // Uppsala coordinates as a tuple
+        location: [17.6389, 59.8586], // Uppsala
       },
     },
-    // You can add more posts here with different locations
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Map Section */}
       <View style={styles.mapContainer}>
         <MapView style={styles.map}>
           {location && (
@@ -81,31 +77,29 @@ export default function MarketplaceScreen() {
             />
           )}
 
-          {/* Add Marker for "Motorsåg" in Uppsala */}
+          {/* Clickable Motorsåg Marker */}
           <MarkerView coordinate={[17.6389, 59.8586]} key="motorsag">
-            <View style={styles.annotationContainer}>
-              <Text style={styles.annotationText}>Motorsåg</Text>
-            </View>
-          </MarkerView>
-
-          {/* Add more Markers if you have other posts with locations */}
-          {examplePosts.map((postData: Post, index: number) => (
-            <MarkerView key={index} coordinate={postData.data.location}>
+            <TouchableOpacity onPress={() => router.push("/(tabs)/(marketplace)/(annons)/post")}>
               <View style={styles.annotationContainer}>
-                <Text style={styles.annotationText}>{postData.data.title}</Text>
+                <Text style={styles.annotationText}>Motorsåg</Text>
               </View>
-            </MarkerView>
-          ))}
+            </TouchableOpacity>
+          </MarkerView>
         </MapView>
       </View>
 
       {/* Posts List */}
       <View style={styles.postsContainer}>
         <ScrollView>
-          <TouchableOpacity style={styles.post} key={0} onPress={() => router.push("/post")}>
+          <TouchableOpacity
+            style={styles.post}
+            key={0}
+            onPress={() => router.push("/(tabs)/(marketplace)/(annons)/post")}
+          >
             <Text>Verktygaren</Text>
             <Text>Motorsåg</Text>
           </TouchableOpacity>
+
           {examplePosts.map((postData: Post, index: number) => (
             <View style={styles.post} key={index}>
               <Text>{postData.data?.title}</Text>
@@ -155,7 +149,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",
-    borderBlockColor: "black",
     alignSelf: "center",
   },
   annotationContainer: {
