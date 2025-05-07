@@ -103,6 +103,20 @@ export default function MarketplaceScreen() {
         <TouchableOpacity onPress={handleCitySearch} style={styles.searchButton}>
           <Text style={{ color: "white" }}>Sök</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            if (location) {
+              setCameraCoords(location);     // move camera
+              setCameraKey(prev => prev + 1); // trigger re-render of <Camera>
+            } else {
+              console.warn("Plats ej tillgänglig ännu.");
+            }
+          }}
+          style={styles.searchButton}
+        >
+          <Text style={{ color: "white" }}>Min plats</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Map */}
