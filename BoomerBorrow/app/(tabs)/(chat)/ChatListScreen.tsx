@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 type Chat = {
   id: string;
@@ -18,7 +19,8 @@ const mockChats: Chat[] = [
 type ChatListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ChatList'>;
 
 const ChatListScreen: React.FC = () => {
-  const navigation = useNavigation<ChatListNavigationProp>();
+  const navigation = useNavigation();
+  const router = useRouter()
 
   return (
     <View style={styles.container}>
@@ -28,7 +30,8 @@ const ChatListScreen: React.FC = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.chatItem}
-            onPress={() => navigation.navigate('Chat', { chatId: item.id })}
+            //onPress={() => navigation.navigate('Chat')}
+            onPress={() => router.push('/Chat')}
           >
             <Text style={styles.chatName}>{item.name}</Text>
           </TouchableOpacity>

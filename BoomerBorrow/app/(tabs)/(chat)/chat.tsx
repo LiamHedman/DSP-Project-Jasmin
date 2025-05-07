@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TextInput,
@@ -10,6 +10,9 @@ import {
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList } from './App';
+import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 
 type Message = {
   id: string;
@@ -17,7 +20,24 @@ type Message = {
   sender: 'user' | 'bot';
 };
 
-const ChatScreen: React.FC = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>;
+
+type ChatParams = {
+  chatId: string;
+  chatName: string;
+};
+
+const ChatScreen: React.FC = () => {  
+  const { chatId, chatName } = useLocalSearchParams<ChatParams>();
+
+  const [Id, setId] = useState("");
+  const [Name, SetName] = useState("");
+
+  useEffect(() => {
+    setId(chatId);
+    SetName(chatName);
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', text: 'Hello!', sender: 'bot' },
     { id: '2', text: 'Hi there!', sender: 'user' },
