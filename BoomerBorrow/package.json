@@ -21,6 +21,7 @@
     "@react-navigation/native": "^7.0.14",
     "@rnmapbox/maps": "^10.1.38",
     "axios": "^1.8.4",
+    "boomerborrow": "file:",
     "commonboomer": "file:../common",
     "expo": "~52.0.41",
     "expo-blur": "~14.0.3",

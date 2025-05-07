@@ -28,37 +28,26 @@ export default function LoginScreen() {
 		
 	}, []);
 
-	async function login() {
+	async function register_user() {
 		try {
-			const user = {
-				name: name,
-				password: password
-			}
-			await axios.post(`${SERVER_URL}/login`, user);
-
-			// Sends the client to the marketplace page
-			router.push("/(tabs)/(marketplace)");
+			user = new User(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
+			await axios.post(`${SERVER_URL}/register_user`, user);
+			router.push("/(tabs)/(login)");
 		} catch (error: any) {
-			console.error("Login failed:", error.message);
+			// TODO: NOTIFY the user upon failed attempt
+			console.error("Registration failed:", error.message);
 		}
 	}
 
-	// Handles a clients login when the login button is pressed
-	const handle_login = async () => {
-		console.log("Username:", name);
-		console.log("Password:", password);
-		await login();
-	};
-
 	const handle_register = async () => {
-		router.push("/(tabs)/(register)");
+		await register_user();
 	};
 
 	return (
 	<SafeAreaView style={styles.container}>
 		
-		<Text>Log in</Text>
-
+		<Text>Register an account</Text>
+		
 		<TextInput
 		style={styles.input}
 		placeholder="Enter username"
@@ -73,16 +62,12 @@ export default function LoginScreen() {
 		secureTextEntry
 		onChangeText={set_password} // Updates state
 		/>
-		
-		<Button 
-		title="Log in" 
-		onPress={handle_login}
-		/>
 
 		<Button 
-		title="I don't have an account" 
+		title="Register account" 
 		onPress={handle_register}
 		/>
+		
 	</SafeAreaView>
 	);
 	}
