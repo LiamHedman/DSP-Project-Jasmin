@@ -3,7 +3,7 @@ import { View, Platform, StyleSheet } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
 
 MapboxGL.setAccessToken(
-  'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA'
+  'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA'
 );
 
 export default function MapScreen() {
@@ -14,7 +14,7 @@ export default function MapScreen() {
       script.onload = () => {
         const mapboxgl = (window as any).mapboxgl;
         mapboxgl.accessToken =
-          'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA';
+          'pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA';
         const map = new mapboxgl.Map({
           container: 'map',
           style: 'mapbox://styles/mapbox/streets-v11',
