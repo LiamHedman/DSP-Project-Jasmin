@@ -197,13 +197,13 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-	padding: 100,
+	padding: 30,
     backgroundColor: "#b0ffe3",
     alignItems: "center", // Center children horizontally
   },
   mapContainer: {
     width: "90%",
-    height: 200,
+    height: 150,
     margin: 12,
     borderRadius: 5,
     overflow: "hidden",
@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   postsContainer: {
-    width: "60%", // Match other components
-    height: 500,
+    width: "90%", // Match other components
+    height: 200,
     margin: 12,
     borderWidth: 1,
     padding: 10,

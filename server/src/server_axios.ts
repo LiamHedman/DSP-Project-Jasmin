@@ -34,6 +34,15 @@ async function check_password(password: string, username: string): Promise<boole
     return result.length;
 }
 
+async function retrieve_id(username: string): Promise<string> {
+    const conditions = {
+        name: username
+    };
+    const result = await retrieve_data(table_name_users, conditions);
+    console.log(`retrieved id: ${result[0].id}`);
+    return result[0].id;
+}
+
 // Handles register user request from the client
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 app.post("/register_user", async (req: Request, res: Response) => {
@@ -62,12 +71,19 @@ app.post("/login", async (req: Request, res: Response) => {
         if (!await user_exists(user.name)) { throw new Error("User with this username doesnt exist"); }
         if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
 
+        const user_id = await retrieve_id(user.name);
+
         // Creates the auth token for the user
-        const jwt = require('jsonwebtoken');
-        const payload = { id: };
-        // TODO: should be stored in a .env and not be hardcoded
-        const secret_key = "temp_key";
-        const token = jwt.sign(payload, secret_key, {expiresIn: '12h'});
+        let token = null;
+        try {
+            const jwt = require('jsonwebtoken');
+            const payload = { id: user_id };
+            // TODO: should be stored in a .env and not be hardcoded
+            const secret_key = "temp_key";
+            token = jwt.sign(payload, secret_key, {expiresIn: '12h'});
+        } catch (error) {
+            console.error("Failed to genereate session token for user");
+        }
 
         console.log(`User "${user.name}" successfully logged in`);
         res.status(200).json(token);
