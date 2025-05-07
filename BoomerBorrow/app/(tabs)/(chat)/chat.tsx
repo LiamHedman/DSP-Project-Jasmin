@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   TextInput,
@@ -13,48 +13,73 @@ import {
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { RootStackParamList } from './App';
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
+import { connectWebSocket, sendMessage, disconnectWebSocket } from '../../../connectionStuff/src/client_messages';
 
 type Message = {
   id: string;
   text: string;
   sender: 'user' | 'bot';
+  chatId: string;
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>;
 
 type ChatParams = {
-  chatId: string;
-  chatName: string;
+  id: string;
+  name: string;
 };
 
 const ChatScreen: React.FC = () => {  
-  const { chatId, chatName } = useLocalSearchParams<ChatParams>();
+  //const { id, name } = useLocalSearchParams<ChatParams>();
+  const { id, name } = useLocalSearchParams<{ id: string; name: string; }>();
 
   const [Id, setId] = useState("");
   const [Name, SetName] = useState("");
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    setId(chatId);
-    SetName(chatName);
-  }, []);
+    if (!id) return;
+  
+    connectWebSocket({
+      chatId: id, // <-- Use the actual chatId from params
+      onMessage: (message) => {
+        setMessages((prev) => ({
+          ...prev,
+          [id]: [...(prev[id] || []), message],
+        }));
+      },
+    });
+  
+    return () => {
+      disconnectWebSocket();
+    };
+  }, [id]);
 
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: 'Hello!', sender: 'bot' },
-    { id: '2', text: 'Hi there!', sender: 'user' },
-  ]);
+  const [messages, setMessages] = useState<Record<string, Message[]>>({
+    [id]: [
+      { id: '1', text: 'Hello!', sender: 'bot', chatId: id },
+      { id: '2', text: 'Hi there!', sender: 'user', chatId: id },
+    ],
+  });
 
   const [inputText, setInputText] = useState<string>('');
 
   const handleSend = (): void => {
-    if (inputText.trim()) {
-      const newMessage: Message = {
-        id: Date.now().toString(),
-        text: inputText,
-        sender: 'user',
-      };
-      setMessages([...messages, newMessage]);
-      setInputText('');
-    }
+    if (!inputText.trim()) return;
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text: inputText,
+      sender: 'user',
+      chatId: id
+    };
+
+    sendMessage(newMessage);
+    setMessages((prev) => ({
+      ...prev,
+      [id]: [...(prev[id] || []), newMessage],
+    }));
+    setInputText('');
   };
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
@@ -74,8 +99,11 @@ const ChatScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={90}
     >
+      <View style={{flex: 1}}>
+        <Text>{name}</Text>
+      </View>
       <FlatList
-        data={messages}
+        data={messages[id]}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messagesContainer}
@@ -86,6 +114,8 @@ const ChatScreen: React.FC = () => {
           placeholder="Type a message..."
           value={inputText}
           onChangeText={setInputText}
+          returnKeyType='send'
+          onSubmitEditing={handleSend}
         />
         <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
           <Text style={styles.sendButtonText}>Send</Text>

@@ -31,7 +31,27 @@ const ChatListScreen: React.FC = () => {
           <TouchableOpacity
             style={styles.chatItem}
             //onPress={() => navigation.navigate('Chat')}
-            onPress={() => router.push('/Chat')}
+            onPress={() => {
+              /*
+              router.setParams({
+                name: item.name,
+                id: item.id
+              })
+                */
+
+              console.log(item.id);
+              console.log(item.name);
+              
+              router.push({
+                pathname: '/chat',
+                params: {
+                  id: item.id,
+                  name: item.name,
+                },
+              });
+              //router.push('./chat');
+            }}
+            //onPress={() => router.push('/chat')}
           >
             <Text style={styles.chatName}>{item.name}</Text>
           </TouchableOpacity>
