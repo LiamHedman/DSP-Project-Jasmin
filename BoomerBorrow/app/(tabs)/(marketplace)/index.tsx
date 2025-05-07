@@ -170,7 +170,7 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "green",
+    backgroundColor: "beige",
     alignItems: "center",
   },
   searchContainer: {
