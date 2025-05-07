@@ -8,6 +8,7 @@ import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 // Set the Mapbox access token
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
+import token_storage from "@/token_storage";
 
 export default function MarketplaceScreen() {
   const SERVER_URL = "http://localhost:3000";
@@ -55,7 +56,11 @@ export default function MarketplaceScreen() {
         created_at    // created at
       );
 
-      await axios.post(`${SERVER_URL}/new_supply_post`, supply_post);
+      const headers = {
+        "Authorization": `${token_storage.get_token}` // Attach token here
+      };
+
+      await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers });
       console.log("post_data (the new post) sent to the server");
 
       const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
