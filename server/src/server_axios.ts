@@ -4,8 +4,8 @@ import insert_data from "./database/data_insertion";
 import retrieve_data from "./database/data_retrieval";
 import delete_data from "./database/data_deletion";
 import modify_data from "./database/data_modification";
-import { Supply_post } from "./../../common/src/classes"
-import { table_name_supply_posts } from "./database/connection_pooling";
+import { Supply_post, User } from "./../../common/src/classes"
+import { table_name_supply_posts, table_name_users } from "./database/connection_pooling";
 
 const app = express();
 const PORT = 3000;
@@ -17,13 +17,55 @@ app.use(express.json());
 // to the server
 app.use(cors());// TODO: this is not safe in production
 
+
+
+
+async function user_exists(username: string): Promise<boolean> {
+    const conditions = {
+        name: username
+    };
+    const result = await retrieve_data(table_name_users, conditions);
+    return result.length;
+}
+
+async function check_password(password: string, username: string): Promise<boolean> {
+    const conditions = {
+        name: username,
+        password: password
+    };
+    const result = await retrieve_data(table_name_users, conditions);
+    return result.length;
+}
+
+// Handles register user request from the client
+// Listens to all axios.post(`${SERVER_URL}/register_user` from the client
+app.post("/register_user", async (req: Request, res: Response) => {
+    const user: User = req.body;
+    
+    try {
+        console.log(`user temp test 1: ${user.name}`);
+        if (await user_exists(user.name)) { 
+            console.log(`checks if user exists: ${user.name}`);
+            throw new Error("User with this username already exists"); }
+
+        console.log(`User "${user.name}" registered`);
+        await insert_data(table_name_users, user);
+        res.status(200).json();
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
 // Handles login requests from the client
 // Listens to all axios.post(`${SERVER_URL}/login` from the client
-app.post("/login", (req: Request, res: Response) => {
-	const { username } = req.body;
+app.post("/login", async (req: Request, res: Response) => {
+	const user = req.body;
     
 	try {
-        console.log(`User "${username}" connected`);
+        if (!await user_exists(user.name)) { throw new Error("User with this username doesnt exist"); }
+        if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
+
+        console.log(`User "${user.name}" successfully logged in`);
         res.status(200).json();
     } catch (error) {
         res.status(500).json();
@@ -101,6 +143,8 @@ app.get("/fetch_all_supply_posts", async (req: Request, res: Response) => {
         res.status(500).json();
     }
 });
+
+
 
 // Listens on the port 3000
 app.listen(PORT, () => {

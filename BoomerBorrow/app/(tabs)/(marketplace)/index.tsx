@@ -99,7 +99,7 @@ export default function MarketplaceScreen() {
   const handle_supply_post_deletion = async (post_id: string) => {
     await delete_supply_post(post_id);
   };
-  
+
   async function edit_supply_post(post_id: string) {
     try {
 
@@ -129,7 +129,6 @@ export default function MarketplaceScreen() {
   const handle_supply_post_editing = async (post_id: string) => {
     await edit_supply_post(post_id);
   };
-
 
   return (
     <SafeAreaView style={styles.container}>

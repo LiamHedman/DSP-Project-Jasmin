@@ -3,22 +3,66 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, Button, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
+import { User } from "./../../../classes_tmp";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
 
-	// use set_username() or set_password() if you want to update the username or password 
-	const [username, set_username] = useState("");
+	let user: User;
+	
+	const [role, set_role] = useState("");
+	const [name, set_name] = useState("");
+	const [mail, set_mail] = useState("temp@temp.dk");
+	const [phone_number, set_phone_number] = useState("12345678");
+	const [bio, set_bio] = useState("hej jag gillar att klippa gräs");
+	const [address, set_address] = useState("Östra Vägen, 42, Gävkle");
+	const [date_of_birth, set_date_of_birth] = useState("1905-02-01");
+	const [profile_picture_url, set_profile_picture_url] = useState("ger23423wsdf");
 	const [password, set_password] = useState("");
+	const [created_at, set_created_at] = useState("19950201");
+	
+	const [users, set_users] = useState<User[]>([]);
 
 	// If you need to execute something on page mount (when you load the page)
 	useEffect(() => {
 		
 	}, []);
 
-	async function login(username: string) {
+	async function register_user() {
 		try {
-			await axios.post(`${SERVER_URL}/login`, {username: username,});
+			user = new User(
+				role,
+				name,
+				mail,
+				phone_number,
+				bio,
+				address,
+				date_of_birth,
+				profile_picture_url,
+				password
+			  );
+			await axios.post(`${SERVER_URL}/register_user`, user);
+
+		} catch (error: any) {
+			// TODO: NOTIFY the user upon failed attempt
+			console.error("Registration failed:", error.message);
+		}
+	}
+
+	const handle_register = async () => {
+		await register_user();
+	};
+
+	async function login() {
+		try {
+			const user = {
+				name: name,
+				password: password
+			}
+			await axios.post(`${SERVER_URL}/login`, user);
+
+			// Sends the client to the marketplace page
+			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
 			console.error("Login failed:", error.message);
 		}
@@ -26,11 +70,9 @@ export default function LoginScreen() {
 
 	// Handles a clients login when the login button is pressed
 	const handle_login = async () => {
-		console.log("Username:", username);
+		console.log("Username:", name);
 		console.log("Password:", password);
-		await login(username);
-		// Sends the client to the marketplace page
-		router.push("/(tabs)/(marketplace)");
+		await login();
 	};
 
 	return (
@@ -38,8 +80,8 @@ export default function LoginScreen() {
 		<TextInput
 		style={styles.input}
 		placeholder="Enter username"
-		value={username}
-		onChangeText={set_username} // Updates state
+		value={name}
+		onChangeText={set_name} // Updates state
 		/>
 
 		<TextInput
@@ -52,6 +94,11 @@ export default function LoginScreen() {
 		<Button 
 		title="Log in" 
 		onPress={handle_login}
+		/>
+
+		<Button 
+		title="Register" 
+		onPress={handle_register}
 		/>
 	</SafeAreaView>
 	);
