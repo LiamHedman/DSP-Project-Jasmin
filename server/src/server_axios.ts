@@ -17,9 +17,6 @@ app.use(express.json());
 // to the server
 app.use(cors());// TODO: this is not safe in production
 
-
-
-
 async function user_exists(username: string): Promise<boolean> {
     const conditions = {
         name: username
@@ -65,8 +62,15 @@ app.post("/login", async (req: Request, res: Response) => {
         if (!await user_exists(user.name)) { throw new Error("User with this username doesnt exist"); }
         if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
 
+        // Creates the auth token for the user
+        const jwt = require('jsonwebtoken');
+        const payload = { id: };
+        // TODO: should be stored in a .env and not be hardcoded
+        const secret_key = "temp_key";
+        const token = jwt.sign(payload, secret_key, {expiresIn: '12h'});
+
         console.log(`User "${user.name}" successfully logged in`);
-        res.status(200).json();
+        res.status(200).json(token);
     } catch (error) {
         res.status(500).json();
     }

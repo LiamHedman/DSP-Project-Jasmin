@@ -4,6 +4,7 @@ import { Text, TextInput, Button, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "./../../../classes_tmp";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -34,7 +35,9 @@ export default function LoginScreen() {
 				name: name,
 				password: password
 			}
-			await axios.post(`${SERVER_URL}/login`, user);
+			const response = await axios.post(`${SERVER_URL}/login`, user);
+			store_token(response.data);
+			console.log(`Stored auth_token: ${response.data}`);
 
 			// Sends the client to the marketplace page
 			router.push("/(tabs)/(marketplace)");
