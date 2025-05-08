@@ -1,7 +1,7 @@
 {
   "scripts": {
     "compile": "tsc && xcopy src\\database\\config dist\\server\\src\\database\\config /E /I /Y",
-    "start_server": "node ./dist/server/src/server_axios.js",
+    "start_server": "node ./dist/server/src/server/server_axios.js",
     "test": "jest",
     "lint": "expo lint"
   },
