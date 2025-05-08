@@ -29,7 +29,6 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
-        // id: string,
         role: string,
         name: string,
         mail: string,
@@ -335,7 +334,6 @@ export class Supply_post {
     public created_at: string;
 
     constructor(
-        id: string,
         owner_id: string,
         title: string,
         description: string,
@@ -345,7 +343,7 @@ export class Supply_post {
         post_picture_url: string,
         created_at: string
     ) {
-        this.id = id;
+        this.id = uuidv4();
         this.owner_id = owner_id;
         this.title = title;
         this.description = description;
