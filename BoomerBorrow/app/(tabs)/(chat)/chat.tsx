@@ -56,9 +56,17 @@ const ChatScreen: React.FC = () => {
   }, [id]);
 
   const [messages, setMessages] = useState<Record<string, Message[]>>({
-    [id]: [
-      { id: '1', text: 'Hello!', sender: 'bot', chatId: id },
-      { id: '2', text: 'Hi there!', sender: 'user', chatId: id },
+    ["1"]: [
+      { id: '1', text: 'Hello!', sender: 'bot', chatId: "1" },
+      { id: '2', text: 'Hi there!', sender: 'user', chatId: "1" },
+    ],
+    ["2"]: [
+      { id: '1', text: 'Hello!', sender: 'bot', chatId: "2" },
+      { id: '2', text: 'Hi there!', sender: 'user', chatId: "2" },
+    ],
+    ["3"]: [
+      { id: '1', text: 'Hello!', sender: 'bot', chatId: "3" },
+      { id: '2', text: 'Hi there!', sender: 'user', chatId: "3" },
     ],
   });
 
@@ -99,7 +107,7 @@ const ChatScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={90}
     >
-      <View style={{flex: 1}}>
+      <View style={{flex: 0.1, height:20}}>
         <Text>{name}</Text>
       </View>
       <FlatList
