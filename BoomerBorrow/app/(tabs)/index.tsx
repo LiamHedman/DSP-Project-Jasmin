@@ -22,6 +22,8 @@ export default function LoginScreen() {
 	const [profile_picture_url, set_profile_picture_url] = useState("ger23423wsdf");
 	const [password, set_password] = useState("");
 	const [created_at, set_created_at] = useState("19950201");
+
+	const [error_message, set_error_message] = useState("");
 	
 	const [users, set_users] = useState<User[]>([]);
 
@@ -45,6 +47,7 @@ export default function LoginScreen() {
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
 			console.error("Login failed:", error.message);
+			set_error_message("Inloggning misslyckades. Försök igen.");
 		}
 	}
 
@@ -56,18 +59,18 @@ export default function LoginScreen() {
 	};
 
 	const handle_register = async () => {
+		// Clears the error message
+		set_error_message("");
 		router.push("/(tabs)/(register)");
 	};
 
 	return (
 		<SafeAreaView style={styles.container}>
-	      {/* Company logo */}
-		  <Image
-			source={require("./../../assets/images/bb_logo.svg")}
-			style={styles.icon}
-			/>
+		  {/* Company logo */}
+		  <Image source={require("./../../assets/images/bb_logo.svg")} style={styles.icon} />
+	  
 		  <Text style={styles.title}>Logga in</Text>
-	
+	  
 		  {/* Username Input */}
 		  <TextInput
 			style={styles.input}
@@ -76,7 +79,7 @@ export default function LoginScreen() {
 			value={name}
 			onChangeText={set_name}
 		  />
-	
+	  
 		  {/* Password Input */}
 		  <TextInput
 			style={styles.input}
@@ -86,17 +89,15 @@ export default function LoginScreen() {
 			value={password}
 			onChangeText={set_password}
 		  />
-	
-		  {/* Forgot Password */}
-		  <TouchableOpacity>
-			<Text style={styles.forgotPassword}>Jag har glömt mitt lösenord</Text>
-		  </TouchableOpacity>
-	
+	  
+		  {/* Error Message */}
+	  
 		  {/* Login Button */}
 		  <TouchableOpacity style={styles.button} onPress={handle_login}>
 			<Text style={styles.buttonText}>Logga in</Text>
 		  </TouchableOpacity>
-	
+		  {error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
+	  
 		  {/* Register Link */}
 		  <TouchableOpacity style={styles.linkButton} onPress={handle_register}>
 			<Text style={styles.linkText}>Har du inget konto? Registera dig här</Text>
@@ -161,5 +162,11 @@ export default function LoginScreen() {
 	  linkText: {
 		color: "#007AFF",
 		fontSize: 14,
+	  },
+	  errorText: {
+		color: "red",
+		fontSize: 14,
+		marginTop: 5,
+		fontStyle: "italic",
 	  },
 	});

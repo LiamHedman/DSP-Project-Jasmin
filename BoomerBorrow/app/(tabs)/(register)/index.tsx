@@ -23,24 +23,95 @@ export default function LoginScreen() {
 	
 	const [users, set_users] = useState<User[]>([]);
 
+	const [error_message, set_error_message] = useState("");
+	const [password_error, set_password_error] = useState("");
+	const [mail_error, set_mail_error] = useState("");
+	const [name_error, set_name_error] = useState("");
+
 	// If you need to execute something on page mount (when you load the page)
 	useEffect(() => {
 		
 	}, []);
 
+
+	const validate_password = (text: string) => {
+		set_password(text);
+		
+		if (text.length < 8) {
+			set_password_error("Lösenordet måste bestå av minst 8 tecken");
+		} else if (!/\d/.test(text)) {
+			set_password_error("Lösenordet måste innehålla minst en siffra");
+		} else if (!/[A-Z]/.test(text)) {
+			set_password_error("Lösenordet måste innehålla minst en stor bokstav");
+		} else {
+			set_password_error(""); // No error if password is valid
+		}
+	};
+
+	const validate_mail = (text: string) => {
+		set_mail(text);
+	  
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email format
+		if (!emailRegex.test(text)) {
+			set_mail_error("Ogiltig e-postadress. Kontrollera formatet.");
+		} else {
+			set_mail_error(""); // No error if valid
+		}
+	}
+
+	const validate_name = (name: string) => {
+		set_name(name);
+
+       	if (!(name.trim().length >= 2)) {
+			set_name_error("Ogiltigt användarnamn. Måste bestå av minst 2 tecken")
+		} else {
+			set_name_error("");
+		}
+    }
+
+	function validate_registration(): boolean {
+		return password_error.length === 0 &&
+			   mail_error.length === 0 && 
+			   name_error.length === 0 &&
+			   name.length != 0 &&
+			   password.length != 0 &&
+			   mail.length != 0;
+	}
+
 	async function register_user() {
 		try {
 			user = new User(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, user);
-			router.push("/(tabs)/(login)");
+			router.back();
 		} catch (error: any) {
-			// TODO: NOTIFY the user upon failed attempt
-			console.error("Registration failed:", error.message);
+			if (error.response) {
+				switch (error.response.status) {
+					case 418:
+						set_error_message("Användarnamnet är redan registrerad.")
+						break;
+					case 419:
+						set_error_message("Mailadressen är redan registrerad.");
+						break;
+					case 500:
+						set_error_message("Internt serverfel. Försök igen senare.");
+						break;
+					default:
+						set_error_message(`Registrering misslyckades: ${error.response.status}`);
+				}
+			} else {
+				set_error_message("Något gick fel. Kontrollera din anslutning.");
+			}
 		}
 	}
 
 	const handle_register = async () => {
-		await register_user();
+		if (validate_registration()) {
+			await register_user();
+		}
+	};
+
+	const handle_login = async () => {
+		router.back();
 	};
 
 	return (
@@ -54,9 +125,9 @@ export default function LoginScreen() {
 			placeholder="Namn"
 			placeholderTextColor="#888"
 			value={name}
-			onChangeText={set_name}
+			onChangeText={validate_name}
 		  />
-	
+			{name_error ? <Text style={styles.errorText}>{name_error}</Text> : null}
 		  {/* Email Input */}
 		  <TextInput
 			style={styles.input}
@@ -64,9 +135,10 @@ export default function LoginScreen() {
 			placeholderTextColor="#888"
 			keyboardType="email-address"
 			value={mail}
-			onChangeText={set_mail}
+			onChangeText={validate_mail}
 		  />
-	
+			{mail_error ? <Text style={styles.errorText}>{mail_error}</Text> : null}
+
 		  {/* Password Input */}
 		  <TextInput
 			style={styles.input}
@@ -74,9 +146,9 @@ export default function LoginScreen() {
 			placeholderTextColor="#888"
 			secureTextEntry
 			value={password}
-			onChangeText={set_password}
+			onChangeText={validate_password}
 		  />
-	
+			{password_error ? <Text style={styles.errorText}>{password_error}</Text> : null}
 		  {/* Confirm Password Input */}
 {/* 		  <TextInput
 			style={styles.input}
@@ -91,9 +163,11 @@ export default function LoginScreen() {
 		  <TouchableOpacity style={styles.button} onPress={handle_register}>
 			<Text style={styles.buttonText}>Registrera</Text>
 		  </TouchableOpacity>
-	
+
+		  {error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
+
 		  {/* Login Link */}
-		  <TouchableOpacity style={styles.linkButton}>
+		  <TouchableOpacity style={styles.linkButton} onPress={handle_login}>
 			<Text style={styles.linkText}>Har du redan ett konto? Logga in här</Text>
 		  </TouchableOpacity>
 		</SafeAreaView>
@@ -152,4 +226,11 @@ export default function LoginScreen() {
 		color: "#007AFF",
 		fontSize: 14,
 	  },
+	  errorText: {
+		color: "red",
+		fontSize: 14,
+		marginTop: 5,
+		fontStyle: "italic",
+	  },
+	  
 	});

@@ -43,17 +43,17 @@ export class User {
 
         this.role = role ? role : "user";
 
-        if (this.checkName(name)) {
-            this.name = name;
+        this.name = name;
+/*         if (this.checkName(name)) {
         } else {
             throw new ConstructorParameterError("Name parameter is of wrong format.");
-        }
+        } */
 
-        if (this.checkEmail(mail)) {
-            this.mail = mail;
+        this.mail = mail;
+/*         if (this.checkEmail(mail)) {
         } else {
             throw new ConstructorParameterError("Email is of wrong format.");
-        }
+        } */
 
         if (this.checkPhoneNumber(phone_number)) {
             this.phone_number = phone_number;
@@ -77,11 +77,11 @@ export class User {
 
         this.profile_picture_url = profile_picture_url ? profile_picture_url : "";
 
-        if (this.checkPassword(password)) {
-            this.password = password;
+        this.password = password;
+/*         if (this.checkPassword(password)) {
         } else {
             throw new ConstructorParameterError("Password is of wrong format.")
-        }
+        } */
 
         this.created_at = new Date().toISOString();
 

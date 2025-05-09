@@ -16,6 +16,14 @@ async function username_in_use(username: string): Promise<boolean> {
     return result.length;
 }
 
+async function mail_in_use(mail: string): Promise<boolean> {
+    const conditions = {
+        mail: mail
+    };
+    const result = await retrieve_data(table_name_users, conditions);
+    return result.length;
+}
+
 async function check_password(password: string, username: string): Promise<boolean> {
     const conditions = {
         name: username,
@@ -40,7 +48,12 @@ router.post("/register_user", async (req: Request, res: Response) => {
     const user: User = req.body;
     
     try {
-        if (await username_in_use(user.name)) { throw new Error("User with this username already exists"); }
+        if (await username_in_use(user.name)) { 
+            return res.status(418).json();
+        }
+        if (await mail_in_use(user.mail)) {
+            return res.status(419).json();
+        }
 
         console.log(`User "${user.name}" registered`);
         await insert_data(table_name_users, user);
