@@ -79,22 +79,6 @@ const ChatScreen: React.FC = () => {
   
 
   const [messages, setMessages] = useState<Record<string, Message[]>>({
-<<<<<<< HEAD
-    ["1"]: [
-      { id: '1', text: 'Hello!', sender: 'bot', chatId: "1" },
-      { id: '2', text: 'Hi there!', sender: 'user', chatId: "1" },
-    ],
-    ["2"]: [
-      { id: '1', text: 'Hello!', sender: 'bot', chatId: "2" },
-      { id: '2', text: 'Hi there!', sender: 'user', chatId: "2" },
-    ],
-    ["3"]: [
-      { id: '1', text: 'Hello!', sender: 'bot', chatId: "3" },
-      { id: '2', text: 'Hi there!', sender: 'user', chatId: "3" },
-    ],
-=======
-   
->>>>>>> 37cc1679 (Sending and retrieving messagaes with firebase)
   });
 
   const [inputText, setInputText] = useState<string>('');
