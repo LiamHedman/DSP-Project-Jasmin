@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, TextInput, Button, StyleSheet } from "react-native";
+import { Text, TextInput, Button, StyleSheet, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
-import { User } from "./../../../classes_tmp";
-import { save_user_id, get_user_id } from "@/auth_token";
+import { User } from "./../../classes_tmp";
+import { save_user_id } from "@/auth_token";
+import { Image } from "react-native";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -59,50 +60,106 @@ export default function LoginScreen() {
 	};
 
 	return (
-	<SafeAreaView style={styles.container}>
-		
-		<Text>Log in</Text>
-
-		<TextInput
-		style={styles.input}
-		placeholder="Enter username"
-		value={name}
-		onChangeText={set_name} // Updates state
-		/>
-
-		<TextInput
-		style={styles.input}
-		placeholder="Enter password"
-		value={password}
-		secureTextEntry
-		onChangeText={set_password} // Updates state
-		/>
-		
-		<Button 
-		title="Log in" 
-		onPress={handle_login}
-		/>
-
-		<Button 
-		title="I don't have an account" 
-		onPress={handle_register}
-		/>
-	</SafeAreaView>
-	);
+		<SafeAreaView style={styles.container}>
+	      {/* Company logo */}
+		  <Image
+			source={require("./../../assets/images/bb_logo.svg")}
+			style={styles.icon}
+			/>
+		  <Text style={styles.title}>Logga in</Text>
+	
+		  {/* Username Input */}
+		  <TextInput
+			style={styles.input}
+			placeholder="Användarnamn"
+			placeholderTextColor="#888"
+			value={name}
+			onChangeText={set_name}
+		  />
+	
+		  {/* Password Input */}
+		  <TextInput
+			style={styles.input}
+			placeholder="Lösenord"
+			placeholderTextColor="#888"
+			secureTextEntry
+			value={password}
+			onChangeText={set_password}
+		  />
+	
+		  {/* Forgot Password */}
+		  <TouchableOpacity>
+			<Text style={styles.forgotPassword}>Jag har glömt mitt lösenord</Text>
+		  </TouchableOpacity>
+	
+		  {/* Login Button */}
+		  <TouchableOpacity style={styles.button} onPress={handle_login}>
+			<Text style={styles.buttonText}>Logga in</Text>
+		  </TouchableOpacity>
+	
+		  {/* Register Link */}
+		  <TouchableOpacity style={styles.linkButton} onPress={handle_register}>
+			<Text style={styles.linkText}>Har du inget konto? Registera dig här</Text>
+		  </TouchableOpacity>
+		</SafeAreaView>
+	  );
 	}
-
+	
 	const styles = StyleSheet.create({
-	container: {
-	flex: 1,
-	justifyContent: "center",
-	alignItems: "center",
-	},
-	input: {
-	height: 40,
-	width: "80%",
-	margin: 12,
-	borderWidth: 1,
-	padding: 10,
-	borderRadius: 5,
-	},
-});
+	  container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#F4F4F4",
+	  },
+	  icon: {
+		width: 200,
+		height: 200,
+		marginBottom: 20,
+		position: "absolute",
+		top: 80,
+		left: "50%",
+		transform: [{ translateX: -100 }], // needs to be half the width
+	  },
+	  title: {
+		fontSize: 30,
+		fontWeight: "bold",
+		color: "#333",
+		marginBottom: 0,
+	  },
+	  input: {
+		width: "80%",
+		height: 50,
+		backgroundColor: "#FFF",
+		borderWidth: 1,
+		borderColor: "#DDD",
+		borderRadius: 10,
+		paddingHorizontal: 15,
+		marginVertical: 10,
+	  },
+	  forgotPassword: {
+		color: "#007AFF",
+		fontSize: 14,
+		marginBottom: 15,
+	  },
+	  button: {
+		width: "80%",
+		backgroundColor: "#007AFF",
+		paddingVertical: 12,
+		borderRadius: 10,
+		alignItems: "center",
+		marginTop: 15,
+	  },
+	  buttonText: {
+		color: "#FFF",
+		fontSize: 16,
+		fontWeight: "bold",
+	  },
+	  linkButton: {
+		marginTop: 15,
+	  },
+	  linkText: {
+		color: "#007AFF",
+		fontSize: 14,
+	  },
+	});
