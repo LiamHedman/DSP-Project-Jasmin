@@ -15,6 +15,16 @@ import { RootStackParamList } from './App';
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 import { connectWebSocket, sendMessage, disconnectWebSocket } from '../../../connectionStuff/src/client_messages';
 
+import { db } from '../../firebaseConfig'; //Our private file with keys from firebase
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
+
 type Message = {
   id: string;
   text: string;
@@ -29,33 +39,47 @@ type ChatParams = {
   name: string;
 };
 
+// Will run when the ChatScreen loads and whenever the id changes 
 const ChatScreen: React.FC = () => {  
-  //const { id, name } = useLocalSearchParams<ChatParams>();
+  // extract the chatId and name
   const { id, name } = useLocalSearchParams<{ id: string; name: string; }>();
 
   const [Id, setId] = useState("");
   const [Name, SetName] = useState("");
   const socketRef = useRef<WebSocket | null>(null);
 
+  //Listening in real-time to all messages in the Firestore 
+  // chats/{chatId}/messages subcollection.
   useEffect(() => {
     if (!id) return;
   
-    connectWebSocket({
-      chatId: id, // <-- Use the actual chatId from params
-      onMessage: (message) => {
-        setMessages((prev) => ({
-          ...prev,
-          [id]: [...(prev[id] || []), message],
-        }));
-      },
+    //fetch the old messages and sort by creation date
+    const q = query(
+      collection(db, 'chats', id, 'messages'),
+      orderBy('createdAt', 'asc')
+    );
+    
+    //onSnapshot is firebase function which detects any real-time updates with query q
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      //transform Firestore documents (from query) into JavaScript objects
+      const fetchedMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Message),
+      }));
+  
+      setMessages((prev) => ({
+        ...prev,
+        [id]: fetchedMessages,
+      }));
     });
   
-    return () => {
-      disconnectWebSocket();
-    };
+    //stops listener when done
+    return () => unsubscribe();
   }, [id]);
+  
 
   const [messages, setMessages] = useState<Record<string, Message[]>>({
+<<<<<<< HEAD
     ["1"]: [
       { id: '1', text: 'Hello!', sender: 'bot', chatId: "1" },
       { id: '2', text: 'Hi there!', sender: 'user', chatId: "1" },
@@ -68,27 +92,37 @@ const ChatScreen: React.FC = () => {
       { id: '1', text: 'Hello!', sender: 'bot', chatId: "3" },
       { id: '2', text: 'Hi there!', sender: 'user', chatId: "3" },
     ],
+=======
+   
+>>>>>>> 37cc1679 (Sending and retrieving messagaes with firebase)
   });
 
   const [inputText, setInputText] = useState<string>('');
 
-  const handleSend = (): void => {
-    if (!inputText.trim()) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
+  const handleSend = async (): Promise<void> => {
+    if (!inputText.trim()) return;
+  
+    //create a new message object
+    const newMessage = {
       text: inputText,
       sender: 'user',
-      chatId: id
+      chatId: id,
+      createdAt: serverTimestamp(),
     };
-
-    sendMessage(newMessage);
-    setMessages((prev) => ({
-      ...prev,
-      [id]: [...(prev[id] || []), newMessage],
-    }));
+  
+    try {
+      //send to Firestore in the current chat
+      await addDoc(collection(db, 'chats', id, 'messages'), newMessage);
+      setInputText('');
+    } catch (error) {
+      console.error('Error sending message: ', error);
+    }
+    //clears the input field
     setInputText('');
   };
+  
+  
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
     <View
