@@ -39,7 +39,7 @@ export class User {
         profile_picture_url: string,
         password: string,
     ) {
-        this.id = Date.now().toString(); // Unique ID
+        this.id = "temp";//Date.now().toString(); // Unique ID
 
         this.role = role ? role : "user";
 
