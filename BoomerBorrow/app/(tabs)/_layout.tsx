@@ -18,11 +18,6 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome name="shopping-cart" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "connection",
-    label: "Connection",
-    icon: (color, size, marginLeft) => <FontAwesome name="wifi" size={size} color={color} style={{marginLeft: marginLeft}}/>,
-  },
-  {
     name: "(login)",
     label: "DIN \nPROFIL",
     icon: (color, size, marginLeft) => <FontAwesome name="user-circle" size={size} color={color} style={{marginLeft: marginLeft}}/>,
@@ -31,6 +26,11 @@ const tabItems: TabItem[] = [
     name: "create_posts",
     label: "LÄGG\nUP\nANONS",
     icon: (color, size, marginLeft) => <FontAwesome name="plus-square" size={size} color={color} style={{marginLeft: marginLeft}} />,
+  },
+  {
+    name: "connection",
+    label: "Meddelanden",
+    icon: (color, size, marginLeft) => <FontAwesome name="wifi" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
 ];
 
@@ -153,9 +153,9 @@ const getBackgroundColor = (routeName: String): ColorValue => {
     case "(login)":
       return "#D2F8B8";
     case "(marketplace)":
-      return "#D2F8B8";
-    case "connection":
       return "#FFFB9F";
+    case "connection":
+      return "#D2F8B8";
     case "create_posts":
       return "#FFFB9F";
     default:
