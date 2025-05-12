@@ -92,6 +92,22 @@ router.post("/modify_user", async (req: Request, res: Response) => {
     }
 });
 
+router.get("/fetch_user", async (req: Request, res: Response) => {
+    const user_id = req.headers.auth;
+
+    try {
+        console.log(`User "${user_id}" fetch from client`);
+        const condition = { id: user_id };
+        const users = await retrieve_data(table_name_users, condition);
+        if (users.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.status(200).json(users[0]);
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
 // Handles login requests from the client
 // Listens to all axios.post(`${SERVER_URL}/login` from the client
 router.post("/login", async (req: Request, res: Response) => {

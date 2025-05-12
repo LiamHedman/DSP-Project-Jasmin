@@ -9,6 +9,7 @@ import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
 import { get_user_id } from "@/auth_token";
+import { router } from "expo-router";
 //import token_storage from "@/token_storage";
 
 export default function MarketplaceScreen() {
@@ -38,6 +39,10 @@ export default function MarketplaceScreen() {
   useEffect(() => {
     fetch_active_supply_posts();
   }, []);
+
+  const handle_temporary = async () => {
+    router.push("/(tabs)/(user_profile)");
+  };
 
   async function send_supply_post() {
     try {
@@ -183,6 +188,9 @@ export default function MarketplaceScreen() {
     </TouchableOpacity>
     <TouchableOpacity style={styles.button} onPress={handle_table_reset}>
       <Text>Rensa annonser (temp. för utvecklare)</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.button} onPress={handle_temporary}>
+      <Text>temp</Text>
     </TouchableOpacity>
     </SafeAreaView>
   );

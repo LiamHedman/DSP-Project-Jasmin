@@ -12,14 +12,14 @@ export default function LoginScreen() {
 	
 	const [role, set_role] = useState("");
 	const [name, set_name] = useState("");
-	const [mail, set_mail] = useState("temp@temp.dk");
+	const [mail, set_mail] = useState("temp@student.uu.se");
 	const [phone_number, set_phone_number] = useState("12345678");
-	const [bio, set_bio] = useState("hej jag gillar att klippa gräs");
-	const [address, set_address] = useState("Östra Vägen, 42, Gävkle");
-	const [date_of_birth, set_date_of_birth] = useState("1905-02-01");
+	const [bio, set_bio] = useState("Hej! Jag heter ... och jag gillar att ...");
+	const [address, set_address] = useState("Östravägen, 42, Gävle");
+	const [date_of_birth, set_date_of_birth] = useState("1955-02-01");
 	const [profile_picture_url, set_profile_picture_url] = useState("ger23423wsdf");
 	const [password, set_password] = useState("");
-	const [created_at, set_created_at] = useState("19950201");
+	const [created_at, set_created_at] = useState("20250201");
 	
 	const [users, set_users] = useState<User[]>([]);
 

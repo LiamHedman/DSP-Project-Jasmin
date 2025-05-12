@@ -71,4 +71,18 @@ router.get("/fetch_all_supply_posts", async (req: Request, res: Response) => {
     }
 });
 
+router.get("/fetch_my_supply_posts", async (req: Request, res: Response) => {
+    const user_id = req.headers.auth;
+
+    try {
+        const condition = { owner_id: user_id };
+        const supply_posts: Supply_post[] = await retrieve_data(table_name_supply_posts, condition);
+        
+        res.status(200).json(supply_posts);
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
+
 export { router as supply_post_routes };

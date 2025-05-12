@@ -55,25 +55,25 @@ export class User {
             throw new ConstructorParameterError("Email is of wrong format.");
         } */
 
-        if (this.checkPhoneNumber(phone_number)) {
-            this.phone_number = phone_number;
+       this.phone_number = phone_number;
+/*         if (this.checkPhoneNumber(phone_number)) {
         } else {
             throw new ConstructorParameterError("Phone number is of wrong format.")
-        }
+        } */
 
         this.bio = bio ? bio : "";
 
-        if (this.checkAddress(address)) {
-            this.address = address;
+        this.address = address;
+/*         if (this.checkAddress(address)) {
         } else {
             throw new ConstructorParameterError("Address is of wrong format.")
-        }
+        } */
 
-        if (this.checkDateOfBirth(date_of_birth)) {
-            this.date_of_birth = date_of_birth;
+       this.date_of_birth = date_of_birth;
+/*         if (this.checkDateOfBirth(date_of_birth)) {
         } else {
             throw new ConstructorParameterError("Date of birth is of wrong format, or means user is too young.")
-        }
+        } */
 
         this.profile_picture_url = profile_picture_url ? profile_picture_url : "";
 
