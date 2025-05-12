@@ -8,6 +8,8 @@ import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 // Set the Mapbox access token
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
+import { get_user_id } from "@/auth_token";
+//import token_storage from "@/token_storage";
 
 export default function MarketplaceScreen() {
   const SERVER_URL = "http://localhost:3000";
@@ -43,19 +45,11 @@ export default function MarketplaceScreen() {
       const created_at = new Date().toISOString();
 	
 	  // TODO: need unique ID:s for every post
-      supply_post = new Supply_post(
-        "20",    // ID
-        "10",    // Owner ID
-        title,   // title
-        description,    // description
-        price,    // price
-        category,   // category
-        location,   // location
-        post_picture_url,   // post_picture_url
-        created_at    // created at
-      );
-
-      await axios.post(`${SERVER_URL}/new_supply_post`, supply_post);
+      const owner_id = await get_user_id();
+      if (owner_id === null ) { throw new Error("Owner id cannot be null upon post creation"); }
+      supply_post = new Supply_post(owner_id, title, description, price, category, location, post_picture_url, created_at);
+      
+      await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
       console.log("post_data (the new post) sent to the server");
 
       const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
@@ -85,7 +79,7 @@ export default function MarketplaceScreen() {
 
   async function delete_supply_post(post_id: string) {
     try {
-      const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { title: post_id });
+      const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { id: post_id });
       
       if (response.status === 200) {
         await fetch_active_supply_posts();
@@ -99,7 +93,7 @@ export default function MarketplaceScreen() {
   const handle_supply_post_deletion = async (post_id: string) => {
     await delete_supply_post(post_id);
   };
-  
+
   async function edit_supply_post(post_id: string) {
     try {
 
@@ -130,7 +124,6 @@ export default function MarketplaceScreen() {
     await edit_supply_post(post_id);
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       {/* Map Section */}
@@ -146,8 +139,8 @@ export default function MarketplaceScreen() {
               <Text style={{ fontWeight: "bold" }}>{supply_post.title}</Text>
               <Text>{supply_post.description}</Text>
 			        <Text>{supply_post.price}</Text>
-			        <Text>{supply_post.category}</Text>                   {/*   // TODO: post_title should be post_id */}
-              <TouchableOpacity style={styles.minibutton} onPress={() => handle_supply_post_deletion(supply_post.title)}>
+			        <Text>{supply_post.category}</Text>
+              <TouchableOpacity style={styles.minibutton} onPress={() => handle_supply_post_deletion(supply_post.id)}>
               <Text>Radera</Text>
               </TouchableOpacity>
             </View>
@@ -198,13 +191,13 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-	padding: 100,
+	padding: 30,
     backgroundColor: "#b0ffe3",
     alignItems: "center", // Center children horizontally
   },
   mapContainer: {
     width: "90%",
-    height: 200,
+    height: 150,
     margin: 12,
     borderRadius: 5,
     overflow: "hidden",
@@ -216,8 +209,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   postsContainer: {
-    width: "60%", // Match other components
-    height: 500,
+    width: "90%", // Match other components
+    height: 200,
     margin: 12,
     borderWidth: 1,
     padding: 10,
