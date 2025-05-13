@@ -52,4 +52,4 @@ const check_connection = async () => {
 };
 
 // Run the queries
-//check_connection();
+check_connection();
