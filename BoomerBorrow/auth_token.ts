@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function save_user_id(user_id: string) {
+  console.log("User id updated");
   await AsyncStorage.setItem("user_id", user_id);
 }
 

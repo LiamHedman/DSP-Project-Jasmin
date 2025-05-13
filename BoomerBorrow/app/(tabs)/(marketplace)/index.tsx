@@ -41,19 +41,19 @@ export default function MarketplaceScreen() {
   }, []);
 
   const handle_temporary = async () => {
-    router.push("/(tabs)/(user_profile)");
+    router.push("/(tabs)/(user_profile)/user_profile_page");
   };
 
   async function send_supply_post() {
     try {
 
       const created_at = new Date().toISOString();
-	
-	  // TODO: need unique ID:s for every post
+
+      // TODO: need unique ID:s for every post
       const owner_id = await get_user_id();
-      if (owner_id === null ) { throw new Error("Owner id cannot be null upon post creation"); }
+      if (owner_id === null) { throw new Error("Owner id cannot be null upon post creation"); }
       supply_post = new Supply_post(owner_id, title, description, price, category, location, post_picture_url, created_at);
-      
+
       await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
       console.log("post_data (the new post) sent to the server");
 
@@ -72,7 +72,7 @@ export default function MarketplaceScreen() {
     try {
       set_posts([]);
       await axios.post(`${SERVER_URL}/reset_table`);
-        // Clears the array locally
+      // Clears the array locally
     } catch (error: any) {
       console.error("Table content reset failed", error.message);
     }
@@ -85,12 +85,12 @@ export default function MarketplaceScreen() {
   async function delete_supply_post(post_id: string) {
     try {
       const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { id: post_id });
-      
+
       if (response.status === 200) {
         await fetch_active_supply_posts();
       }
 
-    } catch(error: any) {
+    } catch (error: any) {
       console.error("Failed to delete post");
     }
   }
@@ -115,12 +115,12 @@ export default function MarketplaceScreen() {
       };
 
       const response = await axios.post(`${SERVER_URL}/edit_supply_post`, new_post_data);
-      
+
       if (response.status === 200) {
         await fetch_active_supply_posts();
       }
 
-    } catch(error: any) {
+    } catch (error: any) {
       console.error("Failed to delete post");
     }
   }
@@ -143,15 +143,18 @@ export default function MarketplaceScreen() {
             <View style={styles.post} key={index}>
               <Text style={{ fontWeight: "bold" }}>{supply_post.title}</Text>
               <Text>{supply_post.description}</Text>
-			        <Text>{supply_post.price}</Text>
-			        <Text>{supply_post.category}</Text>
+              <Text>{supply_post.price}</Text>
+              <Text>{supply_post.category}</Text>
+              {/* Display post creator */}
+              <Text style={styles.postOwner}>Made by: ...{supply_post.owner_id.slice(-6)}</Text>
               <TouchableOpacity style={styles.minibutton} onPress={() => handle_supply_post_deletion(supply_post.id)}>
-              <Text>Radera</Text>
+                <Text>Radera</Text>
               </TouchableOpacity>
             </View>
           ))}
         </ScrollView>
       </View>
+
 
       {/* Input Fields and Button */}
       <TextInput
@@ -183,15 +186,15 @@ export default function MarketplaceScreen() {
         value={category}
         onChangeText={set_category}
       />
-    <TouchableOpacity style={styles.button} onPress={handle_new_supply_post}>
-      <Text>Skapa annons</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button} onPress={handle_table_reset}>
-      <Text>Rensa annonser (temp. för utvecklare)</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button} onPress={handle_temporary}>
-      <Text>temp</Text>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handle_new_supply_post}>
+        <Text style={styles.buttonText}>Skapa annons</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handle_table_reset}>
+        <Text style={styles.buttonText}>Rensa annonser (temp. för utvecklare)</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handle_temporary}>
+        <Text style={styles.buttonText}>temp</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -199,9 +202,15 @@ export default function MarketplaceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-	padding: 30,
-    backgroundColor: "#b0ffe3",
+    padding: 30,
+    backgroundColor: "#ffffff",
     alignItems: "center", // Center children horizontally
+  },
+  postOwner: {
+    fontSize: 14,
+    fontStyle: "italic",
+    color: "#888",
+    marginTop: 4,
   },
   mapContainer: {
     width: "90%",
@@ -218,7 +227,7 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     width: "90%", // Match other components
-    height: 200,
+    height: 350,
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -228,7 +237,7 @@ const styles = StyleSheet.create({
   },
   post: {
     width: "90%", // Relative to postsContainer
-    height: 100,
+    //height: 100,
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -238,24 +247,28 @@ const styles = StyleSheet.create({
     alignSelf: "center", // Center individual posts
   },
   input: {
-    width: "60%", // Match other components
-    height: 40,
-    margin: 12,
+    width: "90%", // Match other components
+    height: 35,
+    margin: 6,
     borderWidth: 1,
-	  color: "#949494", 
+    color: "#949494",
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",
     alignSelf: "center", // Ensure inputs are centered
   },
   button: {
-    backgroundColor: '#ffffff', // Button color
-    paddingVertical: 12, // Vertical padding for height
-    paddingHorizontal: 20, // Horizontal padding for width
+    width: "90%",
+    backgroundColor: '#007AFF', // Button color
+    paddingVertical: 6, // Vertical padding for height
     borderRadius: 5, // Rounded corners (adjust as needed)
     elevation: 5,
     alignItems: 'center',
     margin: 5,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 14,
   },
   minibutton: {
     backgroundColor: '#ff4155', // Button color

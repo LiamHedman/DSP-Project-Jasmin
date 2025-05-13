@@ -46,9 +46,9 @@ async function retrieve_id(username: string): Promise<string> {
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 router.post("/register_user", async (req: Request, res: Response) => {
     const user: User = req.body;
-    
+
     try {
-        if (await username_in_use(user.name)) { 
+        if (await username_in_use(user.name)) {
             return res.status(418).json();
         }
         if (await mail_in_use(user.mail)) {
@@ -70,7 +70,7 @@ router.post("/delete_user", async (req: Request, res: Response) => {
         console.log(`User "${user_id}" set up for deletion`);
         const condition = { id: user_id };
         await delete_data(table_name_users, condition);
-        
+
         res.status(200).json();
     } catch (error) {
         res.status(500).json();
@@ -85,7 +85,7 @@ router.post("/modify_user", async (req: Request, res: Response) => {
         console.log(`User "${user_id}" set up for modification`);
         const condition = { id: user_id };
         await modify_data(table_name_users, new_user_data, condition);
-        
+
         res.status(200).json();
     } catch (error) {
         res.status(500).json();
@@ -111,9 +111,9 @@ router.get("/fetch_user", async (req: Request, res: Response) => {
 // Handles login requests from the client
 // Listens to all axios.post(`${SERVER_URL}/login` from the client
 router.post("/login", async (req: Request, res: Response) => {
-	const user = req.body;
-    
-	try {
+    const user = req.body;
+
+    try {
         if (!await username_in_use(user.name)) { throw new Error("User with this username doesnt exist"); }
         if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
 
@@ -121,7 +121,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
         console.log(`User "${user.name}" successfully logged in`);
         console.log(`User has ID: "${user_id}"`);
-        
+
         res.status(200).json(user_id);
     } catch (error) {
         res.status(500).json();
