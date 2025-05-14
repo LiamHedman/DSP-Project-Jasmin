@@ -202,9 +202,9 @@ export default function LoginScreen() {
 			{error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
 
 			{/* GOOGLE AUTH */}
-			<Button title="Sign in with Google" onPress={() => promptAsync()} />
-			<Button title="Delete local storage" onPress={() => AsyncStorage.removeItem("@user")} />
-			{/* END GOOGLE AUTH */}
+			<TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
+				<Text style={styles.buttonText}>Logga in/registrera med Google</Text>
+			</TouchableOpacity>
 
 			{/* Register Link */}
 			<TouchableOpacity style={styles.linkButton} onPress={handle_register}>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		borderRadius: 10,
 		alignItems: "center",
-		marginTop: 15,
+		marginTop: 10,
 	},
 	buttonText: {
 		color: "#FFF",
