@@ -70,6 +70,7 @@ export default function LoginScreen() {
 		const parsed_user = JSON.parse(user);
 		console.log(`username in signin: ${parsed_user?.name}`);
 		console.log(`mail in signin: ${parsed_user?.email}`);
+		set_password("");
 		set_name(parsed_user?.name);
 		set_mail(parsed_user?.email);
 
@@ -122,20 +123,23 @@ export default function LoginScreen() {
 	// Checks if user info is already stored in AsyncStorage:
 	async function handleSignInWithGoogle() {
 
-		const user = await AsyncStorage.getItem("@user");
-		// if not in storage, retreive and set the info via getUserInfo function
-		if (!user) {
-			if (response?.type === "success") {
-				await getUserInfo(response.authentication!.accessToken!);
+		if (response?.type === "success") {
+			const token = response.authentication?.accessToken;
+			if (!token) {
+				console.error("No access token found");
+				return;
+			}
+
+			await getUserInfo(token);
+
+			const storedUser = await AsyncStorage.getItem("@user");
+			if (storedUser) {
+				setUserInfo(JSON.parse(storedUser));
+				await sign_in(storedUser);
+			} else {
+				console.error("User info not found after Google sign-in");
 			}
 		}
-		// if in storage, change the constant userInfo
-		else {
-			setUserInfo(JSON.parse(user));
-		}
-
-		// Checks if the user has been previously registered
-		await sign_in(user);
 	}
 
 
@@ -143,25 +147,23 @@ export default function LoginScreen() {
 	const getUserInfo = async (token: string) => {
 		if (!token) return;
 		try {
-			// Uses the OAuth token to fetch the user's Google profile.
-			const response = await fetch(
-				"https://www.googleapis.com/userinfo/v2/me",
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
+			const response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
 			const user = await response.json();
 
-			// Saves it to AsyncStorage
-			await AsyncStorage.setItem("@user", JSON.stringify(user));
+			if (!user?.email || !user?.name) {
+				console.error("Incomplete user info from Google:", user);
+				return;
+			}
 
-			//Updates state with the user data
+			await AsyncStorage.setItem("@user", JSON.stringify(user));
 			setUserInfo(user);
 		} catch (error) {
-
+			console.error("Failed to fetch user info:", error);
 		}
-	}
+	};
 
 	// ** End Google Auth **
 

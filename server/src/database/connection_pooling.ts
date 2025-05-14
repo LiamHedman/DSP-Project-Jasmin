@@ -45,10 +45,10 @@ const check_connection = async () => {
         client.release();
     } catch (err) {
         console.error("Error during database connection:", err);
-    } finally {
+    } //finally {
         // Optional: Close the pool when your application ends
-        await pool.end();
-    }
+        //await pool.end();
+    //}
 };
 
 // Run the queries
