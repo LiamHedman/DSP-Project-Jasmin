@@ -5,6 +5,8 @@ import { User } from "../../../common/src/classes";
 import insert_data from "../database/data_insertion";
 import delete_data from "../database/data_deletion";
 import modify_data from "../database/data_modification";
+import { hash_data } from "../encryption/hashing";
+import { decrypt, encrypt } from "../encryption/db_encryption";
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ async function mail_in_use(mail: string): Promise<boolean> {
     const conditions = {
         mail: mail
     };
-    const result = await retrieve_data(table_name_users, conditions);
+    const result = await retrieve_data(table_name_users, conditions, ["mail"]);
     return result.length;
 }
 
@@ -56,7 +58,11 @@ router.post("/register_user", async (req: Request, res: Response) => {
         }
 
         console.log(`User "${user.name}" registered`);
-        await insert_data(table_name_users, user);
+        
+        user.password = hash_data(user.password);
+        //user.mail = encrypt(user.mail);
+        //user.phone_number = encrypt(user.phone_number);
+        await insert_data(table_name_users, user, ["mail", "phone_number", "address"]);
         res.status(200).json();
     } catch (error) {
         res.status(500).json();
@@ -115,7 +121,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
     try {
         if (!await username_in_use(user.name)) { throw new Error("User with this username doesnt exist"); }
-        if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
+        if (!await check_password(hash_data(user.password), user.name)) { throw new Error("The password is incorrect for this username"); }
 
         const user_id = await retrieve_id(user.name);
 
