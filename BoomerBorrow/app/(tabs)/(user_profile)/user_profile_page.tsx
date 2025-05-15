@@ -69,14 +69,27 @@ export default function UserProfilePage() {
 				</TouchableOpacity>
 			</View>
 
+			<Text style={styles.title2}>{"Mina annonser"}</Text>
+
 			{/* Posts Section Wrapped in Light Gray Container */}
 			<View style={styles.postsWrapper}>
 				<ScrollView style={styles.postsContainer}>
 					{posts.map((post, index) => (
 						<View style={styles.post} key={index}>
-							<Text style={styles.postTitle}>{post.title}</Text>
-							<Text style={styles.postDescription}>{post.description}</Text>
-							<Text style={styles.postCategory}>{post.category}</Text>
+							<View style={styles.postInfo}>
+								<View style={styles.postIcon}>
+									<Image
+										source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+										style={styles.postIcon}
+									/>
+								</View>
+								<View style={styles.postTexts}>
+
+									<Text style={styles.postTitle}>{post.title}</Text>
+									<Text style={styles.postDescription}>{post.description}</Text>
+									<Text style={styles.postCategory}>{post.category}</Text>
+								</View>
+							</View>
 							<TouchableOpacity style={styles.deleteButton}>
 								<Text style={styles.deleteButtonText}>Delete</Text>
 							</TouchableOpacity>
@@ -94,12 +107,18 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F8F8F8",
 		alignItems: "center",
 	},
+	title2: {
+		fontWeight: "bold",
+		fontSize: 24,
+		marginBottom: 10,
+	},
 	profileContainer: {
 		alignItems: "center",
 		backgroundColor: "#FFF",
 		padding: 20,
 		borderRadius: 15,
-		marginVertical: 20,
+		marginTop: 40,
+		marginBottom: 40,
 		shadowColor: "#000",
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
@@ -162,9 +181,25 @@ const styles = StyleSheet.create({
 		shadowRadius: 5,
 		elevation: 5,
 	},
+	postInfo: {
+		flexDirection: "row",
+		justifyContent: "flex-start",
+		width: "100%",
+	},
+	postIcon: {
+		width: 130,
+		height: 130,
+		marginRight: 15,
+		borderRadius: 25,
+	},
+	postTexts: {
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		width: "100%",
+	},
 	postTitle: {
 		fontWeight: "bold",
-		fontSize: 18,
+		fontSize: 24,
 	},
 	postDescription: {
 		fontSize: 14,
