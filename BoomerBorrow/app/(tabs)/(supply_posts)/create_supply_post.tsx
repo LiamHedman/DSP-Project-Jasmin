@@ -117,8 +117,7 @@ export default function CreateAd() {
 				<Picker
 					selectedValue={category_type}
 					style={styles.picker}
-					onValueChange={(itemValue) => set_category_type(itemValue)}
-				>
+					onValueChange={(itemValue) => set_category_type(itemValue)}>
 					<Picker.Item label="Produkt" value="Produkt" />
 					<Picker.Item label="Tjänst" value="Tjänst" />
 				</Picker>
@@ -129,10 +128,9 @@ export default function CreateAd() {
 				<Picker
 					selectedValue={category}
 					style={styles.picker}
-					onValueChange={(itemValue) => set_category(itemValue)}
-				>
+					onValueChange={(itemValue) => set_category(itemValue)}>
 					{get_categories().map(([key, label]) => (
-						<Picker.Item key={key} label={label} value={key} />
+						<Picker.Item key={key} label={label} value={label} />
 					))}
 				</Picker>
 			</View>

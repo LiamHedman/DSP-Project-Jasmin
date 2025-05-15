@@ -5,6 +5,7 @@ import { get_user_id } from "@/auth_token";
 import axios from "axios";
 import { Supply_post, User } from "@/classes_tmp";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function UserProfilePage() {
 	const SERVER_URL = "http://localhost:3000";
@@ -52,9 +53,16 @@ export default function UserProfilePage() {
 	const handle_edit_profile = async () => {
 		router.push("/(tabs)/(user_profile)/edit_user_profile");
 	};
+
 	const handle_create_supply_post = async () => {
 		router.push("/(tabs)/(supply_posts)/create_supply_post");
 	};
+
+	const handle_logout = async () => {
+		await AsyncStorage.removeItem("user_id");
+		router.replace("/");
+	};
+
 	useEffect(() => {
 		fetch_user();
 		fetch_supply_posts();
@@ -89,6 +97,8 @@ export default function UserProfilePage() {
 					<Text style={styles.buttonText}>Redigera profil</Text>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
+				<TouchableOpacity style={styles.logoutButton} onPress={handle_logout}><Text style={styles.buttonText}>Logga ut</Text></TouchableOpacity>
+
 			</View>
 
 			<Text style={styles.title2}>{"Mina annonser"}</Text>
@@ -108,8 +118,8 @@ export default function UserProfilePage() {
 								<View style={styles.postTexts}>
 
 									<Text style={styles.postTitle}>{post.title}</Text>
-									<Text style={styles.postDescription}>{post.description}</Text>
 									<Text style={styles.postCategory}>{post.category}</Text>
+									<Text style={styles.postDescription}>{post.description}</Text>
 								</View>
 							</View>
 							<TouchableOpacity style={styles.deleteButton} onPress={() => handle_supply_post_deletion(post?.id)}>
@@ -242,6 +252,14 @@ const styles = StyleSheet.create({
 	deleteButtonText: {
 		color: "#FFF",
 		fontWeight: "bold",
+	},
+	logoutButton: {
+		width: "100%",
+		backgroundColor: "#ff0000",
+		paddingVertical: 12,
+		borderRadius: 10,
+		alignItems: "center",
+		marginTop: 15,
 	},
 	button: {
 		width: "100%",
