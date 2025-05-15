@@ -35,7 +35,9 @@ export default function UserProfilePage() {
 	const handle_edit_profile = async () => {
 		router.push("/(tabs)/(user_profile)/edit_user_profile");
 	};
-
+	const handle_create_supply_post = async () => {
+		router.push("/(tabs)/(supply_posts)/create_supply_post");
+	};
 	useEffect(() => {
 		fetch_user();
 		fetch_supply_posts();
@@ -67,6 +69,7 @@ export default function UserProfilePage() {
 				<TouchableOpacity style={styles.button} onPress={handle_edit_profile}>
 					<Text style={styles.buttonText}>Redigera profil</Text>
 				</TouchableOpacity>
+				<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
 			</View>
 
 			<Text style={styles.title2}>{"Mina annonser"}</Text>
