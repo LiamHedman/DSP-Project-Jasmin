@@ -328,6 +328,7 @@ export class Supply_post {
     public title: string;
     public description: string;
     public price: string;
+    public category_type: string;
     public category: string;
     public location: string;
     public post_picture_url: string;
@@ -339,6 +340,7 @@ export class Supply_post {
         description: string,
         price: string,
         category: string,
+        category_type: string,
         location: string,
         post_picture_url: string,
         created_at: string
@@ -348,6 +350,7 @@ export class Supply_post {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.post_picture_url = post_picture_url;
@@ -362,7 +365,8 @@ class Demand_post {
     public owner_id: string;
     public title: string;
     public description: string;
-    public price: number;
+    public price: string;
+    public category_type: string;
     public category: string;
     public location: string;
     public created_at: string;
@@ -372,7 +376,8 @@ class Demand_post {
         owner_id: string,
         title: string,
         description: string,
-        price: number,
+        price: string,
+        category_type: string,
         category: string,
         location: string,
         created_at: string
@@ -382,6 +387,7 @@ class Demand_post {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.created_at = created_at;

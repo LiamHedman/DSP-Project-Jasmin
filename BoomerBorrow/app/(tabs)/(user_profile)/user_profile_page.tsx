@@ -31,6 +31,23 @@ export default function UserProfilePage() {
 		}
 	}
 
+ 	async function delete_supply_post(post_id: string) {
+		try {
+			const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { id: post_id });
+
+			if (response.status === 200) {
+				await fetch_supply_posts();
+			}
+
+		} catch (error: any) {
+			console.error("Failed to delete post");
+		}
+	} 
+ 
+	const handle_supply_post_deletion = async (post_id: string) => {
+		await delete_supply_post(post_id);
+	}; 
+
 	// Handles a clients login when the login button is pressed
 	const handle_edit_profile = async () => {
 		router.push("/(tabs)/(user_profile)/edit_user_profile");
@@ -44,6 +61,8 @@ export default function UserProfilePage() {
 	}, []);
 
 	return (
+			<ScrollView>
+				
 		<SafeAreaView style={styles.container}>
 			{/* Profile Header */}
 			<View style={styles.profileContainer}>
@@ -93,14 +112,15 @@ export default function UserProfilePage() {
 									<Text style={styles.postCategory}>{post.category}</Text>
 								</View>
 							</View>
-							<TouchableOpacity style={styles.deleteButton}>
-								<Text style={styles.deleteButtonText}>Delete</Text>
+							<TouchableOpacity style={styles.deleteButton} onPress={() => handle_supply_post_deletion(post?.id)}>
+								<Text style={styles.deleteButtonText}>Radera annons</Text>
 							</TouchableOpacity>
 						</View>
 					))}
 				</ScrollView>
 			</View>
 		</SafeAreaView>
+			</ScrollView>
 	);
 }
 

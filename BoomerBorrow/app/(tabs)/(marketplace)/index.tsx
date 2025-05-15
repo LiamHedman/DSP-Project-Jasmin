@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Image, TextInput, Button, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 // import MapView from './MapView'; // Import from same directory
 import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
@@ -8,20 +8,13 @@ import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 // Set the Mapbox access token
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
-import { get_user_id } from "@/auth_token";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 //import token_storage from "@/token_storage";
 
 export default function MarketplaceScreen() {
 	const SERVER_URL = "http://localhost:3000";
-	let supply_post: Supply_post;
 
-	const [title, set_title] = useState("");
-	const [description, set_description] = useState("");
-	const [price, set_price] = useState("");
-	const [category, set_category] = useState("");
-	const [location, set_location] = useState("");
-	const [post_picture_url, set_post_picture_url] = useState("");
 
 	// All the supply posts gets stored here
 	const [posts, set_posts] = useState<Supply_post[]>([]);
@@ -43,46 +36,19 @@ export default function MarketplaceScreen() {
 	const handle_temporary = async () => {
 		router.push("/(tabs)/(user_profile)/user_profile_page");
 	};
+	
+const handle_visit_post = async (post_id: string) => {
+    try {
+        await AsyncStorage.setItem("post_id", post_id);
+        router.push("/(tabs)/(supply_posts)/post_page");
+    } catch (error) {
+        console.error("Failed to store post ID:", error);
+    }
+};
 
-	async function send_supply_post() {
-		try {
+	
 
-			const created_at = new Date().toISOString();
-
-			// TODO: need unique ID:s for every post
-			const owner_id = await get_user_id();
-			if (owner_id === null) { throw new Error("Owner id cannot be null upon post creation"); }
-			supply_post = new Supply_post(owner_id, title, description, price, category, location, post_picture_url, created_at);
-
-			await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
-			console.log("post_data (the new post) sent to the server");
-
-			const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
-			set_posts(response.data);
-		} catch (error: any) {
-			console.error("new_supply_post failed:", error.message);
-		}
-	}
-
-	const handle_new_supply_post = async () => {
-		await send_supply_post();
-	};
-
-	async function reset_table_content() {
-		try {
-			set_posts([]);
-			await axios.post(`${SERVER_URL}/reset_table`);
-			// Clears the array locally
-		} catch (error: any) {
-			console.error("Table content reset failed", error.message);
-		}
-	}
-
-	const handle_table_reset = async () => {
-		await reset_table_content();
-	};
-
-	async function delete_supply_post(post_id: string) {
+/* 	async function delete_supply_post(post_id: string) {
 		try {
 			const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { id: post_id });
 
@@ -93,13 +59,13 @@ export default function MarketplaceScreen() {
 		} catch (error: any) {
 			console.error("Failed to delete post");
 		}
-	}
-
+	} */
+/* 
 	const handle_supply_post_deletion = async (post_id: string) => {
 		await delete_supply_post(post_id);
-	};
+	}; */
 
-	async function edit_supply_post(post_id: string) {
+/* 	async function edit_supply_post(post_id: string) {
 		try {
 
 			const new_post_data = {
@@ -123,11 +89,11 @@ export default function MarketplaceScreen() {
 		} catch (error: any) {
 			console.error("Failed to delete post");
 		}
-	}
+	} */
 
-	const handle_supply_post_editing = async (post_id: string) => {
+/* 	const handle_supply_post_editing = async (post_id: string) => {
 		await edit_supply_post(post_id);
-	};
+	}; */
 
 	return (
 		<ScrollView>
@@ -160,25 +126,13 @@ export default function MarketplaceScreen() {
 									</View>
 								</View>
 								<TouchableOpacity style={styles.saveButton}><Text style={styles.saveButtonText}>Spara annons</Text></TouchableOpacity>
-								<TouchableOpacity style={styles.visitButton}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
+								<TouchableOpacity style={styles.visitButton}onPress={() => handle_visit_post(post?.id)}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
 							</View>
 						))}
 					</ScrollView>
 				</View>
 
-				{/* Input Fields and Button */}
-				<TextInput style={styles.input} placeholder="Titel" value={title} onChangeText={set_title} />
-				<TextInput style={styles.input} placeholder="Beskrivning" value={description} onChangeText={set_description} />
-				<TextInput style={styles.input} placeholder="Pris" value={price} keyboardType="numeric"
-					onChangeText={(text) => set_price(text.replace(/[^0-9]/g, ''))} />
-				<TextInput
-					style={styles.input}
-					placeholder="Kategori"
-					value={category}
-					onChangeText={set_category}
-				/>
-				<TouchableOpacity style={styles.button} onPress={handle_new_supply_post}><Text style={styles.buttonText}>Skapa annons</Text></TouchableOpacity>
-				<TouchableOpacity style={styles.button} onPress={handle_table_reset}><Text style={styles.buttonText}>Rensa annonser (temp. för utvecklare)</Text></TouchableOpacity>
+				{/* Button */}
 				<TouchableOpacity style={styles.button} onPress={handle_temporary}><Text style={styles.buttonText}>temp</Text></TouchableOpacity>
 			</SafeAreaView>
 		</ScrollView>
