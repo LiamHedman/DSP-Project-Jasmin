@@ -13,7 +13,6 @@ import {
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { RootStackParamList } from './App';
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
-import { connectWebSocket, sendMessage, disconnectWebSocket } from '../../../connectionStuff/src/client_messages';
 
 import { db } from '../../firebaseConfig'; //Our private file with keys from firebase
 import {
@@ -23,13 +22,16 @@ import {
   onSnapshot,
   addDoc,
   serverTimestamp,
+  FieldValue,
 } from 'firebase/firestore';
+import { get_user_id } from '@/auth_token';
 
 type Message = {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   chatId: string;
+  createdAt: FieldValue;
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>;
@@ -51,31 +53,49 @@ const ChatScreen: React.FC = () => {
   //Listening in real-time to all messages in the Firestore 
   // chats/{chatId}/messages subcollection.
   useEffect(() => {
-    if (!id) return;
-  
-    //fetch the old messages and sort by creation date
-    const q = query(
-      collection(db, 'chats', id, 'messages'),
-      orderBy('createdAt', 'asc')
-    );
-    
-    //onSnapshot is firebase function which detects any real-time updates with query q
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      //transform Firestore documents (from query) into JavaScript objects
-      const fetchedMessages = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Message),
-      }));
-  
-      setMessages((prev) => ({
+  const fetchUserId = async () => {
+    const storedId = await get_user_id();
+    if (storedId) {
+      SetName(storedId);
+    }
+  };
+
+  fetchUserId();
+
+  if (!id) return;
+
+  const q = query(
+    collection(db, 'chats', id, 'messages'),
+    orderBy('createdAt', 'asc')
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const fetchedMessages = snapshot.docs.map((doc) => ({
+      ...(doc.data() as Message),
+    }));
+
+    setMessages((prev) => {
+      const currentMessages = prev[id] || [];
+      const allMessagesMap = new Map<string, Message>();
+      [...fetchedMessages, ...currentMessages].forEach((msg) => {
+        allMessagesMap.set(msg.id, msg);
+      });
+
+      const mergedMessages = Array.from(allMessagesMap.values()).sort(
+        (a, b) => (a.createdAt as any)?.seconds - (b.createdAt as any)?.seconds
+      );
+
+      return {
         ...prev,
-        [id]: fetchedMessages,
-      }));
+        [id]: mergedMessages,
+      };
     });
-  
-    //stops listener when done
-    return () => unsubscribe();
-  }, [id]);
+  });
+
+  return () => {
+    unsubscribe();
+  };
+}, [id]);
   
 
   const [messages, setMessages] = useState<Record<string, Message[]>>({
@@ -88,7 +108,8 @@ const ChatScreen: React.FC = () => {
     if (!inputText.trim()) return;
   
     //create a new message object
-    const newMessage = {
+    const newMessage: Message = {
+      id: Date.now.toString(),
       text: inputText,
       sender: 'user',
       chatId: id,
@@ -126,7 +147,7 @@ const ChatScreen: React.FC = () => {
       keyboardVerticalOffset={90}
     >
       <View style={{flex: 0.1, height:20}}>
-        <Text>{name}</Text>
+        <Text>{Name}</Text>
       </View>
       <FlatList
         data={messages[id]}
