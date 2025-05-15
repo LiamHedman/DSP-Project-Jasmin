@@ -6,6 +6,10 @@ import path from "path";
 // resolves the path the the certificate (ca.pem)
 const caPath = path.resolve(__dirname, "../../src/database/config/ca.pem");
 
+export const table_name_supply_posts = "active_supply_posts";
+export const table_name_demand_posts = "active_demand_posts";
+export const table_name_users = "active_users";
+
 // Connection Pool Configuration
 export const pool = new Pool({
     // For security, dont hard code the connection data

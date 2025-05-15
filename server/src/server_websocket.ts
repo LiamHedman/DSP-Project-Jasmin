@@ -1,6 +1,5 @@
 
 const express = require('express');
-import { log } from 'console';
 import { Request, Response } from 'express';
 import { WebSocketServer } from 'ws';
 
@@ -29,10 +28,9 @@ wss.on('connection', (ws) => {
 
 
   ws.on('message', (message: string) => {
-    
+
     try {
       const parsed_message = JSON.parse(message);
-      console.log(parsed_message);
       if(parsed_message) {
         switch (parsed_message.type) {
           case "new_ad":
@@ -44,16 +42,6 @@ wss.on('connection', (ws) => {
                 client.send(message);
               }
             });
-          case "message":
-            var id = Number(parsed_message.message.id);
-            const text = parsed_message.message.text;
-            const sender = parsed_message.message.sender;
-            id++;
-            console.log(id);
-            console.log(text);
-            console.log(sender);
-            const new_message = {type: "message", message: {id: id, text: text, sender: 'bot'}};
-            ws.send(JSON.stringify(new_message));
             
         }
       } else {
