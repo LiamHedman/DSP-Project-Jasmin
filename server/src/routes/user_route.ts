@@ -120,8 +120,13 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = req.body;
 
     try {
-        if (!await username_in_use(user.name)) { throw new Error("User with this username doesnt exist"); }
-        if (!await check_password(hash_data(user.password), user.name)) { throw new Error("The password is incorrect for this username"); }
+        if (!await username_in_use(user.name)) { 
+            return res.status(418).json();
+        }
+
+        if (!await check_password(hash_data(user.password), user.name)) {
+            return res.status(419).json();
+        }
 
         const user_id = await retrieve_id(user.name);
 

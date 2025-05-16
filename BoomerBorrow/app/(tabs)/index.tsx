@@ -46,8 +46,23 @@ export default function LoginScreen() {
 			// Sends the client to the marketplace page
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
-			console.error("Login failed:", error.message);
-			set_error_message("Inloggning misslyckades. Försök igen.");
+			if (error.response) {
+				switch (error.response.status) {
+					case 418:
+						set_error_message("Inget konto med detta användarnamn finns registrerat")
+						break;
+					case 419:
+						set_error_message("Fel lösenord för detta användarnamn");
+						break;
+					case 500:
+						set_error_message("Internt serverfel. Försök igen senare.");
+						break;
+					default:
+						set_error_message(`Registrering misslyckades: ${error.response.status}`);
+				}
+			} else {
+				set_error_message("Något gick fel. Kontrollera din anslutning.");
+			}
 		}
 	}
 
