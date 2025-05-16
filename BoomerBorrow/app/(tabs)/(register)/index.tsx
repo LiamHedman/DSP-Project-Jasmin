@@ -12,16 +12,13 @@ export default function LoginScreen() {
 
 	const [role, set_role] = useState("");
 	const [name, set_name] = useState("");
-	const [mail, set_mail] = useState("temp@student.uu.se");
-	const [phone_number, set_phone_number] = useState("12345678");
-	const [bio, set_bio] = useState("Hej! Jag heter ... och jag gillar att ...");
-	const [address, set_address] = useState("Östravägen, 42, Gävle");
-	const [date_of_birth, set_date_of_birth] = useState("1955-02-01");
-	const [profile_picture_url, set_profile_picture_url] = useState("ger23423wsdf");
+	const [mail, set_mail] = useState("");
+	const [phone_number, set_phone_number] = useState("");
+	const [bio, set_bio] = useState("");
+	const [address, set_address] = useState("");
+	const [date_of_birth, set_date_of_birth] = useState("");
+	const [profile_picture_url, set_profile_picture_url] = useState("");
 	const [password, set_password] = useState("");
-	const [created_at, set_created_at] = useState("20250201");
-
-	const [users, set_users] = useState<User[]>([]);
 
 	const [error_message, set_error_message] = useState("");
 	const [password_error, set_password_error] = useState("");
@@ -122,7 +119,7 @@ export default function LoginScreen() {
 			{/* Name Input */}
 			<TextInput
 				style={styles.input}
-				placeholder="Namn"
+				placeholder="Användarnamn"
 				placeholderTextColor="#888"
 				value={name}
 				onChangeText={validate_name}
@@ -161,14 +158,14 @@ export default function LoginScreen() {
 
 			{/* Register Button */}
 			<TouchableOpacity style={styles.button} onPress={handle_register}>
-				<Text style={styles.buttonText}>Registrera</Text>
+				<Text style={styles.buttonText}>Registrera kontot</Text>
 			</TouchableOpacity>
 
 			{error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
 
-			{/* Login Link */}
-			<TouchableOpacity style={styles.linkButton} onPress={handle_login}>
-				<Text style={styles.linkText}>Har du redan ett konto? Logga in här</Text>
+			{/* Login button */}
+			<TouchableOpacity style={styles.button} onPress={handle_login}>
+				<Text style={styles.buttonText}>Har du redan ett konto? Logga in här</Text>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);

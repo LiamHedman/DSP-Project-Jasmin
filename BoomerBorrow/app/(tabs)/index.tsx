@@ -98,9 +98,9 @@ export default function LoginScreen() {
 		  </TouchableOpacity>
 		  {error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
 	  
-		  {/* Register Link */}
-		  <TouchableOpacity style={styles.linkButton} onPress={handle_register}>
-			<Text style={styles.linkText}>Har du inget konto? Registera dig här</Text>
+		  {/* Register Button */}
+			  <TouchableOpacity style={styles.button} onPress={handle_register}>
+			<Text style={styles.buttonText}>Har du inget konto? Registera dig här</Text>
 		  </TouchableOpacity>
 		</SafeAreaView>
 	  );
