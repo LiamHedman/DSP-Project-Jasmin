@@ -12,40 +12,16 @@ import { input_common as Input_common } from "@/assets/ui_elements/text_inputs";
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
 
-	let user: User;
-
-	const [role, set_role] = useState("");
 	const [name, set_name] = useState("");
-	const [mail, set_mail] = useState("temp@temp.dk");
-	const [phone_number, set_phone_number] = useState("12345678");
-	const [bio, set_bio] = useState("hej jag gillar att klippa gräs");
-	const [address, set_address] = useState("Östra Vägen, 42, Gävkle");
-	const [date_of_birth, set_date_of_birth] = useState("1905-02-01");
-	const [profile_picture_url, set_profile_picture_url] = useState("ger23423wsdf");
 	const [password, set_password] = useState("");
-	const [created_at, set_created_at] = useState("19950201");
-
 	const [error_message, set_error_message] = useState("");
-
-	const [users, set_users] = useState<User[]>([]);
-
-	// If you need to execute something on page mount (when you load the page)
-	useEffect(() => {
-
-	}, []);
 
 	async function login() {
 		try {
-			const user = {
-				name: name,
-				password: password
-			}
+			const user = { name: name, password: password }
 			const response = await axios.post(`${SERVER_URL}/login`, user);
 			await save_user_id(response.data);
 
-			console.log(`Retrieved user id: "${response.data}"`);
-
-			// Sends the client to the marketplace page
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
 			if (error.response) {
@@ -76,7 +52,6 @@ export default function LoginScreen() {
 	};
 
 	const handle_register = async () => {
-		// Clears the error message
 		set_error_message("");
 		router.push("/(tabs)/(register)");
 	};
@@ -98,7 +73,7 @@ export default function LoginScreen() {
 
 			{/* Login button */}
 			<Button title="Logga in" on_press={handle_login} variant="visit" bottom_margin={10} />
-			{error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
+			{error_message ? <Text style={styles.error_text}>{error_message}</Text> : null}
 
 			{/* Register button */}
 			<Button title="Har du inget konto? Registera dig här" on_press={handle_register} variant="visit" bottom_margin={15} />
@@ -134,12 +109,7 @@ const styles = StyleSheet.create({
 		color: "#333",
 		marginBottom: 0,
 	},
-	forgotPassword: {
-		color: "#007AFF",
-		fontSize: 14,
-		marginBottom: 15,
-	},
-	errorText: {
+	error_text: {
 		color: "red",
 		fontSize: 14,
 		marginTop: 5,
