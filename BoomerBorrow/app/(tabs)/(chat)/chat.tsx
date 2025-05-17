@@ -23,13 +23,14 @@ import {
   addDoc,
   serverTimestamp,
   FieldValue,
+  where,
 } from 'firebase/firestore';
 import { get_user_id } from '@/auth_token';
 
 type Message = {
-  id: string;
+  id: number,
   text: string;
-  sender: 'user' | 'bot';
+  sender: string;
   chatId: string;
   createdAt: FieldValue;
 };
@@ -46,8 +47,9 @@ const ChatScreen: React.FC = () => {
   // extract the chatId and name
   const { id, name } = useLocalSearchParams<{ id: string; name: string; }>();
 
-  const [Id, setId] = useState("");
+  const [my_id, setId] = useState("");
   const [Name, SetName] = useState("");
+  const [latest_chat, set_latest] = useState<number>(0);
   const socketRef = useRef<WebSocket | null>(null);
 
   //Listening in real-time to all messages in the Firestore 
@@ -56,9 +58,13 @@ const ChatScreen: React.FC = () => {
   const fetchUserId = async () => {
     const storedId = await get_user_id();
     if (storedId) {
-      SetName(storedId);
+      setId(storedId);
+      console.log("actual id: " + storedId);
+      setId("me");
+      console.log("actual id: " + my_id);
     }
   };
+
 
   fetchUserId();
 
@@ -66,31 +72,28 @@ const ChatScreen: React.FC = () => {
 
   const q = query(
     collection(db, 'chats', id, 'messages'),
+    where("id", ">=", latest_chat),
     orderBy('createdAt', 'asc')
   );
+  
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const fetchedMessages = snapshot.docs.map((doc) => ({
       ...(doc.data() as Message),
     }));
 
+    console.log(fetchedMessages);
+    const latest = fetchedMessages[fetchedMessages.length-1];
+    set_latest(Number(latest.id));
     setMessages((prev) => {
-      const currentMessages = prev[id] || [];
-      const allMessagesMap = new Map<string, Message>();
-      [...fetchedMessages, ...currentMessages].forEach((msg) => {
-        allMessagesMap.set(msg.id, msg);
-      });
-
-      const mergedMessages = Array.from(allMessagesMap.values()).sort(
-        (a, b) => (a.createdAt as any)?.seconds - (b.createdAt as any)?.seconds
-      );
 
       return {
         ...prev,
-        [id]: mergedMessages,
+        [id]: fetchedMessages,
       };
     });
   });
+
 
   return () => {
     unsubscribe();
@@ -106,12 +109,13 @@ const ChatScreen: React.FC = () => {
 
   const handleSend = async (): Promise<void> => {
     if (!inputText.trim()) return;
+    
   
     //create a new message object
     const newMessage: Message = {
-      id: Date.now.toString(),
+      id: Date.now(),
       text: inputText,
-      sender: 'user',
+      sender: my_id,
       chatId: id,
       createdAt: serverTimestamp(),
     };
@@ -133,7 +137,7 @@ const ChatScreen: React.FC = () => {
     <View
       style={[
         styles.messageBubble,
-        item.sender === 'user' ? styles.userBubble : styles.botBubble,
+        item.sender === my_id ? styles.userBubble : styles.botBubble,
       ]}
     >
       <Text style={styles.messageText}>{item.text}</Text>
@@ -152,7 +156,7 @@ const ChatScreen: React.FC = () => {
       <FlatList
         data={messages[id]}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.messagesContainer}
       />
       <View style={styles.inputContainer}>

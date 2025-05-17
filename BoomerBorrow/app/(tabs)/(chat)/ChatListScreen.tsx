@@ -13,21 +13,18 @@ import {
   addDoc,
   serverTimestamp,
   FieldValue,
+  where,
 } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 
 type Chat = {
   id: string;
-  name: string;
+  participants: string[2];
 };
 
-const mockChats: Chat[] = [
-  { id: '1', name: 'Alice' },
-  { id: '2', name: 'Bob' },
-  { id: '3', name: 'Charlie' },
-];
 
 type ChatListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ChatList'>;
+
 
 const ChatListScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -36,10 +33,21 @@ const ChatListScreen: React.FC = () => {
   const [my_id, set_id] = useState<string>("");
   const { owner_id } = useLocalSearchParams<{ owner_id: string;}>();
 
+  const fetch_user_id = async () => {
+    const my_id = await get_user_id() as string;
+    set_id(my_id);
+    console.log("actual id: " + my_id);
+    set_id("me");
+    console.log("for testing: " + my_id);    
+  }
+  
   useEffect(() => {
+    
+    fetch_user_id();
+
     const q = query(
           collection(db, 'chats'),
-          orderBy('asc')
+          where("participants", "array-contains", my_id),
         );
 
     const setupChat = async () => {
@@ -47,11 +55,15 @@ const ChatListScreen: React.FC = () => {
       console.log("my_id:", my_id);
       console.log("owner_id:", owner_id);
 
+
+
+      /*
       if (!chats.some(chat => chat.name === owner_id)) {
         const newChat: Chat = { id: my_id + "_" + owner_id, name: owner_id };
         console.log("Creating chat with id:", newChat.id);
-        //setChats((prev) => [...prev, newChat]);
+        setChats((prev) => [...prev, newChat]);
       }
+        */
     };
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -60,10 +72,11 @@ const ChatListScreen: React.FC = () => {
             ...(doc.data() as Chat),
           }));
       
+          console.log(fetchedMessages);
           
-          setChats((prev) => (
+          setChats(
            fetchedMessages
-          ));
+          );
         });
 
     setupChat();
@@ -86,19 +99,20 @@ const ChatListScreen: React.FC = () => {
                 id: item.id
               })
                 */
+
               
               router.push({
                 pathname: '/chat',
                 params: {
                   id: item.id,
-                  name: item.name,
+                  name: item.participants[0],
                 },
               });
               //router.push('./chat');
             }}
             //onPress={() => router.push('/chat')}
           >
-            <Text style={styles.chatName}>{item.id}</Text>
+            <Text style={styles.chatName}>{item.participants[0]}</Text>
           </TouchableOpacity>
         )}
       />
