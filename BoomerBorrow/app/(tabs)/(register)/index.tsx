@@ -8,8 +8,8 @@ import { User } from "./../../../classes_tmp";
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
 
+	// User info
 	let user: User;
-
 	const [role, set_role] = useState("");
 	const [name, set_name] = useState("");
 	const [mail, set_mail] = useState("");
@@ -20,16 +20,11 @@ export default function LoginScreen() {
 	const [profile_picture_url, set_profile_picture_url] = useState("");
 	const [password, set_password] = useState("");
 
+	// Error texts
 	const [error_message, set_error_message] = useState("");
 	const [password_error, set_password_error] = useState("");
 	const [mail_error, set_mail_error] = useState("");
 	const [name_error, set_name_error] = useState("");
-
-	// If you need to execute something on page mount (when you load the page)
-	useEffect(() => {
-
-	}, []);
-
 
 	const validate_password = (text: string) => {
 		set_password(text);
@@ -114,6 +109,7 @@ export default function LoginScreen() {
 	return (
 		<SafeAreaView style={styles.container}>
 
+			{/* Input fields for user reg. */}
 			<Text style={styles.title}>Registrera dig</Text>
 
 			{/* Name Input */}
