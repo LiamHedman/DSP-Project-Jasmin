@@ -11,7 +11,7 @@ export default function UserProfilePage() {
     const [user, set_user] = useState<User | null>(null); // Start as null
     const [loading, set_loading] = useState(true); // Track loading state
 
-    // Profile info
+    // User info
     const [name, set_name] = useState("");
     const [bio, set_bio] = useState("");
     const [mail, set_mail] = useState("");
@@ -19,8 +19,7 @@ export default function UserProfilePage() {
     const [address, set_address] = useState("");
     const [date_of_birth, set_date_of_birth] = useState("");
 
-    const [error_message, set_error_message] = useState("");
-    const [password_error, set_password_error] = useState("");
+    // Error texts
     const [mail_error, set_mail_error] = useState("");
     const [name_error, set_name_error] = useState("");
     const [phone_number_error, set_phone_number_error] = useState("");
@@ -31,11 +30,11 @@ export default function UserProfilePage() {
     const validate_mail = (text: string) => {
         set_mail(text);
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(text)) {
             set_mail_error("Ogiltig e-postadress. Kontrollera formatet.");
         } else {
-            set_mail_error(""); // No error if valid
+            set_mail_error("");
         }
     }
 
@@ -79,7 +78,7 @@ export default function UserProfilePage() {
 
     const validate_date_of_birth = (text: string) => {
         set_date_of_birth(text);
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Format: YYYY-MM-DD
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd
         if (!dateRegex.test(text)) {
             set_date_of_birth_error("Ogiltigt datumformat. Använd YYYY-MM-DD.");
         } else {
@@ -100,7 +99,6 @@ export default function UserProfilePage() {
 
     async function fetch_user() {
         try {
-            console.log(`user id in fetch user: ${await get_user_id()}`)
             const response = await axios.get(`${SERVER_URL}/fetch_user`, { headers: { auth: `${await get_user_id()}` } });
             const fetched_user = response.data;
 
@@ -133,7 +131,6 @@ export default function UserProfilePage() {
         }
     }
 
-    // Handles a clients login when the login button is pressed
     const handle_edit_profile = async () => {
         if (validate_edit()) {
             await edit_profile();
@@ -229,9 +226,9 @@ const styles = StyleSheet.create({
     },
     button: {
         width: "80%",
-        backgroundColor: '#007AFF', // Button color
-        paddingVertical: 6, // Vertical padding for height
-        borderRadius: 5, // Rounded corners (adjust as needed)
+        backgroundColor: '#007AFF',
+        paddingVertical: 6,
+        borderRadius: 5,
         elevation: 5,
         alignItems: 'center',
         margin: 5,
@@ -246,7 +243,4 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontStyle: "italic",
     },
-
-
-
 });
