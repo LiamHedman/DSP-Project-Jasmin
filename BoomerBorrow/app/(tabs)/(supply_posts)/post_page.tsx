@@ -29,7 +29,7 @@ const MarketplaceProduct = () => {
             console.error("Failed to fetch owner info:", error.message);
         }
     }
- 
+
     useEffect(() => {
         fetch_supply_post();
     }, []);
@@ -42,15 +42,12 @@ const MarketplaceProduct = () => {
 
     return (
         <View style={styles.container}>
-            {/* Product Image (Using DiceBear Icon Based on ID) */}
+            {/* Post pic*/}
             <Image
-                source={{
-                    uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}`,
-                }}
-                style={styles.productImage}
-            />
+                source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+                style={styles.productImage} />
 
-            {/* Product Details */}
+            {/* Post details */}
             <Text style={styles.title}>{post?.title}</Text>
             <Text style={styles.description}>{post?.description}</Text>
             <Text style={styles.info}>Price: {post?.price} SEK</Text>
@@ -63,7 +60,6 @@ const MarketplaceProduct = () => {
     );
 };
 
-// Styles
 const styles = StyleSheet.create({
     container: {
         padding: 20,
@@ -92,11 +88,6 @@ const styles = StyleSheet.create({
     info: {
         fontSize: 18,
         marginBottom: 5,
-    },
-    notFound: {
-        fontSize: 18,
-        textAlign: "center",
-        marginVertical: 20,
     },
 });
 

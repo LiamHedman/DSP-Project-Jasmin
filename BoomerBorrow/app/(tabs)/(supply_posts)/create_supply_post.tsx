@@ -10,6 +10,7 @@ export default function CreateAd() {
 	const SERVER_URL = "http://localhost:3000";
 	let supply_post: Supply_post;
 
+	// Post info
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 	const [title, set_title] = useState("");
 	const [description, set_description] = useState("");
@@ -19,10 +20,12 @@ export default function CreateAd() {
 	const [location, set_location] = useState("");
 	const [post_picture_url, set_post_picture_url] = useState("");
 
+	// Error texts
 	const [title_error, set_title_error] = useState("");
 	const [desc_error, set_desc_error] = useState("");
 	const [price_error, set_price_error] = useState("");
 
+	// Categories for the different posts
 	const categories_product = {
 		ÖVRIGT: "Övrigt",
 		HUSHÅLLSARTIKLAR: "hushållsartiklar",
@@ -72,7 +75,6 @@ export default function CreateAd() {
 
 	async function send_supply_post() {
 		try {
-
 			const created_at = new Date().toLocaleDateString("sv-SE");
 			const owner_id = await get_user_id();
 
@@ -96,11 +98,12 @@ export default function CreateAd() {
 		}
 	};
 
-	const handle_add_images = async () => {
-	};
+	// Mock function, do not remove
+	const handle_add_images = async () => {};
 
 	return (
 		<View style={styles.container}>
+			{/* Inputs for post creation */}
 			<Text style={styles.title}>Skapa en annons</Text>
 
 			<Text style={styles.label}>Titel</Text>
@@ -154,12 +157,8 @@ export default function CreateAd() {
 				onChangeText={(text) => set_price(text.replace(/[^0-9]/g, ''))}
 			/>
 			{price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
-
-
-			{/* 			<View style={styles.imageContainer}>
-		  <Image source={require("./../../../assets/images/add_image.png")} style={styles.placeholderImage} />
-				<Text style={styles.uploadText}>Ladda upp bilder</Text>
-			</View> */}
+			
+			{/* Action buttons for the post creation */}
 			<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
 				<Text style={styles.createButtonText}>Ladda upp bilder</Text>
 			</TouchableOpacity>

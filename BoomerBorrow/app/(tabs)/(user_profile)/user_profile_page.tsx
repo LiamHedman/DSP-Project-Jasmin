@@ -32,10 +32,11 @@ export default function UserProfilePage() {
 		}
 	}
 
- 	async function delete_supply_post(post_id: string) {
+	async function delete_supply_post(post_id: string) {
 		try {
 			const response = await axios.post(`${SERVER_URL}/delete_supply_post`, { id: post_id });
 
+			// Updates the table of posts after successfull deletion
 			if (response.status === 200) {
 				await fetch_supply_posts();
 			}
@@ -43,13 +44,12 @@ export default function UserProfilePage() {
 		} catch (error: any) {
 			console.error("Failed to delete post");
 		}
-	} 
- 
+	}
+
 	const handle_supply_post_deletion = async (post_id: string) => {
 		await delete_supply_post(post_id);
-	}; 
+	};
 
-	// Handles a clients login when the login button is pressed
 	const handle_edit_profile = async () => {
 		router.push("/(tabs)/(user_profile)/edit_user_profile");
 	};
@@ -69,68 +69,73 @@ export default function UserProfilePage() {
 	}, []);
 
 	return (
-			<ScrollView>
-				
-		<SafeAreaView style={styles.container}>
-			{/* Profile Header */}
-			<View style={styles.profileContainer}>
-				<View style={styles.profileInfo}>
-					<Image
-						source={{ uri: `https://api.dicebear.com/7.x/micah/svg?seed=${user.id}` }}
-						style={styles.profileImage}
-					/>
-					<View style={styles.userInfo}>
-						<Text style={styles.userName}>{user.name}</Text>
+		<ScrollView>
+			<SafeAreaView style={styles.container}>
+				{/* Profile container */}
+				<View style={styles.profileContainer}>
+					<View style={styles.profileInfo}>
+						{/* Profile pic */}
+						<Image
+							source={{ uri: `https://api.dicebear.com/7.x/micah/svg?seed=${user.id}` }}
+							style={styles.profileImage}
+						/>
+						{/* User info */}
+						<View style={styles.userInfo}>
+							<Text style={styles.userName}>{user.name}</Text>
 
-						<View style={styles.bioContainer}>
-							<Text style={styles.userBio}>{user.bio}</Text>
-						</View>
-
-						<Text style={styles.userDetails}>{user.phone_number}</Text>
-						<Text style={styles.userDetails}>{user.mail}</Text>
-						<Text style={styles.userDetails}>{user.address}</Text>
-						<Text style={styles.userDetails}>{user.date_of_birth}</Text>
-					</View>
-
-				</View>
-				<TouchableOpacity style={styles.button} onPress={handle_edit_profile}>
-					<Text style={styles.buttonText}>Redigera profil</Text>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
-				<TouchableOpacity style={styles.logoutButton} onPress={handle_logout}><Text style={styles.buttonText}>Logga ut</Text></TouchableOpacity>
-
-			</View>
-
-			<Text style={styles.title2}>{"Mina annonser"}</Text>
-
-			{/* Posts Section Wrapped in Light Gray Container */}
-			<View style={styles.postsWrapper}>
-				<ScrollView style={styles.postsContainer}>
-					{posts.map((post, index) => (
-						<View style={styles.post} key={index}>
-							<View style={styles.postInfo}>
-								<View style={styles.postIcon}>
-									<Image
-										source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
-										style={styles.postIcon}
-									/>
-								</View>
-								<View style={styles.postTexts}>
-
-									<Text style={styles.postTitle}>{post.title}</Text>
-									<Text style={styles.postCategory}>{post.category}</Text>
-									<Text style={styles.postDescription}>{post.description}</Text>
-								</View>
+							<View style={styles.bioContainer}>
+								<Text style={styles.userBio}>{user.bio}</Text>
 							</View>
-							<TouchableOpacity style={styles.deleteButton} onPress={() => handle_supply_post_deletion(post?.id)}>
-								<Text style={styles.deleteButtonText}>Radera annons</Text>
-							</TouchableOpacity>
+
+							<Text style={styles.userDetails}>{user.phone_number}</Text>
+							<Text style={styles.userDetails}>{user.mail}</Text>
+							<Text style={styles.userDetails}>{user.address}</Text>
+							<Text style={styles.userDetails}>{user.date_of_birth}</Text>
 						</View>
-					))}
-				</ScrollView>
-			</View>
-		</SafeAreaView>
-			</ScrollView>
+
+					</View>
+					{/* User action buttons */}
+					<TouchableOpacity style={styles.button} onPress={handle_edit_profile}>
+						<Text style={styles.buttonText}>Redigera profil</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
+					<TouchableOpacity style={styles.logoutButton} onPress={handle_logout}><Text style={styles.buttonText}>Logga ut</Text></TouchableOpacity>
+				
+				</View>
+
+				{/* The users posts */}
+				<Text style={styles.title2}>{"Mina annonser"}</Text>
+
+				<View style={styles.postsWrapper}>
+					<ScrollView style={styles.postsContainer}>
+						{posts.map((post, index) => (
+							<View style={styles.post} key={index}>
+								<View style={styles.postInfo}>
+									{/* Post icon */}
+									<View style={styles.postIcon}>
+										<Image
+											source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+											style={styles.postIcon}
+										/>
+									</View>
+									{/* Post info */}
+									<View style={styles.postTexts}>
+
+										<Text style={styles.postTitle}>{post.title}</Text>
+										<Text style={styles.postCategory}>{post.category}</Text>
+										<Text style={styles.postDescription}>{post.description}</Text>
+									</View>
+								</View>
+								{/* Post buttons */}
+								<TouchableOpacity style={styles.deleteButton} onPress={() => handle_supply_post_deletion(post?.id)}>
+									<Text style={styles.deleteButtonText}>Radera annons</Text>
+								</TouchableOpacity>
+							</View>
+						))}
+					</ScrollView>
+				</View>
+			</SafeAreaView>
+		</ScrollView>
 	);
 }
 
