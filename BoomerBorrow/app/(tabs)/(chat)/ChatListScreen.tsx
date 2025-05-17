@@ -14,12 +14,14 @@ import {
   serverTimestamp,
   FieldValue,
   where,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
+import { log } from 'console';
 
 type Chat = {
   id: string;
-  participants: string[2];
+  participants: string[];
 };
 
 
@@ -30,58 +32,65 @@ const ChatListScreen: React.FC = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const [chats, setChats] = useState<Chat[]>([]);
-  const [my_id, set_id] = useState<string>("");
+  const [id, set_id] = useState<string>("");
   const { owner_id } = useLocalSearchParams<{ owner_id: string;}>();
 
   const fetch_user_id = async () => {
     const my_id = await get_user_id() as string;
     set_id(my_id);
-    console.log("actual id: " + my_id);
+    console.log("actual id: " + id);
     set_id("me");
-    console.log("for testing: " + my_id);    
+    console.log("for testing: " + id);    
   }
   
+
   useEffect(() => {
-    
+    console.log("AAAAAAAAAAAAa");
+
     fetch_user_id();
+  }, []);
 
-    const q = query(
-          collection(db, 'chats'),
-          where("participants", "array-contains", my_id),
-        );
+  useEffect(() => {
+    console.log("SSSSSSSSSSSSS");
+  if (!id) return; // Skip if id hasn't loaded yet
 
-    const setupChat = async () => {
-      const my_id = await get_user_id(); // Make sure to await
-      console.log("my_id:", my_id);
-      console.log("owner_id:", owner_id);
+  const q = query(
+    collection(db, 'chats'),
+    where("participants", "array-contains", id),
+  );
 
+  const setupChat = async () => {
+    const snapshot = await getDocs(q);
+    
+    const fetchedChats = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Chat, 'id'>),
+    }));
 
+    setChats(fetchedChats);
 
-      /*
-      if (!chats.some(chat => chat.name === owner_id)) {
-        const newChat: Chat = { id: my_id + "_" + owner_id, name: owner_id };
-        console.log("Creating chat with id:", newChat.id);
-        setChats((prev) => [...prev, newChat]);
-      }
-        */
-    };
+    // Optional: auto-create chat if not exists
+    if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id))) {
+      const newChatRef = await addDoc(collection(db, 'chats'), {
+        participants: [id, owner_id],
+      });
+      console.log("Created new chat with id:", newChatRef.id);
+    }
+  };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-          //transform Firestore documents (from query) into JavaScript objects
-          const fetchedMessages = snapshot.docs.map((doc) => ({
-            ...(doc.data() as Chat),
-          }));
-      
-          console.log(fetchedMessages);
-          
-          setChats(
-           fetchedMessages
-          );
-        });
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const fetchedChats = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Chat, 'id'>),
+    }));
 
-    setupChat();
-    return () => unsubscribe();
-}, []);
+    setChats(fetchedChats);
+  });
+
+  setupChat();
+
+  return () => unsubscribe();
+}, [id]);
 
   return (
     <View style={styles.container}>

@@ -138,6 +138,7 @@ const getButtonStyle = (color: ColorValue): ViewStyle => ({
 });
 const getBackgroundStyle = (routeName: String): ViewStyle => ({
   backgroundColor: getBackgroundColor(routeName), 
+  height: "25%",
   flexDirection: "row", 
   justifyContent: "center", 
   borderTopLeftRadius: 25,  

@@ -3,10 +3,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 // import MapView from './MapView'; // Import from same directory
-import Mapbox, { MapView, Camera } from "@rnmapbox/maps";
 
 // Set the Mapbox access token
-Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
+//Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -106,9 +105,6 @@ const handle_visit_post = async (post_id: string, owner_id: string) => {
 			<SafeAreaView style={styles.container}>
 
 				{/* Map Section */}
-				<View style={styles.mapContainer}>
-					<MapView />
-				</View>
 
 				<Text style={styles.title2}>{"Annonser"}</Text>
 
