@@ -1,4 +1,3 @@
-import { Url } from "url";
 import { v4 as uuidv4 } from 'uuid';
 
 // Result type used for data initialization
@@ -360,7 +359,7 @@ export class Supply_post {
 
 // The class for demand posts, i.e. posts/ads where users
 // want to RENT stuff
-class Demand_post {
+export class Demand_post {
     public id: string;
     public owner_id: string;
     public title: string;
@@ -376,8 +375,8 @@ class Demand_post {
         title: string,
         description: string,
         price: string,
-        category_type: string,
         category: string,
+        category_type: string,
         location: string,
         created_at: string
     ) {
