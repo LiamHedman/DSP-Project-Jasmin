@@ -86,15 +86,24 @@ export default function LoginScreen() {
 		set_password(uuidv4());
 
 		try {
-			const new_user = new User(role, parsed_user?.name, parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
-			await axios.post(`${SERVER_URL}/register_user`, new_user);
+			let response = await axios.post(`${SERVER_URL}/google_sign_in`, {}, { headers: { auth: `${parsed_user.email}` } });
+			const user_exists: boolean = response.data.length;
+			if (!user_exists) {
+				const new_user = new User("google", role, parsed_user.name, parsed_user.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
+				response = await axios.post(`${SERVER_URL}/register_user`, new_user);
+				console.log("response1; ", JSON.stringify(response));
+				console.log("response1 id; ",JSON.stringify(response.data));
+
+				save_user_id(response.data);
+			} else {
+				save_user_id(response.data[0].id)
+			}
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
 			if (error.response) {
 				switch (error.response.status) {
 					case 419:
-						console.log("Ignore this 419 error");
-						router.push("/(tabs)/(marketplace)");
+						set_error_message("Mailaddressen finns registrerad, men är ej kopplad till Google");
 					case 500:
 						set_error_message("Internt serverfel. Försök igen senare.");
 						break;
@@ -168,7 +177,7 @@ export default function LoginScreen() {
 				console.error("Incomplete user info from Google:", user);
 				return;
 			}
-			
+
 			await AsyncStorage.setItem("@user", JSON.stringify(user));
 			setUserInfo(user);
 		} catch (error) {
@@ -197,7 +206,7 @@ export default function LoginScreen() {
 			<Button title="Logga in" on_press={handle_login} variant="visit" bottom_margin={10} />
 			{error_message ? <Text style={styles.error_text}>{error_message}</Text> : null}
 
-						{/* GOOGLE AUTH */}
+			{/* GOOGLE AUTH */}
 			<TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
 				<Text style={styles.buttonText}>Logga in/registrera med Google</Text>
 			</TouchableOpacity>

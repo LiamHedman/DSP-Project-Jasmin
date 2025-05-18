@@ -72,7 +72,7 @@ export default function LoginScreen() {
 
 	async function register_user() {
 		try {
-			user = new User(role, name, mail, phone_number, bio, address, date_of_birth, profile_picture_url, password);
+			user = new User("standard", role, name, mail, phone_number, bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, user);
 			router.back();
 		} catch (error: any) {
