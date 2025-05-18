@@ -372,7 +372,6 @@ class Demand_post {
     public created_at: string;
 
     constructor(
-        id: string,
         owner_id: string,
         title: string,
         description: string,
@@ -382,7 +381,7 @@ class Demand_post {
         location: string,
         created_at: string
     ) {
-        this.id = id;
+        this.id = uuidv4();
         this.owner_id = owner_id;
         this.title = title;
         this.description = description;
