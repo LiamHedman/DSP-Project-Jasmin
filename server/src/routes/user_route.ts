@@ -50,9 +50,9 @@ router.post("/register_user", async (req: Request, res: Response) => {
     const user: User = req.body;
 
     try {
-        if (await username_in_use(user.name)) {
-            return res.status(418).json();
-        }
+        //if (await username_in_use(user.name)) { 
+        //    return res.status(418).json();
+        //}
         if (await mail_in_use(user.mail)) {
             return res.status(419).json();
         }

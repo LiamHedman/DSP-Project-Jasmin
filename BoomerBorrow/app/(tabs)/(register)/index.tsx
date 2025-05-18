@@ -78,9 +78,9 @@ export default function LoginScreen() {
 		} catch (error: any) {
 			if (error.response) {
 				switch (error.response.status) {
-					case 418:
-						set_error_message("Användarnamnet är redan registrerad.")
-						break;
+					//case 418:
+						//set_error_message("Användarnamnet är redan registrerad.")
+						//break;
 					case 419:
 						set_error_message("Mailadressen är redan registrerad.");
 						break;
