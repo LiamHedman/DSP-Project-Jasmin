@@ -1,35 +1,40 @@
+import { decrypt } from '../encryption/db_encryption';
 import { pool } from './connection_pooling';
 
-
-const retrieve_data = async (table: string, conditions: any = {}) => {
+const retrieve_data = async (table: string, conditions: any = {}, sensitiveFields: string[] = []) => {
     try {
-        // Builds a query dynamically
-
-        // Builds the list of columns for the SELECT query
         const keys = Object.keys(conditions);
-        // Retrieves the conditions
         const values = Object.values(conditions);
-        // Dynamically builds a WHERE clause based on provided conditions.
         const where_clause = keys.length
             ? `WHERE ${keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ')}`
             : '';
 
         const query = `SELECT * FROM ${table} ${where_clause}`;
-        
-        // Executes the query using the pool
         const result = await pool.query(query, values);
 
         if (result.rows.length > 0) {
-            //console.log(`[SUCCESS]: Data retrieved from table "${table}": ${JSON.stringify(result.rows)}`);
+            // Decrypt only the specified fields
+            result.rows.forEach((row: { [key: string]: any }) => {
+                sensitiveFields.forEach(field => {
+                    if (row[field] && typeof row[field] === "string" && row[field].includes(":")) {
+                        try {
+                            row[field] = decrypt(row[field]);
+                        } catch (err) {
+                            console.warn(`[WARN]: Failed to decrypt field "${field}" in row. Leaving it as is.`);
+                        }
+                    }
+                });
+            });
+
+            console.log(`[SUCCESS]: Retrieved and decrypted data from "${table}".`);
         } else {
-            console.log(`[INFO]: No matching data found in table "${table}" with given conditions.`);
+            console.log(`[INFO]: No matching data found in table "${table}".`);
         }
 
-        // Returns ALL matching rows
         return result.rows;
     } catch (err: any) {
         switch (err.code) {
-            case "42P01":   // Undefined table
+            case "42P01":
                 console.error(`[ERROR]: Table "${table}" not found.`);
                 break;
             default:

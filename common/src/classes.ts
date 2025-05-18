@@ -1,4 +1,4 @@
-import { Url } from "url";
+import { v4 as uuidv4 } from 'uuid';
 
 // Result type used for data initialization
 export type Result<T> = { ok: true, value: T } | { ok: false, error: string };
@@ -18,7 +18,7 @@ export class User {
     public name: string;
     public mail: string;
     public phone_number: string;
-    public biography: string;
+    public bio: string;
     public address: string;
     public date_of_birth: string;
     public profile_picture_url: string;
@@ -28,60 +28,59 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
-        // id: string,
         role: string,
         name: string,
         mail: string,
         phone_number: string,
-        biography: string,
+        bio: string,
         address: string,
         date_of_birth: string,
         profile_picture_url: string,
         password: string,
     ) {
-        this.id = "temp";//Date.now().toString(); // Unique ID
+        this.id = uuidv4();
 
         this.role = role ? role : "user";
 
-        if (this.checkName(name)) {
-            this.name = name;
+        this.name = name;
+/*         if (this.checkName(name)) {
         } else {
             throw new ConstructorParameterError("Name parameter is of wrong format.");
-        }
+        } */
 
-        if (this.checkEmail(mail)) {
-            this.mail = mail;
+        this.mail = mail;
+/*         if (this.checkEmail(mail)) {
         } else {
             throw new ConstructorParameterError("Email is of wrong format.");
-        }
+        } */
 
-        if (this.checkPhoneNumber(phone_number)) {
-            this.phone_number = phone_number;
+       this.phone_number = phone_number;
+/*         if (this.checkPhoneNumber(phone_number)) {
         } else {
             throw new ConstructorParameterError("Phone number is of wrong format.")
-        }
+        } */
 
-        this.biography = biography ? biography : "";
+        this.bio = bio ? bio : "";
 
-        if (this.checkAddress(address)) {
-            this.address = address;
+        this.address = address;
+/*         if (this.checkAddress(address)) {
         } else {
             throw new ConstructorParameterError("Address is of wrong format.")
-        }
+        } */
 
-        if (this.checkDateOfBirth(date_of_birth)) {
-            this.date_of_birth = date_of_birth;
+       this.date_of_birth = date_of_birth;
+/*         if (this.checkDateOfBirth(date_of_birth)) {
         } else {
             throw new ConstructorParameterError("Date of birth is of wrong format, or means user is too young.")
-        }
+        } */
 
         this.profile_picture_url = profile_picture_url ? profile_picture_url : "";
 
-        if (this.checkPassword(password)) {
-            this.password = password;
+        this.password = password;
+/*         if (this.checkPassword(password)) {
         } else {
             throw new ConstructorParameterError("Password is of wrong format.")
-        }
+        } */
 
         this.created_at = new Date().toISOString();
 
@@ -162,8 +161,8 @@ export class User {
         }
     }
 
-    public setBiography(newBiography: string) {
-        this.biography = newBiography;
+    public setBiography(newBio: string) {
+        this.bio = newBio;
     }
 
     public setAddress(newAddress: string) {
@@ -265,7 +264,7 @@ export class User {
     }
 
     public getBiography(): string {
-        return this.biography;
+        return this.bio;
     }
 
     public getAddress(): string {
@@ -328,27 +327,29 @@ export class Supply_post {
     public title: string;
     public description: string;
     public price: string;
+    public category_type: string;
     public category: string;
     public location: string;
     public post_picture_url: string;
     public created_at: string;
 
     constructor(
-        id: string,
         owner_id: string,
         title: string,
         description: string,
         price: string,
         category: string,
+        category_type: string,
         location: string,
         post_picture_url: string,
         created_at: string
     ) {
-        this.id = id;
+        this.id = uuidv4();
         this.owner_id = owner_id;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.post_picture_url = post_picture_url;
@@ -358,31 +359,33 @@ export class Supply_post {
 
 // The class for demand posts, i.e. posts/ads where users
 // want to RENT stuff
-class Demand_post {
+export class Demand_post {
     public id: string;
     public owner_id: string;
     public title: string;
     public description: string;
-    public price: number;
+    public price: string;
+    public category_type: string;
     public category: string;
     public location: string;
     public created_at: string;
 
     constructor(
-        id: string,
         owner_id: string,
         title: string,
         description: string,
-        price: number,
+        price: string,
         category: string,
+        category_type: string,
         location: string,
         created_at: string
     ) {
-        this.id = id;
+        this.id = uuidv4();
         this.owner_id = owner_id;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.created_at = created_at;

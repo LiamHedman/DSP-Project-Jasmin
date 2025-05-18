@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, TextInput, Button, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, StyleSheet, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "./../../classes_tmp";
@@ -8,11 +8,14 @@ import { save_user_id } from "@/auth_token";
 import { Image } from "react-native";
 import * as WebBrowser from "expo-web-browser"; //to open the Google sign-in 
 import * as Google from 'expo-auth-session/providers/google' // a Google OAuth helper 
-import AsyncStorage from "@react-native-async-storage/async-storage" // to persist user data on the device 
+import AsyncStorage from "@react-native-async-storage/async-storage" // to persist user data on the device
+import { v4 as uuidv4 } from 'uuid';
 
 // Clean up any in-progress or backgrounded auth sessions (e.g., if the app was closed during login).
 WebBrowser.maybeCompleteAuthSession();
 
+import { button as Button } from "@/assets/ui_elements/buttons";
+import { input_common as Input_common } from "@/assets/ui_elements/text_inputs";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -36,10 +39,7 @@ export default function LoginScreen() {
 
 	async function login() {
 		try {
-			const user = {
-				name: name,
-				password: password
-			}
+			const user = { name: name, password: password }
 			const response = await axios.post(`${SERVER_URL}/login`, user);
 			await save_user_id(response.data);
 
@@ -48,8 +48,23 @@ export default function LoginScreen() {
 			// Sends the client to the marketplace page
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
-			console.error("Login failed:", error.message);
-			set_error_message("Inloggning misslyckades. Försök igen.");
+			if (error.response) {
+				switch (error.response.status) {
+					case 418:
+						set_error_message("Inget konto med detta användarnamn finns registrerat")
+						break;
+					case 419:
+						set_error_message("Fel lösenord för detta användarnamn");
+						break;
+					case 500:
+						set_error_message("Internt serverfel. Försök igen senare.");
+						break;
+					default:
+						set_error_message(`Registrering misslyckades: ${error.response.status}`);
+				}
+			} else {
+				set_error_message("Något gick fel. Kontrollera din anslutning.");
+			}
 		}
 	}
 
@@ -61,21 +76,17 @@ export default function LoginScreen() {
 	};
 
 	const handle_register = async () => {
-		// Clears the error message
 		set_error_message("");
 		router.push("/(tabs)/(register)");
 	};
 
 	async function sign_in(user: any) {
 		const parsed_user = JSON.parse(user);
-		console.log(`username in signin: ${parsed_user?.name}`);
-		console.log(`mail in signin: ${parsed_user?.email}`);
-		set_password("");
-		set_name(parsed_user?.name);
-		set_mail(parsed_user?.email);
+		// To set a random, non-guessable password
+		set_password(uuidv4());
 
 		try {
-			const new_user = { role, name: parsed_user?.name, mail: parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password };
+			const new_user = new User(role, parsed_user?.name, parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, new_user);
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
@@ -157,7 +168,7 @@ export default function LoginScreen() {
 				console.error("Incomplete user info from Google:", user);
 				return;
 			}
-
+			
 			await AsyncStorage.setItem("@user", JSON.stringify(user));
 			setUserInfo(user);
 		} catch (error) {
@@ -174,42 +185,25 @@ export default function LoginScreen() {
 
 			<Text style={styles.title}>Logga in</Text>
 
-			{/* Username Input */}
-			<TextInput
-				style={styles.input}
-				placeholder="Användarnamn"
-				placeholderTextColor="#888"
-				value={name}
-				onChangeText={set_name}
-			/>
+			<View style={styles.input_container}>
+				{/* Username input */}
+				<Input_common title="Användarnamn" value={name} on_change_text={set_name} />
 
-			{/* Password Input */}
-			<TextInput
-				style={styles.input}
-				placeholder="Lösenord"
-				placeholderTextColor="#888"
-				secureTextEntry
-				value={password}
-				onChangeText={set_password}
-			/>
+				{/* Password input */}
+				<Input_common title="Lösenord" value={password} on_change_text={set_password} hide_input={true} />
+			</View>
 
-			{/* Error Message */}
+			{/* Login button */}
+			<Button title="Logga in" on_press={handle_login} variant="visit" bottom_margin={10} />
+			{error_message ? <Text style={styles.error_text}>{error_message}</Text> : null}
 
-			{/* Login Button */}
-			<TouchableOpacity style={styles.button} onPress={handle_login}>
-				<Text style={styles.buttonText}>Logga in</Text>
-			</TouchableOpacity>
-			{error_message ? <Text style={styles.errorText}>{error_message}</Text> : null}
-
-			{/* GOOGLE AUTH */}
+						{/* GOOGLE AUTH */}
 			<TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
 				<Text style={styles.buttonText}>Logga in/registrera med Google</Text>
 			</TouchableOpacity>
 
-			{/* Register Link */}
-			<TouchableOpacity style={styles.linkButton} onPress={handle_register}>
-				<Text style={styles.linkText}>Har du inget konto? Registera dig här</Text>
-			</TouchableOpacity>
+			{/* Register button */}
+			<Button title="Har du inget konto? Registera dig här" on_press={handle_register} variant="visit" bottom_margin={15} />
 		</SafeAreaView>
 	);
 }
@@ -220,6 +214,12 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#F4F4F4",
+	},
+	input_container: {
+		alignItems: "center",
+		width: "100%",
+		paddingTop: 20,
+		paddingBottom: 20,
 	},
 	icon: {
 		width: 200,
@@ -271,12 +271,10 @@ const styles = StyleSheet.create({
 		color: "#007AFF",
 		fontSize: 14,
 	},
-	errorText: {
+	error_text: {
 		color: "red",
 		fontSize: 14,
 		marginTop: 5,
 		fontStyle: "italic",
 	},
 });
-
-
