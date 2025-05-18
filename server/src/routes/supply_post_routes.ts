@@ -90,6 +90,7 @@ router.get("/fetch_supply_post", async (req: Request, res: Response) => {
     try {
         const condition = { id: post_id };
         const supply_posts: Supply_post[] = await retrieve_data(table_name_supply_posts, condition);
+
         
         res.status(200).json(supply_posts[0]);
     } catch (error) {

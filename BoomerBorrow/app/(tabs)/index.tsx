@@ -8,7 +8,8 @@ import { save_user_id } from "@/auth_token";
 import { Image } from "react-native";
 import * as WebBrowser from "expo-web-browser"; //to open the Google sign-in 
 import * as Google from 'expo-auth-session/providers/google' // a Google OAuth helper 
-import AsyncStorage from "@react-native-async-storage/async-storage" // to persist user data on the device 
+import AsyncStorage from "@react-native-async-storage/async-storage" // to persist user data on the device
+import { v4 as uuidv4 } from 'uuid';
 
 // Clean up any in-progress or backgrounded auth sessions (e.g., if the app was closed during login).
 WebBrowser.maybeCompleteAuthSession();
@@ -81,14 +82,11 @@ export default function LoginScreen() {
 
 	async function sign_in(user: any) {
 		const parsed_user = JSON.parse(user);
-		console.log(`username in signin: ${parsed_user?.name}`);
-		console.log(`mail in signin: ${parsed_user?.email}`);
-		set_password("");
-		set_name(parsed_user?.name);
-		set_mail(parsed_user?.email);
+		// To set a random, non-guessable password
+		set_password(uuidv4());
 
 		try {
-			const new_user = { role, name: parsed_user?.name, mail: parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password };
+			const new_user = new User(role, parsed_user?.name, parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, new_user);
 			router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
@@ -170,7 +168,7 @@ export default function LoginScreen() {
 				console.error("Incomplete user info from Google:", user);
 				return;
 			}
-
+			
 			await AsyncStorage.setItem("@user", JSON.stringify(user));
 			setUserInfo(user);
 		} catch (error) {
@@ -273,7 +271,7 @@ const styles = StyleSheet.create({
 		color: "#007AFF",
 		fontSize: 14,
 	},
-	errorText: {
+	error_text: {
 		color: "red",
 		fontSize: 14,
 		marginTop: 5,

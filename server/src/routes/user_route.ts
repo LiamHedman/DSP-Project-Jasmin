@@ -104,7 +104,7 @@ router.get("/fetch_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" fetch from client`);
         const condition = { id: user_id };
-        const users = await retrieve_data(table_name_users, condition);
+        const users = await retrieve_data(table_name_users, condition, ["mail", "phone_number", "address"]);
         if (users.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
