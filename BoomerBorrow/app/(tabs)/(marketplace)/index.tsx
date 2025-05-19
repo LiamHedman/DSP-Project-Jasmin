@@ -41,14 +41,42 @@ export default function MarketplaceScreen() {
 			console.error("Failed to store post ID:", error);
 		}
 	};
+	const [selectedOption1, setSelectedOption1] = useState('Opt 1');
+	const [selectedOption2, setSelectedOption2] = useState('Opt 1');
 
 	return (
 		<ScrollView>
 			<SafeAreaView style={styles.container}>
 
 				{/* Map Section */}
-				<View style={styles.mapContainer}>
+				{/* 				<View style={styles.mapContainer}>
 					<MapView />
+				</View> */}
+				<Text style={styles.title2}>{"Sortera annonser"}</Text>
+				<View style={styles.sorting_container}>
+					<View style={styles.sorting_button_container}>
+						<TouchableOpacity
+							style={[styles.sorting_button_left, selectedOption1 === 'Opt 1' && styles.selected]} onPress={() => setSelectedOption1('Opt 1')}>
+							<Text style={styles.text}>Till salu</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							style={[styles.sorting_button_right, selectedOption1 === 'Opt 2' && styles.selected]} onPress={() => setSelectedOption1('Opt 2')}>
+							<Text style={styles.text}>Efterfrågas</Text>
+						</TouchableOpacity>
+					</View>
+
+					<View style={styles.sorting_button_container}>
+						<TouchableOpacity
+							style={[styles.sorting_button_left, selectedOption2 === 'Opt 1' && styles.selected]} onPress={() => setSelectedOption2('Opt 1')}>
+							<Text style={styles.text}>Varor</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							style={[styles.sorting_button_right, selectedOption2 === 'Opt 2' && styles.selected]} onPress={() => setSelectedOption2('Opt 2')}>
+							<Text style={styles.text}>Tjänster</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 
 				<Text style={styles.title2}>{"Annonser"}</Text>
@@ -72,9 +100,9 @@ export default function MarketplaceScreen() {
 										<Text style={styles.postPrice}>{(Number(post.price)).toLocaleString("sv-SE") + " kr"}</Text>
 									</View>
 								</View>
-								<TouchableOpacity style={styles.saveButton}><Text style={styles.saveButtonText}>Spara annons</Text></TouchableOpacity>
+								{/* 								<TouchableOpacity style={styles.saveButton}><Text style={styles.saveButtonText}>Spara annons</Text></TouchableOpacity>
 								<TouchableOpacity style={styles.visitButton} onPress={() => handle_visit_post(post?.id)}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
-							</View>
+ */}							</View>
 						))}
 					</ScrollView>
 				</View>
@@ -85,14 +113,53 @@ export default function MarketplaceScreen() {
 		</ScrollView>
 	);
 }
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 10,
+		paddingTop: 50,
 		backgroundColor: "#ffffff",
 		alignItems: "center",
 	},
+
+	sorting_container: {
+		flex: 1,
+		width: "80%",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	sorting_button_container: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: "100%",
+		marginBottom: 20,
+	},
+	sorting_button_left: {
+		flex: 1,
+		padding: 12,
+		alignItems: 'center',
+		backgroundColor: '#9C9C9C',
+		borderTopLeftRadius: 25,
+		borderBottomLeftRadius: 25,
+	},
+	sorting_button_right: {
+		flex: 1,
+		padding: 12,
+		alignItems: 'center',
+		backgroundColor: '#9C9C9C',
+		borderTopRightRadius: 25,
+		borderBottomRightRadius: 25,
+	},
+	selected: {
+		backgroundColor: '#007BFF',
+	},
+	text: {
+		color: '#fff',
+		fontWeight: "bold",
+		fontSize: 16,
+	},
+
+
 	mapContainer: {
 		width: "90%",
 		height: 150,
@@ -136,13 +203,8 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	postsWrapper: {
-		backgroundColor: "#EAEAEA",
-		padding: 15,
 		borderRadius: 10,
-		width: "90%",
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+		width: "100%",
 		elevation: 5,
 		marginBottom: 20,
 	},
@@ -150,14 +212,11 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	post: {
+		borderColor: "#CFCECE",
+		borderBottomWidth: 1,
+		borderTopWidth: 1,
 		backgroundColor: "#FFF",
-		padding: 15,
-		marginVertical: 10,
-		borderRadius: 10,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		elevation: 5,
+		padding: 20,
 	},
 	postInfo: {
 		flexDirection: "row",
@@ -165,8 +224,8 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	postIcon: {
-		width: 100,
-		height: 100,
+		width: 150,
+		height: 150,
 		marginRight: 15,
 		borderRadius: 25,
 	},
@@ -177,18 +236,18 @@ const styles = StyleSheet.create({
 	},
 	postTitle: {
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 26,
 	},
 	postDescription: {
 		fontSize: 14,
 		color: "#555",
 	},
 	postCategory: {
-		fontSize: 14,
+		fontSize: 16,
 		fontStyle: "italic",
 	},
 	postPrice: {
-		fontSize: 14,
+		fontSize: 18,
 		fontStyle: "italic",
 		position: "absolute",
 		bottom: 0,
