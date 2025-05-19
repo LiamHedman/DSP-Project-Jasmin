@@ -1,2 +1,2 @@
 // index.js
-export { Supply_post } from './src/classes';
+export { Supply_post } from './src/classes'; 

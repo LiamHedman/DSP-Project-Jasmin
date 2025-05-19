@@ -10,10 +10,10 @@ const router = express.Router();
 
 // Listens for a new post from a client. 
 router.post("/new_demand_post", async (req: Request, res: Response) => {
-    const { id, owner_id, title, description, price, category, location, created_at } = req.body;
+    const { id, owner_id, owner_name, title, description, price, category, location, created_at } = req.body;
 
     try {
-        const post_data = new Demand_post(id, owner_id, title, description, price, category, location, created_at);
+        const post_data = new Demand_post(id, owner_id, owner_name, title, description, price, category, location, created_at);
         console.log(`ID of new demand post: ${id}`);
         console.log(`Title of new demand post: ${title}`);
 
@@ -26,11 +26,11 @@ router.post("/new_demand_post", async (req: Request, res: Response) => {
 });
 
 router.post("/edit_demand_post", async (req: Request, res: Response) => {
-    const { id, owner_id, title, description, price, category, location, created_at } = req.body;
+    const { id, owner_id, owner_name, title, description, price, category, location, created_at } = req.body;
     const criteria = { id: id };
 
     try {
-        const post_data = new Demand_post(id, owner_id, title, description, price, category, location, created_at);
+        const post_data = new Demand_post(id, owner_id, owner_name, title, description, price, category, location, created_at);
         console.log(`ID of the edited demand post: ${id}`);
         console.log(`Title of edited demand post: ${title}`);
 

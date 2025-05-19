@@ -28,6 +28,7 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
+        // id: string,
         role: string,
         name: string,
         mail: string,
@@ -244,6 +245,7 @@ export class User {
     // Getter functions for attributes of class User
 
     public getId(): string {
+
         return this.id;
     }
 
@@ -324,6 +326,7 @@ export class Supply_post {
 
     public id: string;
     public owner_id: string;
+    public owner_name: string;
     public title: string;
     public description: string;
     public price: string;
@@ -335,9 +338,10 @@ export class Supply_post {
 
     constructor(
         owner_id: string,
+        owner_name: string,
         title: string,
         description: string,
-        price: string,
+        price: string, 
         category: string,
         category_type: string,
         location: string,
@@ -346,6 +350,7 @@ export class Supply_post {
     ) {
         this.id = uuidv4();
         this.owner_id = owner_id;
+        this.owner_name = owner_name;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -362,6 +367,7 @@ export class Supply_post {
 export class Demand_post {
     public id: string;
     public owner_id: string;
+    public owner_name: string;
     public title: string;
     public description: string;
     public price: string;
@@ -372,6 +378,7 @@ export class Demand_post {
 
     constructor(
         owner_id: string,
+        owner_name: string,
         title: string,
         description: string,
         price: string,
@@ -382,6 +389,7 @@ export class Demand_post {
     ) {
         this.id = uuidv4();
         this.owner_id = owner_id;
+        this.owner_name = owner_name;
         this.title = title;
         this.description = description;
         this.price = price;
