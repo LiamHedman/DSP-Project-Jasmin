@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Mapbox, { MapView } from "@rnmapbox/maps";
-import { button_two_choice as Button_tc } from "@/assets/ui_elements/buttons";
+import { button as Button, button_two_choice as Button_tc } from "@/assets/ui_elements/buttons";
 
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
@@ -54,13 +54,13 @@ export default function MarketplaceScreen() {
 					<MapView />
 				</View> */}
 				<Text style={styles.title2}>{"Sortera annonser"}</Text>
-				<View style={styles.sorting_container}>
-					<View style={styles.sorting_button_container}>
+				<View style={button_styles.sorting_container}>
+					<View style={button_styles.sorting_button_container}>
 						<Button_tc title="Till salu" onPress={() => set_selected_category("till salu")} selected={selected_category === "till salu"} variant="left" />
 						<Button_tc title="Efterfrågas" onPress={() => set_selected_category("efterfrågas")} selected={selected_category === "efterfrågas"} variant="right" />
 					</View>
 
-					<View style={styles.sorting_button_container}>
+					<View style={button_styles.sorting_button_container}>
 						<Button_tc title="Varor" onPress={() => set_selected_sub_category("varor")} selected={selected_sub_category === "varor"} variant="left" />
 						<Button_tc title="Tjänster" onPress={() => set_selected_sub_category("tjänster")} selected={selected_sub_category === "tjänster"} variant="right" />
 					</View>
@@ -95,19 +95,13 @@ export default function MarketplaceScreen() {
 				</View>
 
 				{/* Action buttons */}
-				<TouchableOpacity style={styles.button} onPress={handle_temporary}><Text style={styles.buttonText}>temp</Text></TouchableOpacity>
+			<Button title="Användarprofil (temp)" on_press={handle_temporary} variant="visit" bottom_margin={15} />
 			</SafeAreaView>
 		</ScrollView>
 	);
 }
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: 50,
-		backgroundColor: "#ffffff",
-		alignItems: "center",
-	},
 
+const button_styles = StyleSheet.create({
 	sorting_container: {
 		flex: 1,
 		width: "80%",
@@ -121,7 +115,16 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginBottom: 20,
 	},
+ })
 
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingTop: 50,
+		backgroundColor: "#ffffff",
+		alignItems: "center",
+	},
 	mapContainer: {
 		width: "90%",
 		height: 150,
@@ -135,35 +138,13 @@ const styles = StyleSheet.create({
 	map: {
 		flex: 1,
 	},
-	input: {
-		width: "90%",
-		height: 35,
-		margin: 6,
-		borderWidth: 1,
-		color: "#949494",
-		padding: 10,
-		borderRadius: 5,
-		backgroundColor: "white",
-		alignSelf: "center",
-	},
-	button: {
-		width: "90%",
-		backgroundColor: '#007AFF',
-		paddingVertical: 6,
-		borderRadius: 5,
-		elevation: 5,
-		alignItems: 'center',
-		margin: 5,
-	},
-	buttonText: {
-		color: "#FFF",
-		fontSize: 14,
-	},
+
 	title2: {
 		fontWeight: "bold",
 		fontSize: 24,
 		marginBottom: 10,
 	},
+
 	postsWrapper: {
 		borderRadius: 10,
 		width: "100%",
@@ -213,27 +194,5 @@ const styles = StyleSheet.create({
 		fontStyle: "italic",
 		position: "absolute",
 		bottom: 0,
-	},
-	saveButton: {
-		backgroundColor: "#FF0022",
-		paddingVertical: 8,
-		borderRadius: 6,
-		alignItems: "center",
-		marginTop: 10,
-	},
-	saveButtonText: {
-		color: "#FFF",
-		fontWeight: "bold",
-	},
-	visitButton: {
-		backgroundColor: "#007AFF",
-		paddingVertical: 8,
-		borderRadius: 6,
-		alignItems: "center",
-		marginTop: 10,
-	},
-	visitButtonText: {
-		color: "#FFF",
-		fontWeight: "bold",
 	},
 });
