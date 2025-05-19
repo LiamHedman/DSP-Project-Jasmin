@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Mapbox, { MapView } from "@rnmapbox/maps";
+import { button_two_choice as Button_tc } from "@/assets/ui_elements/buttons";
 
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
 import { Supply_post } from "./../../../classes_tmp";
@@ -41,8 +42,8 @@ export default function MarketplaceScreen() {
 			console.error("Failed to store post ID:", error);
 		}
 	};
-	const [selectedOption1, setSelectedOption1] = useState('Opt 1');
-	const [selectedOption2, setSelectedOption2] = useState('Opt 1');
+	const [selected_category, set_selected_category] = useState("till salu");
+	const [selected_sub_category, set_selected_sub_category] = useState("varor");
 
 	return (
 		<ScrollView>
@@ -55,27 +56,13 @@ export default function MarketplaceScreen() {
 				<Text style={styles.title2}>{"Sortera annonser"}</Text>
 				<View style={styles.sorting_container}>
 					<View style={styles.sorting_button_container}>
-						<TouchableOpacity
-							style={[styles.sorting_button_left, selectedOption1 === 'Opt 1' && styles.selected]} onPress={() => setSelectedOption1('Opt 1')}>
-							<Text style={styles.text}>Till salu</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={[styles.sorting_button_right, selectedOption1 === 'Opt 2' && styles.selected]} onPress={() => setSelectedOption1('Opt 2')}>
-							<Text style={styles.text}>Efterfrågas</Text>
-						</TouchableOpacity>
+						<Button_tc title="Till salu" onPress={() => set_selected_category("till salu")} selected={selected_category === "till salu"} variant="left" />
+						<Button_tc title="Efterfrågas" onPress={() => set_selected_category("efterfrågas")} selected={selected_category === "efterfrågas"} variant="right" />
 					</View>
 
 					<View style={styles.sorting_button_container}>
-						<TouchableOpacity
-							style={[styles.sorting_button_left, selectedOption2 === 'Opt 1' && styles.selected]} onPress={() => setSelectedOption2('Opt 1')}>
-							<Text style={styles.text}>Varor</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={[styles.sorting_button_right, selectedOption2 === 'Opt 2' && styles.selected]} onPress={() => setSelectedOption2('Opt 2')}>
-							<Text style={styles.text}>Tjänster</Text>
-						</TouchableOpacity>
+						<Button_tc title="Varor" onPress={() => set_selected_sub_category("varor")} selected={selected_sub_category === "varor"} variant="left" />
+						<Button_tc title="Tjänster" onPress={() => set_selected_sub_category("tjänster")} selected={selected_sub_category === "tjänster"} variant="right" />
 					</View>
 				</View>
 
@@ -134,31 +121,6 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginBottom: 20,
 	},
-	sorting_button_left: {
-		flex: 1,
-		padding: 12,
-		alignItems: 'center',
-		backgroundColor: '#9C9C9C',
-		borderTopLeftRadius: 25,
-		borderBottomLeftRadius: 25,
-	},
-	sorting_button_right: {
-		flex: 1,
-		padding: 12,
-		alignItems: 'center',
-		backgroundColor: '#9C9C9C',
-		borderTopRightRadius: 25,
-		borderBottomRightRadius: 25,
-	},
-	selected: {
-		backgroundColor: '#007BFF',
-	},
-	text: {
-		color: '#fff',
-		fontWeight: "bold",
-		fontSize: 16,
-	},
-
 
 	mapContainer: {
 		width: "90%",
