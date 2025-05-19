@@ -69,7 +69,8 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 								<View style={styles.postInfo}>
 									<View style={styles.postIcon}>
 										<Image
-											source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+											//source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+											source={{uri: post.post_picture_url}}
 											style={styles.postIcon}
 										/>
 									</View>

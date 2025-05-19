@@ -89,7 +89,8 @@ export default function LoginScreen() {
 		try {
 			const new_user = new User(role, parsed_user?.name, parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, new_user);
-			router.push("/(tabs)/(marketplace)");
+			//router.push("/(tabs)/(marketplace)");
+			router.push("/(tabs)/(user_profile)/user_profile_page");
 		} catch (error: any) {
 			if (error.response) {
 				switch (error.response.status) {
