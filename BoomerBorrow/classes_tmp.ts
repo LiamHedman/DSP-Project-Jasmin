@@ -1,4 +1,3 @@
-import { Url } from "url";
 import { v4 as uuidv4 } from 'uuid';
 
 // Result type used for data initialization
@@ -29,6 +28,7 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
+        // id: string,
         role: string,
         name: string,
         mail: string,
@@ -55,25 +55,25 @@ export class User {
             throw new ConstructorParameterError("Email is of wrong format.");
         } */
 
-        if (this.checkPhoneNumber(phone_number)) {
-            this.phone_number = phone_number;
+       this.phone_number = phone_number;
+/*         if (this.checkPhoneNumber(phone_number)) {
         } else {
             throw new ConstructorParameterError("Phone number is of wrong format.")
-        }
+        } */
 
         this.bio = bio ? bio : "";
 
-        if (this.checkAddress(address)) {
-            this.address = address;
+        this.address = address;
+/*         if (this.checkAddress(address)) {
         } else {
             throw new ConstructorParameterError("Address is of wrong format.")
-        }
+        } */
 
-        if (this.checkDateOfBirth(date_of_birth)) {
-            this.date_of_birth = date_of_birth;
+       this.date_of_birth = date_of_birth;
+/*         if (this.checkDateOfBirth(date_of_birth)) {
         } else {
             throw new ConstructorParameterError("Date of birth is of wrong format, or means user is too young.")
-        }
+        } */
 
         this.profile_picture_url = profile_picture_url ? profile_picture_url : "";
 
@@ -245,6 +245,7 @@ export class User {
     // Getter functions for attributes of class User
 
     public getId(): string {
+
         return this.id;
     }
 
@@ -329,8 +330,9 @@ export class Supply_post {
     public title: string;
     public description: string;
     public price: string;
+    public category_type: string;
     public category: string;
-    public location: [number, number] | null;
+    public location: string;
     public post_picture_url: string;
     public created_at: string;
 
@@ -339,9 +341,10 @@ export class Supply_post {
         owner_name: string,
         title: string,
         description: string,
-        price: string,
+        price: string, 
         category: string,
-        location: [number, number] | null,
+        category_type: string,
+        location: string,
         post_picture_url: string,
         created_at: string
     ) {
@@ -351,6 +354,7 @@ export class Supply_post {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.post_picture_url = post_picture_url;
@@ -360,34 +364,36 @@ export class Supply_post {
 
 // The class for demand posts, i.e. posts/ads where users
 // want to RENT stuff
-class Demand_post {
+export class Demand_post {
     public id: string;
     public owner_id: string;
     public owner_name: string;
     public title: string;
     public description: string;
-    public price: number;
+    public price: string;
+    public category_type: string;
     public category: string;
     public location: string;
     public created_at: string;
 
     constructor(
-        id: string,
         owner_id: string,
         owner_name: string,
         title: string,
         description: string,
-        price: number,
+        price: string,
         category: string,
+        category_type: string,
         location: string,
         created_at: string
     ) {
-        this.id = id;
+        this.id = uuidv4();
         this.owner_id = owner_id;
         this.owner_name = owner_name;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category_type = category_type;
         this.category = category;
         this.location = location;
         this.created_at = created_at;

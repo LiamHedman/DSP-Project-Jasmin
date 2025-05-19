@@ -5,7 +5,8 @@ import { User } from "../../../common/src/classes";
 import insert_data from "../database/data_insertion";
 import delete_data from "../database/data_deletion";
 import modify_data from "../database/data_modification";
-import { log } from "console";
+import { hash_data } from "../encryption/hashing";
+import { decrypt, encrypt } from "../encryption/db_encryption";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ async function mail_in_use(mail: string): Promise<boolean> {
     const conditions = {
         mail: mail
     };
-    const result = await retrieve_data(table_name_users, conditions);
+    const result = await retrieve_data(table_name_users, conditions, ["mail"]);
     return result.length;
 }
 
@@ -43,31 +44,25 @@ async function retrieve_id(username: string): Promise<string> {
     return result[0].id;
 }
 
-async function retrieve_name(id: string): Promise<string> {
-    const conditions = {
-        id: id
-    };
-    const result = await retrieve_data(table_name_users, conditions);
-    console.log(`retrieved name: ${result[0].name}`);
-    return result[0].name;
-}
 // Handles register user request from the client
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 router.post("/register_user", async (req: Request, res: Response) => {
     const user: User = req.body;
 
-    console.log("TETS");
     try {
-        if (await username_in_use(user.name)) {
-            return res.status(418).json();
-        }
-        
+        //if (await username_in_use(user.name)) { 
+        //    return res.status(418).json();
+        //}
         if (await mail_in_use(user.mail)) {
             return res.status(419).json();
         }
 
         console.log(`User "${user.name}" registered`);
-        await insert_data(table_name_users, user);
+        
+        user.password = hash_data(user.password);
+        //user.mail = encrypt(user.mail);
+        //user.phone_number = encrypt(user.phone_number);
+        await insert_data(table_name_users, user, ["mail", "phone_number", "address"]);
         res.status(200).json();
     } catch (error) {
         res.status(500).json();
@@ -109,7 +104,7 @@ router.get("/fetch_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" fetch from client`);
         const condition = { id: user_id };
-        const users = await retrieve_data(table_name_users, condition);
+        const users = await retrieve_data(table_name_users, condition, ["mail", "phone_number", "address"]);
         if (users.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
@@ -125,8 +120,13 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = req.body;
 
     try {
-        if (!await username_in_use(user.name)) { throw new Error("User with this username doesnt exist"); }
-        if (!await check_password(user.password, user.name)) { throw new Error("The password is incorrect for this username"); }
+        if (!await username_in_use(user.name)) { 
+            return res.status(418).json();
+        }
+
+        if (!await check_password(hash_data(user.password), user.name)) {
+            return res.status(419).json();
+        }
 
         const user_id = await retrieve_id(user.name);
 

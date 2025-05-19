@@ -9,13 +9,15 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.agnesbae.BoomerBorrow"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.agnesbae.BoomerBorrow"
     },
     "web": {
       "bundler": "metro",
@@ -38,10 +40,19 @@
         {
           "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205aGh6bTJ3MDRmZjJrcjE2eGVraGR2dyJ9.6AuHtcQWsGIcNqquPh9lkg"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ab7fda17-1ebe-41d7-b7cf-267e673974ac"
+      }
     }
   }
 }

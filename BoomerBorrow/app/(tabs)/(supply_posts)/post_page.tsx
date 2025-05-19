@@ -14,14 +14,13 @@ const MarketplaceProduct = () => {
 
     async function fetch_supply_post() {
         try {
-            //const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
-            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${post_id}` } });
+            const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
+            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${id}` } });
             set_post(response.data);
         } catch (error: any) {
             console.error("Failed to fetch supply_post:", error.message);
         }
     }
-    
 
     async function fetch_user() {
         try {
@@ -54,9 +53,12 @@ const MarketplaceProduct = () => {
             <Text style={styles.title}>{post?.title}</Text>
             <Text style={styles.description}>{post?.description}</Text>
             <Text style={styles.info}>Price: {post?.price} SEK</Text>
+            <Text style={styles.info}>Category Type: {post?.category_type}</Text>
             <Text style={styles.info}>Category: {post?.category}</Text>
             <Text style={styles.info}>Location: {post?.location}</Text>
-            <Text style={styles.info}>Owner's Name: {post?.owner_name}</Text>
+
+            <Text style={styles.info}>Owner's Name: {owner?.name}</Text>
+
             <Button 
                 title="till chat"
                 onPress={() => router.push({
