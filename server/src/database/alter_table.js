@@ -36,66 +36,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pool = exports.table_name_users = exports.table_name_demand_posts = exports.table_name_supply_posts = void 0;
-var fs = require('fs');
-var Pool = require('pg').Pool;
-require('dotenv').config();
-//import path from "path";
-var path = require("path");
-// resolves the path the the certificate (ca.pem)
-var caPath = path.resolve(__dirname, "../../src/database/config/ca.pem");
-exports.table_name_supply_posts = "active_supply_posts";
-exports.table_name_demand_posts = "active_demand_posts";
-exports.table_name_users = "active_users";
-// Connection Pool Configuration
-exports.pool = new Pool({
-    // For security, dont hard code the connection data
-    // To change the connection data, change the values in the .env file
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    max: 10, // Maximum number of connections in the pool
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-    ssl: {
-        rejectUnauthorized: true,
-        ca: fs.readFileSync(caPath).toString(),
-    },
-});
-// TODO: Move this out into a separate file
-// Test queries to check that the database has been connected to
-var check_connection = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var client, versionResult, err_1;
+var connection_pooling_1 = require("./connection_pooling");
+var add_owner_name_column = function (table) { return __awaiter(void 0, void 0, void 0, function () {
+    var query, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, 4, 6]);
-                return [4 /*yield*/, exports.pool.connect()];
+                _a.trys.push([0, 2, , 3]);
+                query = "\n            ALTER TABLE ".concat(table, "\n            ADD COLUMN IF NOT EXISTS owner_name TEXT;\n        ");
+                return [4 /*yield*/, connection_pooling_1.pool.query(query)];
             case 1:
-                client = _a.sent();
-                return [4 /*yield*/, client.query("SELECT VERSION()")];
-            case 2:
-                versionResult = _a.sent();
-                console.log("PostgreSQL version:", versionResult.rows[0].version);
-                // Releases the client back to the pool
-                client.release();
-                return [3 /*break*/, 6];
-            case 3:
-                err_1 = _a.sent();
-                console.error("Error during database connection:", err_1);
-                return [3 /*break*/, 6];
-            case 4: 
-            // Optional: Close the pool when your application ends
-            return [4 /*yield*/, exports.pool.end()];
-            case 5:
-                // Optional: Close the pool when your application ends
                 _a.sent();
-                return [7 /*endfinally*/];
-            case 6: return [2 /*return*/];
+                console.log("[SUCCESS]: Column 'owner_name' added to table \"".concat(table, "\" (or already exists)."));
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                switch (err_1.code) {
+                    case "42P01": // Undefined table
+                        console.error("[ERROR]: Table \"".concat(table, "\" not found."));
+                        break;
+                    case "42701": // Duplicate column
+                        console.error("[ERROR]: Column 'owner_name' already exists in \"".concat(table, "\"."));
+                        break;
+                    default:
+                        console.error("[ERROR]: Failed to alter table \"".concat(table, "\""), err_1);
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
-// Run the queries
-//check_connection();
+exports.default = add_owner_name_column;

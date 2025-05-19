@@ -59,32 +59,29 @@ const ChatScreen: React.FC = () => {
   // chats/{chatId}/messages subcollection.
   useEffect(() => {
   const fetchUserId = async () => {
-    //const storedId = await get_user_id();
-    setId("me");
-    /*if (storedId) {
+    const storedId = await get_user_id();
+    //setId("me");
+    if (storedId) {
       setId(storedId);
       console.log("actual id: " + storedId);
       console.log("actual id: " + my_id);
     }
-      */
-  };
-
-  
+  };  
 
   fetchUserId();
-
+  
   if (!id) return;
+  console.log(id);
 
   const q = query(
     collection(db, 'chats', id, 'messages'),
-    where("id", ">=", latest_chat),
+    where("id", ">", latest_chat),
     orderBy('createdAt', 'asc')
   );
 
   const setup = async () => {
     const snapshot = await getDocs(q);
         const fetchedChats = snapshot.docs.map((doc) => ({
-          id: doc.id,
           ...(doc.data() as Message),
         }));
   }
@@ -92,26 +89,32 @@ const ChatScreen: React.FC = () => {
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const fetchedMessages = snapshot.docs.map((doc) => ({
-      id: doc.id,
       ...(doc.data() as Message),
     }));
 
     console.log(fetchedMessages);
     const latest = fetchedMessages[fetchedMessages.length-1];
-    set_latest(Number(latest.id));
+    console.log("HEJ");
+    if(latest){
+      console.log(latest);
+      set_latest((latest.id));
+    }
     setMessages((prev) => {
-    const currentMessages = prev[id] || [];
+      const currentMessages = prev[id] || [];
 
-    // Create a Set of existing message IDs to prevent duplicates
-    const existingIds = new Set(currentMessages.map((msg) => msg.id));
+  // Create a map for fast lookup and update
+  const msgMap = new Map(currentMessages.map(msg => [msg.id, msg]));
 
-    // Filter only new messages that haven't been seen yet
-    const newMessages = fetchedMessages.filter((msg) => !existingIds.has(msg.id));
+  // Update existing or add new
+  fetchedMessages.forEach(msg => {
+    msgMap.set(msg.id, msg); // This overwrites the old message with the updated one
+  });
 
-    return {
-      ...prev,
-      [id]: [...currentMessages, ...newMessages],
-    };
+  return {
+    ...prev,
+    [id]: Array.from(msgMap.values()).sort((a, b) => a.createdAt?.seconds - b.createdAt?.seconds),
+  };
+
   });
   });
 
@@ -155,8 +158,9 @@ const ChatScreen: React.FC = () => {
   
 
  const renderItem: ListRenderItem<Message> = ({ item }) => {
-  const isUser = item.sender === 'me';
+  const isUser = item.sender === my_id;
   console.log(isUser.toString());
+  console.log(item.createdAt);
   const timeString = item.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   console.log(timeString);
 

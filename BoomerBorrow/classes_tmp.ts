@@ -325,6 +325,7 @@ export class Supply_post {
 
     public id: string;
     public owner_id: string;
+    public owner_name: string;
     public title: string;
     public description: string;
     public price: string;
@@ -335,6 +336,7 @@ export class Supply_post {
 
     constructor(
         owner_id: string,
+        owner_name: string,
         title: string,
         description: string,
         price: string,
@@ -345,6 +347,7 @@ export class Supply_post {
     ) {
         this.id = uuidv4();
         this.owner_id = owner_id;
+        this.owner_name = owner_name;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -360,6 +363,7 @@ export class Supply_post {
 class Demand_post {
     public id: string;
     public owner_id: string;
+    public owner_name: string;
     public title: string;
     public description: string;
     public price: number;
@@ -370,6 +374,7 @@ class Demand_post {
     constructor(
         id: string,
         owner_id: string,
+        owner_name: string,
         title: string,
         description: string,
         price: number,
@@ -379,6 +384,7 @@ class Demand_post {
     ) {
         this.id = id;
         this.owner_id = owner_id;
+        this.owner_name = owner_name;
         this.title = title;
         this.description = description;
         this.price = price;

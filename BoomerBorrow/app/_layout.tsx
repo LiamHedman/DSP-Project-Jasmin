@@ -5,6 +5,5 @@ export default function MarketplaceLayout() {
   return (
   <Stack
     screenOptions={{headerShown:false}}>
-    <Stack.Screen name="(tabs)" />
   </Stack>);
 }

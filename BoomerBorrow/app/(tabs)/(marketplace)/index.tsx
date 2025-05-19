@@ -36,16 +36,19 @@ export default function MarketplaceScreen() {
 		router.push("/(tabs)/(user_profile)/user_profile_page");
 	};
 	
-const handle_visit_post = async (post_id: string, owner_id: string) => {
+const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
     try {
         //await AsyncStorage.setItem("post_id", post_id);
         //router.push("/(tabs)/(supply_posts)/post_page");
         router.push({
-                pathname: "/(tabs)/(chat)/ChatListScreen",
+                pathname: "/(tabs)/(supply_posts)/post_page",
                 params: {
-                  owner_id: owner_id,
+					post_id: post_id,
+                  	owner_id: owner_id,
+                  	owner_name: owner_name,
                 },
               });
+			  
     } catch (error) {
         console.error("Failed to store post ID:", error);
     }
@@ -128,7 +131,7 @@ const handle_visit_post = async (post_id: string, owner_id: string) => {
 									</View>
 								</View>
 								<TouchableOpacity style={styles.saveButton}><Text style={styles.saveButtonText}>Spara annons</Text></TouchableOpacity>
-								<TouchableOpacity style={styles.visitButton}onPress={() => handle_visit_post(post?.id, post.owner_id)}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
+								<TouchableOpacity style={styles.visitButton}onPress={() => handle_visit_post(post?.id, post.owner_id, post.owner_name)}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
 							</View>
 						))}
 					</ScrollView>

@@ -5,6 +5,7 @@ import { User } from "../../../common/src/classes";
 import insert_data from "../database/data_insertion";
 import delete_data from "../database/data_deletion";
 import modify_data from "../database/data_modification";
+import { log } from "console";
 
 const router = express.Router();
 
@@ -42,15 +43,25 @@ async function retrieve_id(username: string): Promise<string> {
     return result[0].id;
 }
 
+async function retrieve_name(id: string): Promise<string> {
+    const conditions = {
+        id: id
+    };
+    const result = await retrieve_data(table_name_users, conditions);
+    console.log(`retrieved name: ${result[0].name}`);
+    return result[0].name;
+}
 // Handles register user request from the client
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 router.post("/register_user", async (req: Request, res: Response) => {
     const user: User = req.body;
 
+    console.log("TETS");
     try {
         if (await username_in_use(user.name)) {
             return res.status(418).json();
         }
+        
         if (await mail_in_use(user.mail)) {
             return res.status(419).json();
         }

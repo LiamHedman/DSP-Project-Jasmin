@@ -4,8 +4,9 @@ import { Text, TextInput, Button, StyleSheet, TouchableOpacity, View } from "rea
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "./../classes_tmp";
-import { save_user_id } from "@/auth_token";
+import { save_user_id, save_user_name } from "@/auth_token";
 import { Image } from "react-native";
+import { log } from "console";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -38,10 +39,14 @@ export default function LoginScreen() {
 				name: name,
 				password: password
 			}
+			/*
 			const response = await axios.post(`${SERVER_URL}/login`, user);
+			console.log(response);
 			await save_user_id(response.data);
+			await save_user_name(user.name);
 			
 			console.log(`Retrieved user id: "${response.data}"`);
+			*/
 
 			// Sends the client to the marketplace page
 			router.push("/(tabs)/(marketplace)");

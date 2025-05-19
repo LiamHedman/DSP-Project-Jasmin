@@ -4,7 +4,7 @@ import { Text, TextInput, Button, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "../../classes_tmp";
-import { save_user_id } from "@/auth_token";
+import { save_user_id, save_user_name } from "@/auth_token";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -31,13 +31,14 @@ export default function LoginScreen() {
 
 	async function register_user() {
 		try {
-			user = new User(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
+			user = new User(role, name,	"viktor@back.se", phone_number,	bio, address, date_of_birth, profile_picture_url, password);
 			
 			console.log(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
 			
-			//await axios.post(`${SERVER_URL}/register_user`, user);
+			await axios.post(`${SERVER_URL}/register_user`, user);
 			save_user_id(user.id);
-			router.push("/(tabs)/(chat)/ChatListScreen");
+			save_user_name(user.name);
+			//router.push("/(tabs)/(marketplace)");
 		} catch (error: any) {
 			// TODO: NOTIFY the user upon failed attempt
 			console.error("Registration failed:", error.message);

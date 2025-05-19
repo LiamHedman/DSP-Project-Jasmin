@@ -86,7 +86,7 @@ export default function UserProfilePage() {
 							<Text style={styles.userBio}>{user.bio}</Text>
 						</View>
 
-						<Text style={styles.userDetails}>{user.phone_number}</Text>
+						
 						<Text style={styles.userDetails}>{user.mail}</Text>
 						<Text style={styles.userDetails}>{user.address}</Text>
 						<Text style={styles.userDetails}>{user.date_of_birth}</Text>

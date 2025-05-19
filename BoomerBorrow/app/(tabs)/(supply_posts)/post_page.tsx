@@ -1,24 +1,27 @@
 import { Supply_post, User } from "@/classes_tmp";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
 
 const MarketplaceProduct = () => {
     const SERVER_URL = "http://localhost:3000";
 
     const [post, set_post] = useState<Supply_post>();
     const [owner, set_owner] = useState<User | null>(null); // Start as null
+    const { post_id, owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
 
     async function fetch_supply_post() {
         try {
-            const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
-            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${id}` } });
+            //const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
+            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${post_id}` } });
             set_post(response.data);
         } catch (error: any) {
             console.error("Failed to fetch supply_post:", error.message);
         }
     }
+    
 
     async function fetch_user() {
         try {
@@ -29,7 +32,7 @@ const MarketplaceProduct = () => {
             console.error("Failed to fetch owner info:", error.message);
         }
     }
- 
+
     useEffect(() => {
         fetch_supply_post();
     }, []);
@@ -42,27 +45,33 @@ const MarketplaceProduct = () => {
 
     return (
         <View style={styles.container}>
-            {/* Product Image (Using DiceBear Icon Based on ID) */}
+            {/* Post pic*/}
             <Image
-                source={{
-                    uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}`,
-                }}
-                style={styles.productImage}
-            />
+                source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+                style={styles.productImage} />
 
-            {/* Product Details */}
+            {/* Post details */}
             <Text style={styles.title}>{post?.title}</Text>
             <Text style={styles.description}>{post?.description}</Text>
             <Text style={styles.info}>Price: {post?.price} SEK</Text>
             <Text style={styles.info}>Category: {post?.category}</Text>
             <Text style={styles.info}>Location: {post?.location}</Text>
-
-            <Text style={styles.info}>Owner's Name: {owner?.name}</Text>
+            <Text style={styles.info}>Owner's Name: {post?.owner_name}</Text>
+            <Button 
+                title="till chat"
+                onPress={() => router.push({
+                                    pathname: "/(tabs)/(chat)/ChatListScreen",
+                                    params: {
+                                        owner_id: owner_id,
+                                        owner_name: owner_name,
+                                    },
+                    })
+                }
+            />
         </View>
     );
 };
 
-// Styles
 const styles = StyleSheet.create({
     container: {
         padding: 20,
@@ -91,11 +100,6 @@ const styles = StyleSheet.create({
     info: {
         fontSize: 18,
         marginBottom: 5,
-    },
-    notFound: {
-        fontSize: 18,
-        textAlign: "center",
-        marginVertical: 20,
     },
 });
 
