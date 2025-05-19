@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Supply_post } from "@/classes_tmp";
-import { get_user_id } from "@/auth_token";
+import { get_user_id, get_user_name } from "@/auth_token";
 import axios from "axios";
 import { router } from "expo-router";
 
@@ -77,9 +77,10 @@ export default function CreateAd() {
 		try {
 			const created_at = new Date().toLocaleDateString("sv-SE");
 			const owner_id = await get_user_id();
+			const owner_name = await get_user_name();
 
-			if (owner_id === null) { throw new Error("Owner id cannot be null upon post creation"); }
-			supply_post = new Supply_post(owner_id, title, description, price, category, location, post_picture_url, created_at, category_type);
+			if (owner_id === null || owner_name === null ) { throw new Error("Owner id or name cannot be null upon post creation"); }
+			supply_post = new Supply_post(owner_id, owner_name, title, description, price, category, location, post_picture_url, created_at, category_type);
 
 			await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
 			console.log("post_data (the new post) sent to the server");

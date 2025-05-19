@@ -3,8 +3,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, TextInput, StyleSheet, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import axios from "axios";
-import { User } from "./../../classes_tmp";
-import { save_user_id } from "@/auth_token";
+import { User } from "../classes_tmp";
+import { save_user_id, save_user_name } from "@/auth_token";
 import { Image } from "react-native";
 import * as WebBrowser from "expo-web-browser"; //to open the Google sign-in 
 import * as Google from 'expo-auth-session/providers/google' // a Google OAuth helper 
@@ -42,6 +42,7 @@ export default function LoginScreen() {
 			const user = { name: name, password: password }
 			const response = await axios.post(`${SERVER_URL}/login`, user);
 			await save_user_id(response.data);
+			await save_user_name(user.name);
 
 			console.log(`Retrieved user id: "${response.data}"`);
 
@@ -190,7 +191,7 @@ export default function LoginScreen() {
 	return (
 		<SafeAreaView style={styles.container}>
 			{/* Company logo */}
-			<Image source={require("./../../assets/images/bb_logo.svg")} style={styles.icon} />
+			<Image source={require("./../assets/images/bb_logo.svg")} style={styles.icon} />
 
 			<Text style={styles.title}>Logga in</Text>
 

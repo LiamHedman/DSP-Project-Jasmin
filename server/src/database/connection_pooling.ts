@@ -1,7 +1,8 @@
 const fs = require('fs');
 const { Pool } = require('pg');
 require('dotenv').config();
-import path from "path";
+//import path from "path";
+const path = require("path");
 
 // resolves the path the the certificate (ca.pem)
 const caPath = path.resolve(__dirname, "../../src/database/config/ca.pem");

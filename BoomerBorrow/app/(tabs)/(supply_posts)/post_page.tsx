@@ -1,14 +1,16 @@
 import { Supply_post, User } from "@/classes_tmp";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
 
 const MarketplaceProduct = () => {
     const SERVER_URL = "http://localhost:3000";
 
     const [post, set_post] = useState<Supply_post>();
     const [owner, set_owner] = useState<User | null>(null); // Start as null
+    const { post_id, owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
 
     async function fetch_supply_post() {
         try {
@@ -56,6 +58,18 @@ const MarketplaceProduct = () => {
             <Text style={styles.info}>Location: {post?.location}</Text>
 
             <Text style={styles.info}>Owner's Name: {owner?.name}</Text>
+
+            <Button 
+                title="till chat"
+                onPress={() => router.push({
+                                    pathname: "/(tabs)/(chat)/ChatListScreen",
+                                    params: {
+                                        owner_id: owner_id,
+                                        owner_name: owner_name,
+                                    },
+                    })
+                }
+            />
         </View>
     );
 };
