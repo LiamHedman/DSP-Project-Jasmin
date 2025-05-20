@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './App';
+/* import { RootStackParamList } from './App'; */
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { get_user_id, get_user_name } from '@/auth_token';
@@ -26,7 +26,7 @@ type Chat = {
 };
 
 
-type ChatListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ChatList'>;
+/* type ChatListNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ChatList'>; */
 
 
 const ChatListScreen: React.FC = () => {

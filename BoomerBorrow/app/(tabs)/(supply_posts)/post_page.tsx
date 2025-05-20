@@ -1,20 +1,22 @@
 import { Supply_post, User } from "@/classes_tmp";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 const MarketplaceProduct = () => {
     const SERVER_URL = "http://localhost:3000";
 
     const [post, set_post] = useState<Supply_post>();
     const [owner, set_owner] = useState<User | null>(null); // Start as null
-    const { post_id, owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
+    const { owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
 
     async function fetch_supply_post() {
         try {
+            fetch_user();
             const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
+            console.log("rec pid in pager", id);
             const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${id}` } });
             set_post(response.data);
         } catch (error: any) {
@@ -32,15 +34,16 @@ const MarketplaceProduct = () => {
         }
     }
 
-    useEffect(() => {
-        fetch_supply_post();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            console.log("Page re-entered / enterd");
+            fetch_supply_post();
 
-    useEffect(() => {
-        if (post?.owner_id) {
-            fetch_user();
-        }
-    }, [post]);
+            return () => {
+                console.log("Leaving page");
+            };
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
@@ -59,15 +62,15 @@ const MarketplaceProduct = () => {
 
             <Text style={styles.info}>Owner's Name: {owner?.name}</Text>
 
-            <Button 
+            <Button
                 title="till chat"
                 onPress={() => router.push({
-                                    pathname: "/(tabs)/(chat)/ChatListScreen",
-                                    params: {
-                                        owner_id: owner_id,
-                                        owner_name: owner_name,
-                                    },
-                    })
+                    pathname: "/(tabs)/(chat)/ChatListScreen",
+                    params: {
+                        owner_id: owner_id,
+                        owner_name: owner_name,
+                    },
+                })
                 }
             />
         </View>

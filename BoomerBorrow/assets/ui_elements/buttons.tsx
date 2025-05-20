@@ -83,7 +83,7 @@ const button_style = StyleSheet.create({
 
 const button_tc_common: ViewStyle  = {
 		flex: 1,
-		padding: 12,
+		padding: 16,
 		alignItems: 'center',
 		backgroundColor: '#9C9C9C',
 }
@@ -91,13 +91,13 @@ const button_tc_common: ViewStyle  = {
 const button_tc_style = StyleSheet.create({
   sorting_button_left: {
     ...button_tc_common,
-    borderTopLeftRadius: 25,
-    borderBottomLeftRadius: 25,
+    borderTopLeftRadius: 50,
+    borderBottomLeftRadius: 50,
   },
   sorting_button_right: {
     ...button_tc_common,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
+    borderTopRightRadius: 50,
+    borderBottomRightRadius: 50,
   },
   selected: {
     backgroundColor: '#007BFF',
@@ -105,6 +105,6 @@ const button_tc_style = StyleSheet.create({
   text: {
     color: '#fff',
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 24,
   },
 });

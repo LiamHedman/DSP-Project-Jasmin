@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ChatListScreen from './ChatListScreen';
@@ -20,4 +20,4 @@ const App = () => (
   </NavigationContainer>
 );
 
-export default App;
+export default App; */
