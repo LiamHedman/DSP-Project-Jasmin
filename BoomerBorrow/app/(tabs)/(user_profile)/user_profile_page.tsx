@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function UserProfilePage() {
 	const SERVER_URL = "http://localhost:3000";
 
-	const empty_user = new User("", "", "", "", "", "", "", "", "");
+	const empty_user = new User("", "", "", "", "", "", "", "", "", "");
 	const [user, set_user] = useState<User>(empty_user);
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 
