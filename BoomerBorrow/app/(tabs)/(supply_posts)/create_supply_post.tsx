@@ -15,7 +15,7 @@ export default function CreateAd() {
 	const [title, set_title] = useState("");
 	const [description, set_description] = useState("");
 	const [price, set_price] = useState("");
-	const [category_type, set_category_type] = useState("Produkt");
+	const [category_type, set_category_type] = useState("Uthyrning");
 	const [category, set_category] = useState("");
 	const [location, set_location] = useState("");
 	const [post_picture_url, set_post_picture_url] = useState("");
@@ -68,7 +68,7 @@ export default function CreateAd() {
 	};
 
 	const get_categories = () => {
-		return category_type === "Produkt"
+		return category_type === "Uthyrning"
 			? Object.entries(categories_product)
 			: Object.entries(categories_service);
 	};
@@ -80,7 +80,7 @@ export default function CreateAd() {
 			const owner_name = await get_user_name();
 
 			if (owner_id === null || owner_name === null ) { throw new Error("Owner id or name cannot be null upon post creation"); }
-			supply_post = new Supply_post(owner_id, owner_name, title, description, price, category, location, post_picture_url, created_at, category_type);
+			supply_post = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
 
 			await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
 			console.log("post_data (the new post) sent to the server");
@@ -116,13 +116,13 @@ export default function CreateAd() {
 			/>
 			{title_error ? <Text style={styles.errorText}>{title_error}</Text> : null}
 
-			<Text style={styles.label}>Produkt eller tjänst</Text>
+			<Text style={styles.label}>Uthyrning eller tjänst</Text>
 			<View style={styles.pickerContainer}>
 				<Picker
 					selectedValue={category_type}
 					style={styles.picker}
 					onValueChange={(itemValue) => set_category_type(itemValue)}>
-					<Picker.Item label="Produkt" value="Produkt" />
+					<Picker.Item label="Uthyrning" value="Uthyrning" />
 					<Picker.Item label="Tjänst" value="Tjänst" />
 				</Picker>
 			</View>

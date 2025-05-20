@@ -10,12 +10,10 @@ const router = express.Router();
 
 // Listens for a new post from a client. 
 router.post("/new_supply_post", async (req: Request, res: Response) => {
-    const { id, owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at } = req.body;
+    const { owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at } = req.body;
 
     try {
         const post_data = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
-        console.log(`ID of new supply post: ${id}`);
-        console.log(`Title of new supply post: ${title}`);
 
         await insert_data(table_name_supply_posts, post_data);
         res.status(200).json();

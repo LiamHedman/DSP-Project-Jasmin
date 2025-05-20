@@ -103,11 +103,11 @@ export default function MarketplaceScreen() {
 											/>
 										</View>
 										<View style={styles.postTexts}>
-											<Text style={styles.postTitle}>{post.category_type}</Text>
+											<Text style={styles.postCategoryType}>{post.category_type}</Text>
 											<Text style={styles.postTitle}>{post.title}</Text>
 											<Text style={styles.postCategory}>{post.category}</Text>
-											<Text style={styles.postDescription}>{post.description}</Text>
-											<Text style={styles.postPrice}>{(Number(post.price)).toLocaleString("sv-SE") + " kr"}</Text>
+											<Text style={styles.postDescription} numberOfLines={2} ellipsizeMode="tail">{post?.description}</Text>
+											<Text style={styles.postPrice}>{(Number(post.price)).toLocaleString("sv-SE") + " kr" + (post.category_type === "Uthyrning" ? "/dag" : "")}</Text>
 										</View>
 									</View>
 								</TouchableOpacity>
@@ -208,7 +208,11 @@ const styles = StyleSheet.create({
 	postTexts: {
 		flexDirection: "column",
 		justifyContent: "flex-start",
-		width: "100%",
+		width: "60%",
+	},
+	postCategoryType: {
+		fontSize: 14,
+		marginBottom: -10,
 	},
 	postTitle: {
 		fontWeight: "bold",
