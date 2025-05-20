@@ -29,8 +29,11 @@ export const button = ({ title, on_press, variant, bottom_margin = 0 }: Button):
 const button_common: ViewStyle  = {
     width: "80%",
     padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+		backgroundColor: "#007AFF",
+		paddingVertical: 24,
+		borderRadius: 12,
+		alignItems: "center",
+		marginTop: 15,
 }
 
 const styles = StyleSheet.create({
@@ -47,7 +50,9 @@ const styles = StyleSheet.create({
 
   text: {
     color: '#fff',
-    fontSize: 16,
-	fontWeight: "bold",
+    fontSize: 22,
+	  fontWeight: "bold",
+    textAlign: "center"
+
   },
 });
