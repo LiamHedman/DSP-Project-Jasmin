@@ -31,7 +31,7 @@ export default function LoginScreen() {
 
 	async function register_user() {
 		try {
-			user = new User(role, name,	"viktor@back.se", phone_number,	bio, address, date_of_birth, profile_picture_url, password);
+			user = new User("standard", role, name, mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
 			
 			console.log(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
 			
@@ -45,6 +45,7 @@ export default function LoginScreen() {
 		}
 	}
 
+	
 	const handle_register = async () => {
 		await register_user();
 	};

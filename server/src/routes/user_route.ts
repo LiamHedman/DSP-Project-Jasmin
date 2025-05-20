@@ -44,6 +44,29 @@ async function retrieve_id(username: string): Promise<string> {
     return result[0].id;
 }
 
+router.post("/google_sign_in", async (req: Request, res: Response) => {
+    const mail = req.headers.auth;
+
+    try {
+        const conditions = { mail: mail };
+        console.log(`Mail rec in the server: ${mail}`);
+        const result = await retrieve_data(table_name_users, conditions);
+        console.log(`parsed result in server after retrieve:`, JSON.stringify(result));
+        const user_exists: boolean = result.length;
+        if (user_exists && result[0].account_type === "standard") {
+            // The user exists and is a standard account
+            // i.e. a log in that should be blocked
+            res.status(419).json();
+        } else {
+            // User doesnt exists or has a google account
+            res.status(200).json(result);
+        }
+
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
 // Handles register user request from the client
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 router.post("/register_user", async (req: Request, res: Response) => {
@@ -58,12 +81,11 @@ router.post("/register_user", async (req: Request, res: Response) => {
         }
 
         console.log(`User "${user.name}" registered`);
-        
         user.password = hash_data(user.password);
         //user.mail = encrypt(user.mail);
         //user.phone_number = encrypt(user.phone_number);
-        await insert_data(table_name_users, user, ["mail", "phone_number", "address"]);
-        res.status(200).json();
+        await insert_data(table_name_users, user, ["phone_number", "address"]);
+        res.status(200).json(user.id);
     } catch (error) {
         res.status(500).json();
     }
