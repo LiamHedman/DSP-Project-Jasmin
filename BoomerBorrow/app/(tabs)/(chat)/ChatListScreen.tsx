@@ -63,65 +63,67 @@ const ChatListScreen: React.FC = () => {
   useEffect(() => {
     console.log("AAAAAAAAAAAAa");
     console.log("owner_id: " + owner_id);
+    console.log("owner_name: " + owner_name);
 
     console.log("HEJ");
     fetch_user_id();
     fetch_user_name();
-  }, []);
+  }, [id, name]);
 
   useEffect(() => {
-    console.log("SSSSSSSSSSSSS");
-  if (!id) return; // Skip if id hasn't loaded yet
+      
+    if (!id) return; // Skip if id hasn't loaded yet
+    if (!name) return; // Skip if name hasn't loaded yet
 
-  const q = query(
-    collection(db, 'chats'),
-    where("participants", "array-contains", id),
-  );
+    const q = query(
+      collection(db, 'chats'),
+      where("participants", "array-contains", id),
+    );
 
-  const setupChat = async () => {
-    const snapshot = await getDocs(q);
-    
-    const fetchedChats = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Chat, 'id'>),
-    }));
+    const setupChat = async () => {
+      const snapshot = await getDocs(q);
+      
+      const fetchedChats = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Chat, 'id'>),
+      }));
 
-    setChats(fetchedChats);
+      setChats(fetchedChats);
 
-    console.log("AAAAAAAAAAAAAAAAA");
+      console.log("AAAAAAAAAAAAAAAAA");
 
-    if(owner_id)
-      console.log("owner id works: " + owner_id);
+      if(owner_id)
+        console.log("owner id works: " + owner_id);
 
-    if(fetchedChats.some(chat => chat.participants.includes(owner_id)))
-      console.log("has id");
-    
+      if(fetchedChats.some(chat => chat.participants.includes(owner_id)))
+        console.log("has id");
+      
 
-    console.log(name);
-    console.log(owner_name);
+      console.log(name);
+      console.log(owner_name);
 
-    if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id))) {
-      const newChatRef = await addDoc(collection(db, 'chats'), {
-        id: id + "_" + owner_id,
-        participants: [id, owner_id],
-        names: [name, owner_name],
-      });
-      console.log("Created new chat with id:", newChatRef.id);
-    }
-  };
+      if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id))) {
+        const newChatRef = await addDoc(collection(db, 'chats'), {
+          id: id + "_" + owner_id,
+          participants: [id, owner_id],
+          names: [name, owner_name],
+        });
+        console.log("Created new chat with id:", newChatRef.id);
+      }
+    };
 
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const fetchedChats = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Chat, 'id'>),
-    }));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedChats = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Chat, 'id'>),
+      }));
 
-    setChats(fetchedChats);
-  });
-  setupChat();
+      setChats(fetchedChats);
+    });
+    setupChat();
 
-  return () => unsubscribe();
-}, [id]);
+    return () => unsubscribe();
+  }, [id]);
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ColorValue, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { Stack, Tabs } from "expo-router";
+import { router, Stack, Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useIsFocused } from "@react-navigation/native";
@@ -52,7 +52,7 @@ export default function TabLayout() {
         },
         headerTitle: getHeaderTitle(route.name),
         headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => router.back()}>
             <FontAwesome name="arrow-left" size={24} color="black" style={{ marginLeft: 15 }} />
           </TouchableOpacity>
         )
@@ -68,6 +68,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
   const rightTabs = tabItems.slice(half);
 
   const renderTabButton = (item: TabItem, index: number) => {
+    console.log(item);
     const route = state.routes.find(r => r.name === item.name);
     if (!route) return null;
 

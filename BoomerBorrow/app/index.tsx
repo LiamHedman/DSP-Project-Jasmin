@@ -82,31 +82,40 @@ export default function LoginScreen() {
 	};
 
 	async function sign_in(user: any) {
-		const parsed_user = JSON.parse(user);
-		// To set a random, non-guessable password
-		set_password(uuidv4());
+        const parsed_user = JSON.parse(user);
+        // To set a random, non-guessable password
+        set_password(uuidv4());
 
-		try {
-			const new_user = new User(role, parsed_user?.name, parsed_user?.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
-			await axios.post(`${SERVER_URL}/register_user`, new_user);
-			router.push("/(tabs)/(marketplace)");
-		} catch (error: any) {
-			if (error.response) {
-				switch (error.response.status) {
-					case 419:
-						console.log("Ignore this 419 error");
-						router.push("/(tabs)/(marketplace)");
-					case 500:
-						set_error_message("Internt serverfel. Försök igen senare.");
-						break;
-					default:
-						set_error_message(`Registrering misslyckades: ${error.response.status}`);
-				}
-			} else {
-				set_error_message("Något gick fel. Kontrollera din anslutning.");
-			}
-		}
-	}
+        try {
+            let response = await axios.post(`${SERVER_URL}/google_sign_in`, {}, { headers: { auth: `${parsed_user.email}` } });
+            const user_exists: boolean = response.data.length;
+            if (!user_exists) {
+                const new_user = new User("google", role, parsed_user.name, parsed_user.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
+                response = await axios.post(`${SERVER_URL}/register_user`, new_user);
+                console.log("response1; ", JSON.stringify(response));
+                console.log("response1 id; ",JSON.stringify(response.data));
+
+                save_user_id(response.data);
+            } else {
+                save_user_id(response.data[0].id)
+            }
+            router.push("/(tabs)/(marketplace)");
+        } catch (error: any) {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 419:
+                        set_error_message("Mailaddressen finns registrerad, men är ej kopplad till Google");
+                    case 500:
+                        set_error_message("Internt serverfel. Försök igen senare.");
+                        break;
+                    default:
+                        set_error_message(`Registrering misslyckades: ${error.response.status}`);
+                }
+            } else {
+                set_error_message("Något gick fel. Kontrollera din anslutning.");
+            }
+        }
+    }
 
 	// ** Google Auth **
 	// Currently logged-in user's info, once retrieved from Google or local storage.
@@ -134,7 +143,6 @@ export default function LoginScreen() {
 
 	// Checks if user info is already stored in AsyncStorage:
 	async function handleSignInWithGoogle() {
-
 		if (response?.type === "success") {
 			const token = response.authentication?.accessToken;
 			if (!token) {

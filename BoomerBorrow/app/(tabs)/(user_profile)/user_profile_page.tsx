@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function UserProfilePage() {
 	const SERVER_URL = "http://localhost:3000";
 
-	const empty_user = new User("", "", "", "", "", "", "", "", "");
+	const empty_user = new User("", "", "", "", "", "", "", "", "", "");
 	const [user, set_user] = useState<User>(empty_user);
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 
@@ -26,6 +26,7 @@ export default function UserProfilePage() {
 	async function fetch_supply_posts() {
 		try {
 			const response = await axios.get(`${SERVER_URL}/fetch_my_supply_posts`, { headers: { auth: `${await get_user_id()}` } });
+			console.log(response.data);
 			set_posts(response.data);
 		} catch (error: any) {
 			console.error("Failed to fetch supply posts:", error.message);
@@ -114,7 +115,7 @@ export default function UserProfilePage() {
 									{/* Post icon */}
 									<View style={styles.postIcon}>
 										<Image
-											source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+											source={{ uri: post.post_picture_url }}
 											style={styles.postIcon}
 										/>
 									</View>

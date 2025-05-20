@@ -1,14 +1,23 @@
-import React, { useState } from "react";
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Supply_post } from "@/classes_tmp";
 import { get_user_id, get_user_name } from "@/auth_token";
 import axios from "axios";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 export default function CreateAd() {
 	const SERVER_URL = "http://localhost:3000";
 	let supply_post: Supply_post;
+
+	// camera things
+	const { image_uri } = useLocalSearchParams();
+
+	useEffect(() => {
+		if (image_uri && typeof image_uri === "string") {
+			set_post_picture_url(image_uri);
+		}
+	}, [image_uri]);
 
 	// Post info
 	const [posts, set_posts] = useState<Supply_post[]>([]);
@@ -80,7 +89,7 @@ export default function CreateAd() {
 			const owner_name = await get_user_name();
 
 			if (owner_id === null || owner_name === null ) { throw new Error("Owner id or name cannot be null upon post creation"); }
-			supply_post = new Supply_post(owner_id, owner_name, title, description, price, category, location, post_picture_url, created_at, category_type);
+			supply_post = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
 
 			await axios.post(`${SERVER_URL}/new_supply_post`, supply_post, { headers: { auth: `${await get_user_id()}` } });
 			console.log("post_data (the new post) sent to the server");
@@ -100,73 +109,91 @@ export default function CreateAd() {
 	};
 
 	// Mock function, do not remove
-	const handle_add_images = async () => {};
+	const handle_add_images = async () => {
+		router.push("./camera");
+	};
 
 	return (
-		<View style={styles.container}>
-			{/* Inputs for post creation */}
-			<Text style={styles.title}>Skapa en annons</Text>
+		<ScrollView>
 
-			<Text style={styles.label}>Titel</Text>
-			<TextInput
-				style={styles.input}
-				value={title}
-				onChangeText={set_title}
-				placeholder="Ange en titel"
-			/>
-			{title_error ? <Text style={styles.errorText}>{title_error}</Text> : null}
+			<View style={styles.container}>
+				{/* Inputs for post creation */}
+				<Text style={styles.title}>Skapa en annons</Text>
 
-			<Text style={styles.label}>Produkt eller tjänst</Text>
-			<View style={styles.pickerContainer}>
-				<Picker
-					selectedValue={category_type}
-					style={styles.picker}
-					onValueChange={(itemValue) => set_category_type(itemValue)}>
-					<Picker.Item label="Produkt" value="Produkt" />
-					<Picker.Item label="Tjänst" value="Tjänst" />
-				</Picker>
+				<Text style={styles.label}>Titel</Text>
+				<TextInput
+					style={styles.input}
+					value={title}
+					onChangeText={set_title}
+					placeholder="Ange en titel"
+				/>
+				{title_error ? <Text style={styles.errorText}>{title_error}</Text> : null}
+
+				<Text style={styles.label}>Produkt eller tjänst</Text>
+				<View style={styles.pickerContainer}>
+					<Picker
+						selectedValue={category_type}
+						style={styles.picker}
+						onValueChange={(itemValue) => set_category_type(itemValue)}>
+						<Picker.Item label="Produkt" value="Produkt" />
+						<Picker.Item label="Tjänst" value="Tjänst" />
+					</Picker>
+				</View>
+
+				<Text style={styles.label}>Kategori</Text>
+				<View style={styles.pickerContainer}>
+					<Picker
+						selectedValue={category}
+						style={styles.picker}
+						onValueChange={(itemValue) => set_category(itemValue)}>
+						{get_categories().map(([key, label]) => (
+							<Picker.Item key={key} label={label} value={label} />
+						))}
+					</Picker>
+				</View>
+
+				<Text style={styles.label}>Beskrivning</Text>
+				<TextInput
+					style={styles.textarea}
+					value={description}
+					onChangeText={set_description}
+					placeholder="Beskriv din annons"
+					multiline
+				/>
+				{desc_error ? <Text style={styles.errorText}>{desc_error}</Text> : null}
+
+				<Text style={styles.label}>Pris</Text>
+				<TextInput
+					style={styles.input}
+					value={price}
+					placeholder="Ange ett pris"
+					keyboardType="numeric"
+					onChangeText={(text) => set_price(text.replace(/[^0-9]/g, ''))}
+					/>
+				{price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
+				
+				{/* Action buttons for the post creation */}
+				<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
+					<Text style={styles.createButtonText}>Ladda upp bilder</Text>
+				</TouchableOpacity>
+				<View style={styles.imagePreviewContainer}>
+					{post_picture_url ? (
+						<Image
+							source={{ uri: post_picture_url }}
+							style={styles.imagePreview}
+							resizeMode="cover"
+						/>
+					) : (
+						<View style={styles.imagePlaceholder}>
+							<Text style={styles.placeholderText}>Ingen bild vald</Text>
+						</View>
+					)}
+				</View>
+				<TouchableOpacity style={styles.createButton} onPress={handle_new_supply_post}>
+					<Text style={styles.createButtonText}>Skapa Annons</Text>
+				</TouchableOpacity>
 			</View>
-
-			<Text style={styles.label}>Kategori</Text>
-			<View style={styles.pickerContainer}>
-				<Picker
-					selectedValue={category}
-					style={styles.picker}
-					onValueChange={(itemValue) => set_category(itemValue)}>
-					{get_categories().map(([key, label]) => (
-						<Picker.Item key={key} label={label} value={label} />
-					))}
-				</Picker>
-			</View>
-
-			<Text style={styles.label}>Beskrivning</Text>
-			<TextInput
-				style={styles.textarea}
-				value={description}
-				onChangeText={set_description}
-				placeholder="Beskriv din annons"
-				multiline
-			/>
-			{desc_error ? <Text style={styles.errorText}>{desc_error}</Text> : null}
-
-			<Text style={styles.label}>Pris</Text>
-			<TextInput
-				style={styles.input}
-				value={price}
-				placeholder="Ange ett pris"
-				keyboardType="numeric"
-				onChangeText={(text) => set_price(text.replace(/[^0-9]/g, ''))}
-			/>
-			{price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
-			
-			{/* Action buttons for the post creation */}
-			<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
-				<Text style={styles.createButtonText}>Ladda upp bilder</Text>
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.createButton} onPress={handle_new_supply_post}>
-				<Text style={styles.createButtonText}>Skapa Annons</Text>
-			</TouchableOpacity>
-		</View>
+		</ScrollView>
 	);
 }
 
@@ -200,6 +227,30 @@ const styles = StyleSheet.create({
 		color: "red",
 		fontSize: 14,
 		marginTop: 5,
+		fontStyle: "italic",
+	},
+	imagePreviewContainer: {
+		alignItems: "center",
+		marginVertical: 10,
+	},
+	imagePreview: {
+		width: 200,
+		height: 200,
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: "#ccc",
+	},imagePlaceholder: {
+		width: 200,
+		height: 200,
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: "#ccc",
+		backgroundColor: "#f0f0f0",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	placeholderText: {
+		color: "#888",
 		fontStyle: "italic",
 	},
 });

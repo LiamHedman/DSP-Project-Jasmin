@@ -46,7 +46,7 @@ const MarketplaceProduct = () => {
         <View style={styles.container}>
             {/* Post pic*/}
             <Image
-                source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+                source={{ uri: post?.post_picture_url }}
                 style={styles.productImage} />
 
             {/* Post details */}
@@ -57,7 +57,7 @@ const MarketplaceProduct = () => {
             <Text style={styles.info}>Category: {post?.category}</Text>
             <Text style={styles.info}>Location: {post?.location}</Text>
 
-            <Text style={styles.info}>Owner's Name: {owner?.name}</Text>
+            <Text style={styles.info}>Owner's Name: {post?.owner_name}</Text>
 
             <Button 
                 title="till chat"
