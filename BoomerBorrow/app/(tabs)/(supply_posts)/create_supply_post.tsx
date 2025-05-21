@@ -104,7 +104,7 @@ export default function CreateAd() {
 	const handle_new_supply_post = async () => {
 		if (validate_post()) {
 			await send_supply_post();
-			router.push("/(tabs)/(user_profile)/user_profile_page");
+			router.push("/(tabs)/(user_profile)");
 		}
 	};
 

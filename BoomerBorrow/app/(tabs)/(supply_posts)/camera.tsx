@@ -2,6 +2,7 @@ import {
   CameraMode,
   CameraType,
   CameraView,
+  FlashMode,
   useCameraPermissions,
 } from "expo-camera";
 import { useRef, useState } from "react";
@@ -12,6 +13,8 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import React from "react";
 import { router } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function camera() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -19,7 +22,11 @@ export default function camera() {
   const [uri, setUri] = useState<string | null>(null);
   const [mode, setMode] = useState<CameraMode>("picture");
   const [facing, setFacing] = useState<CameraType>("back");
+  const [flash, setFlash] = useState<FlashMode>("off");
   const [recording, setRecording] = useState(false);
+
+  
+  const isFocused = useIsFocused();
 
   if (!permission) {
     return null;
@@ -62,8 +69,8 @@ export default function camera() {
     console.log({ video });
   };
 
-  const toggleMode = () => {
-    setMode((prev) => (prev === "picture" ? "video" : "picture"));
+  const toggleFlash = () => {
+    setFlash((prev) => (prev === "off" ? "on" : "off"));
   };
 
   const toggleFacing = () => {
@@ -90,15 +97,15 @@ export default function camera() {
         ref={ref}
         mode={mode}
         facing={facing}
-        mute={false}
+        flash={flash}
         responsiveOrientationWhenOrientationLocked
       >
         <View style={styles.shutterContainer}>
-          <Pressable onPress={toggleMode}>
-            {mode === "picture" ? (
-              <AntDesign name="picture" size={32} color="white" />
+          <Pressable onPress={toggleFlash}>
+            {flash === "on" ? (
+              <MaterialCommunityIcons name="flash" size={32} color="white" />
             ) : (
-              <Feather name="video" size={32} color="white" />
+              <MaterialCommunityIcons name="flash-off" size={32} color="white" />
             )}
           </Pressable>
           <Pressable onPress={mode === "picture" ? takePicture : recordVideo}>
@@ -132,7 +139,10 @@ export default function camera() {
 
   return (
     <View style={styles.container}>
-      {uri ? renderPicture() : renderCamera()}
+      {uri
+      ? renderPicture()
+      : isFocused && renderCamera() // only render camera when screen is focused
+    }
     </View>
   );
 }

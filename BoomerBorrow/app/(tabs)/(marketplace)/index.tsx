@@ -31,7 +31,7 @@ export default function MarketplaceScreen() {
 	}, []);
 
 	const handle_temporary = async () => {
-		router.push("/(tabs)/(user_profile)/user_profile_page");
+		router.push("/(tabs)/(user_profile)");
 	};
 
 const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {

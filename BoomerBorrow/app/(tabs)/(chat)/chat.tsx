@@ -10,8 +10,6 @@ import {
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import { RootStackParamList } from './App';
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 
 import { db } from '../../firebaseConfig'; //Our private file with keys from firebase
@@ -38,7 +36,6 @@ type Message = {
   createdAt: Timestamp;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>;
 
 type ChatParams = {
   id: string;

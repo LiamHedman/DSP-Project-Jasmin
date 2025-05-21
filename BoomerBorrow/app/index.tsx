@@ -73,7 +73,8 @@ export default function LoginScreen() {
 	const handle_login = async () => {
 		console.log("Username:", name);
 		console.log("Password:", password);
-		await login();
+		router.push("/(tabs)/(marketplace)");
+		//await login();
 	};
 
 	const handle_register = async () => {

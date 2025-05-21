@@ -125,7 +125,7 @@ export default function UserProfilePage() {
             const response = await axios.post(`${SERVER_URL}/modify_user`, new_user_info, { headers: { auth: `${await get_user_id()}` } });
             set_user(response.data);
 
-            router.push("/(tabs)/(user_profile)/user_profile_page");
+            router.push("/(tabs)/(user_profile)");
         } catch (error: any) {
             console.error("Edit profile failed:", error.message);
         }

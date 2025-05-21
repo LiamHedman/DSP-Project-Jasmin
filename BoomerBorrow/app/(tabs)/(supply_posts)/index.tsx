@@ -105,7 +105,7 @@ export default function CreateAd() {
     const handle_new_supply_post = async () => {
         if (validate_post()) {
             await send_supply_post();
-            router.push("/(tabs)/(user_profile)/user_profile_page");
+            router.push("/(tabs)/(user_profile)");
         }
     };
 
@@ -116,11 +116,24 @@ export default function CreateAd() {
 
     return (
         <ScrollView>
-
             <View style={styles.container}>
                 {/* Inputs for post creation */}
                 <Text style={styles.title}>Skapa en annons</Text>
 
+                {/* Action buttons for the post creation */}
+                <TouchableOpacity style={styles.imagePreviewContainer} onPress={handle_add_images}>
+                    {post_picture_url ? (
+                        <Image
+                            source={{ uri: post_picture_url }}
+                            style={styles.imagePreview}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <View style={styles.imagePlaceholder}>
+                            <Text style={styles.placeholderText}>Ladda upp bild</Text>
+                        </View>
+                    )}
+                </TouchableOpacity>
                 <Text style={styles.label}>Titel</Text>
                 <TextInput
                     style={styles.input}
@@ -173,23 +186,6 @@ export default function CreateAd() {
                     />
                 {price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
                 
-                {/* Action buttons for the post creation */}
-                <TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
-                    <Text style={styles.createButtonText}>Ladda upp bilder</Text>
-                </TouchableOpacity>
-                <View style={styles.imagePreviewContainer}>
-                    {post_picture_url ? (
-                        <Image
-                            source={{ uri: post_picture_url }}
-                            style={styles.imagePreview}
-                            resizeMode="cover"
-                        />
-                    ) : (
-                        <View style={styles.imagePlaceholder}>
-                            <Text style={styles.placeholderText}>Ingen bild vald</Text>
-                        </View>
-                    )}
-                </View>
                 <TouchableOpacity style={styles.createButton} onPress={handle_new_supply_post}>
                     <Text style={styles.createButtonText}>Skapa Annons</Text>
                 </TouchableOpacity>

@@ -1,10 +1,10 @@
+
 import React, { useLayoutEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ColorValue, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { router, Stack, Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { useIsFocused } from "@react-navigation/native";
-
+import { useIsFocused, useNavigationState, useNavigation } from "@react-navigation/native";
 
 type TabItem = {
   name: string;
@@ -19,12 +19,12 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome name="shopping-cart" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(chat)/ChatListScreen",
+    name: "(chat)",
     label: "Meddelanden",
     icon: (color, size, marginLeft) => <FontAwesome name="wifi" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(login)",
+    name: "(user_profile)",
     label: "DIN \nPROFIL",
     icon: (color, size, marginLeft) => <FontAwesome name="user-circle" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
@@ -40,24 +40,11 @@ const topRowCount = 2;
 export default function TabLayout() {
   return (
       <Tabs
-      screenOptions={({ navigation, route }) => ({
-        headerStyle: {
-          //backgroundColor: getBackgroundColor(route.name),
-          backgroundColor: getColor(route.name, false),
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          color: "black"
-        },
-        headerTitle: getHeaderTitle(route.name),
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => router.back()}>
-            <FontAwesome name="arrow-left" size={24} color="black" style={{ marginLeft: 15 }} />
-          </TouchableOpacity>
-        )
+      screenOptions={() => ({
+        headerShown: false,
       })}
       tabBar={(props) => <CustomTabBar {...props} />}
+      
     />
   );
 }
