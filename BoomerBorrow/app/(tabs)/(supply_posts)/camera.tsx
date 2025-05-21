@@ -21,7 +21,7 @@ export default function camera() {
   const ref = useRef<CameraView>(null);
   const [uri, setUri] = useState<string | null>(null);
   const [mode, setMode] = useState<CameraMode>("picture");
-  const [facing, setFacing] = useState<CameraType>("back");
+  const [facing, setFacing] = useState<CameraType>("front");
   const [flash, setFlash] = useState<FlashMode>("off");
   const [recording, setRecording] = useState(false);
 
