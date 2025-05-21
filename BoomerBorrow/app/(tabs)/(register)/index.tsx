@@ -161,7 +161,7 @@ export default function LoginScreen() {
 
 			{/* Login button */}
 			<TouchableOpacity style={styles.button} onPress={handle_login}>
-				<Text style={styles.buttonText}>Har du redan ett konto? Logga in här</Text>
+				<Text style={styles.buttonText}>Logga in med befintligt konto</Text>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);
@@ -184,33 +184,36 @@ const styles = StyleSheet.create({
 		transform: [{ translateX: -100 }], // Centers horizontally
 	},
 	title: {
-		fontSize: 30,
+		fontSize: 36,
 		fontWeight: "bold",
 		color: "#333",
 		marginBottom: 0,
 	},
 	input: {
 		width: "80%",
-		height: 50,
+		height: 65,
 		backgroundColor: "#FFF",
 		borderWidth: 1,
 		borderColor: "#DDD",
 		borderRadius: 10,
 		paddingHorizontal: 15,
 		marginVertical: 10,
+		fontSize: 20,
 	},
 	button: {
 		width: "80%",
 		backgroundColor: "#007AFF",
-		paddingVertical: 12,
+		paddingVertical: 16,
 		borderRadius: 10,
 		alignItems: "center",
+		justifyContent: "center",
 		marginTop: 15,
 	},
 	buttonText: {
 		color: "#FFF",
-		fontSize: 16,
+		fontSize: 24,
 		fontWeight: "bold",
+		textAlign: "center"
 	},
 	linkButton: {
 		marginTop: 15,
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		color: "red",
-		fontSize: 14,
+		fontSize: 18,
 		marginTop: 5,
 		fontStyle: "italic",
 	},

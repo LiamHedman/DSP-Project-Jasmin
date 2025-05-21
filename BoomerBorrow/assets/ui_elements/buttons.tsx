@@ -60,8 +60,11 @@ export const button_two_choice = ({ title, onPress, selected, variant }: Button_
 const button_common: ViewStyle  = {
     width: "80%",
     padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+		backgroundColor: "#007AFF",
+		paddingVertical: 24,
+		borderRadius: 12,
+		alignItems: "center",
+		marginTop: 15,
 }
 
 const button_style = StyleSheet.create({
@@ -76,8 +79,10 @@ const button_style = StyleSheet.create({
 
   text: {
     color: '#fff',
-    fontSize: 16,
-	fontWeight: "bold",
+    fontSize: 22,
+	  fontWeight: "bold",
+    textAlign: "center"
+
   },
 });
 
