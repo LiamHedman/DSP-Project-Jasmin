@@ -10,8 +10,9 @@ import Mapbox, { MapView, MarkerView, Camera } from "@rnmapbox/maps";
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 
 export default function CreateAd() {
+	const params = useLocalSearchParams();
 	const SERVER_URL = "http://localhost:3000";
-	const { image_uri } = useLocalSearchParams();
+	//const { image_uri } = useLocalSearchParams();
 
 	// ✅ Default Stockholm coords
 	const defaultCoords: [number, number] = [18.0686, 59.3293];
@@ -35,11 +36,18 @@ export default function CreateAd() {
 	const [price_error, set_price_error] = useState("");
 	const [location_error, set_location_error] = useState("");
 
+	
+
 	useEffect(() => {
-		if (image_uri && typeof image_uri === "string") {
-			set_post_picture_url(image_uri);
-		}
-	}, [image_uri]);
+		console.log("Params received in CreateAd:", params);
+		if (params.image_uri) set_post_picture_url(params.image_uri as string);
+		if (params.title) set_title(params.title as string);
+		if (params.description) set_description(params.description as string);
+		if (params.price) set_price(params.price as string);
+		if (params.category_type) set_category_type(params.category_type as string);
+		if (params.category) set_category(params.category as string);
+		if (params.location) set_location(params.location as string);
+	}, [params]);
 
 	const categories_product = {
 		ÖVRIGT: "Övrigt",
@@ -128,8 +136,19 @@ export default function CreateAd() {
 		}
 	};
 
-	const handle_add_images = async () => {
-		router.push("./camera");
+	const handle_add_images = () => {
+  		router.push({
+   			pathname: "./camera",
+    		params: {
+      			title,
+      			description,
+      			price,
+      			category_type,
+      			category,
+      			location,
+      			post_picture_url,
+    		},
+  		});
 	};
 
 	return (
@@ -177,6 +196,20 @@ export default function CreateAd() {
 					onChangeText={(text) => set_price(text.replace(/[^0-9]/g, ''))}
 				/>
 				{price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
+				
+								<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
+					<Text style={styles.createButtonText}>Ladda upp bilder</Text>
+				</TouchableOpacity>
+
+				<View style={styles.imagePreviewContainer}>
+					{post_picture_url ? (
+						<Image source={{ uri: post_picture_url }} style={styles.imagePreview} resizeMode="cover" />
+					) : (
+						<View style={styles.imagePlaceholder}>
+							<Text style={styles.placeholderText}>Ingen bild vald</Text>
+						</View>
+					)}
+				</View>
 
 				<Text style={styles.label}>Plats</Text>
 				<View style={styles.searchContainer}>
@@ -212,20 +245,6 @@ export default function CreateAd() {
 							</View>
 						</MarkerView>
 					</MapView>
-				</View>
-
-				<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
-					<Text style={styles.createButtonText}>Ladda upp bilder</Text>
-				</TouchableOpacity>
-
-				<View style={styles.imagePreviewContainer}>
-					{post_picture_url ? (
-						<Image source={{ uri: post_picture_url }} style={styles.imagePreview} resizeMode="cover" />
-					) : (
-						<View style={styles.imagePlaceholder}>
-							<Text style={styles.placeholderText}>Ingen bild vald</Text>
-						</View>
-					)}
 				</View>
 
 				<TouchableOpacity style={styles.createButton} onPress={handle_new_supply_post}>
