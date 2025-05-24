@@ -51,22 +51,11 @@ export default function camera() {
         setUri(photo.uri);
         
         router.replace({
-          pathname: "./create_supply_post",
+          pathname: "/(tabs)/(supply_posts)/create_supply_post",
           params: { image_uri: photo.uri },
         });
       }
     }
-  };
-
-  const recordVideo = async () => {
-    if (recording) {
-      setRecording(false);
-      ref.current?.stopRecording();
-      return;
-    }
-    setRecording(true);
-    const video = await ref.current?.recordAsync();
-    console.log({ video });
   };
 
   const toggleFlash = () => {
@@ -108,7 +97,7 @@ export default function camera() {
               <MaterialCommunityIcons name="flash-off" size={32} color="white" />
             )}
           </Pressable>
-          <Pressable onPress={mode === "picture" ? takePicture : recordVideo}>
+          <Pressable onPress={takePicture}>
             {({ pressed }) => (
               <View
                 style={[
@@ -122,7 +111,7 @@ export default function camera() {
                   style={[
                     styles.shutterBtnInner,
                     {
-                      backgroundColor: mode === "picture" ? "white" : "red",
+                      backgroundColor: "white"
                     },
                   ]}
                 />

@@ -4,6 +4,7 @@ import { Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-nat
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "./../../../classes_tmp";
+import { save_user_id, save_user_name } from "@/auth_token";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -71,30 +72,20 @@ export default function LoginScreen() {
 	}
 
 	async function register_user() {
-		try {
-			user = new User(role, name, mail, phone_number, bio, address, date_of_birth, profile_picture_url, password);
-			await axios.post(`${SERVER_URL}/register_user`, user);
-			router.back();
-		} catch (error: any) {
-			if (error.response) {
-				switch (error.response.status) {
-					//case 418:
-						//set_error_message("Användarnamnet är redan registrerad.")
-						//break;
-					case 419:
-						set_error_message("Mailadressen är redan registrerad.");
-						break;
-					case 500:
-						set_error_message("Internt serverfel. Försök igen senare.");
-						break;
-					default:
-						set_error_message(`Registrering misslyckades: ${error.response.status}`);
-				}
-			} else {
-				set_error_message("Något gick fel. Kontrollera din anslutning.");
+			try {
+				user = new User("standard", role, name, mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
+				
+				console.log(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
+				
+				await axios.post(`${SERVER_URL}/register_user`, user);
+				save_user_id(user.id);
+				save_user_name(user.name);
+				//router.push("/(tabs)/(marketplace)");
+			} catch (error: any) {
+				// TODO: NOTIFY the user upon failed attempt
+				console.error("Registration failed:", error.message);
 			}
 		}
-	}
 
 	const handle_register = async () => {
 		if (validate_registration()) {

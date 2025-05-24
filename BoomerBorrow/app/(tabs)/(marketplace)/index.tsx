@@ -39,7 +39,7 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 	console.log("owner_name: " + owner_name);
     try {
         await AsyncStorage.setItem("post_id", post_id);
-        router.push({
+        router.replace({
                 pathname: "/(tabs)/(supply_posts)/post_page",
                 params: {
 					post_id: post_id,

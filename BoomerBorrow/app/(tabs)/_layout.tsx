@@ -29,7 +29,7 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome name="user-circle" size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(supply_posts)",
+    name: "(supply_posts)/create_supply_post",
     label: "LÄGG\nUP\nANONS",
     icon: (color, size, marginLeft) => <FontAwesome name="plus-square" size={size} color={color} style={{marginLeft: marginLeft}} />,
   },
