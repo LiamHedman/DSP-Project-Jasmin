@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import { get_user_id } from "@/auth_token";
+import { get_user_id, save_user_id, save_user_name } from "@/auth_token";
 import axios from "axios";
 import { Supply_post, User } from "@/classes_tmp";
 import { router } from "expo-router";
@@ -15,13 +15,14 @@ export default function UserProfilePage() {
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 
 	async function fetch_user() {
-		try {
-			const response = await axios.get(`${SERVER_URL}/fetch_user`, { headers: { auth: `${await get_user_id()}` } });
-			set_user(response.data);
-		} catch (error: any) {
-			console.error("Failed to fetch user info:", error.message);
-		}
+	try {
+		const user_id = await get_user_id();
+		const response = await axios.get(`${SERVER_URL}/fetch_user`, { headers: { auth: user_id } });
+		set_user(response.data);
+	} catch (error: any) {
+		console.error("Failed to fetch user info:", error.message);
 	}
+}
 
 	async function fetch_supply_posts() {
 		try {
@@ -56,6 +57,8 @@ export default function UserProfilePage() {
 	};
 
 	const handle_create_supply_post = async () => {
+		save_user_id(user.id);
+		save_user_name(user.name);
 		router.push("/(tabs)/(supply_posts)/create_supply_post");
 	};
 
