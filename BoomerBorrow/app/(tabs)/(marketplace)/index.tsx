@@ -145,14 +145,28 @@ export default function MarketplaceScreen() {
 		  {posts.map((p, i) => {
 			const coords = p.location.split(",").map((n) => parseFloat(n));
 			const isValidCoords = coords.length === 2 && coords.every((c) => !isNaN(c));
+
 			return isValidCoords ? (
-			  <MarkerView key={i} coordinate={[coords[0], coords[1]]}>
-				<View style={{ backgroundColor: "blue", padding: 4, borderRadius: 6 }}>
-				  <Text style={{ color: "white", fontSize: 10 }}>{p.title}</Text>
-				</View>
-			  </MarkerView>
+				<MarkerView key={i} coordinate={[coords[0], coords[1]]}>
+					<TouchableOpacity
+						onPress={() =>
+							router.push({
+								pathname: "/(tabs)/(supply_posts)/post_page",
+								params: {
+									post_id: p.id,
+									owner_id: p.owner_id,
+									owner_name: p.owner_name,
+								},
+							})
+						}
+					>
+						<View style={{ backgroundColor: "blue", padding: 4, borderRadius: 6 }}>
+							<Text style={{ color: "white", fontSize: 10 }}>{p.title}</Text>
+						</View>
+					</TouchableOpacity>
+				</MarkerView>
 			) : null;
-		  })}
+		})}
 		  {/* Extra markers from second code */}
 		  {user_location && (
 			<MarkerView coordinate={user_location}>
