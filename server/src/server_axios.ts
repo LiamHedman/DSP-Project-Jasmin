@@ -9,7 +9,8 @@ const app = express();
 const PORT = 3000;
 
 // Middleware which enables automatic JSON parsing
-app.use(express.json());
+app.use(express.json({ limit: '5mb' })); // Increase JSON body size to 10MB
+
 // Enables cross-origin resource sharing
 // i.e. enables the front end (different port) to communicate
 // to the server
