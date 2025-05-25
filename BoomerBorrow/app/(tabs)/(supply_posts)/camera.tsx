@@ -2,6 +2,7 @@ import {
   CameraMode,
   CameraType,
   CameraView,
+  FlashMode,
   useCameraPermissions,
 } from "expo-camera";
 import { useRef, useState } from "react";
@@ -12,14 +13,20 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import React from "react";
 import { router } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function camera() {
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef<CameraView>(null);
   const [uri, setUri] = useState<string | null>(null);
   const [mode, setMode] = useState<CameraMode>("picture");
-  const [facing, setFacing] = useState<CameraType>("back");
+  const [facing, setFacing] = useState<CameraType>("front");
+  const [flash, setFlash] = useState<FlashMode>("off");
   const [recording, setRecording] = useState(false);
+
+  
+  const isFocused = useIsFocused();
 
   if (!permission) {
     return null;
@@ -44,26 +51,15 @@ export default function camera() {
         setUri(photo.uri);
         
         router.replace({
-          pathname: "./create_supply_post",
+          pathname: "/(tabs)/(supply_posts)/create_supply_post",
           params: { image_uri: photo.uri },
         });
       }
     }
   };
 
-  const recordVideo = async () => {
-    if (recording) {
-      setRecording(false);
-      ref.current?.stopRecording();
-      return;
-    }
-    setRecording(true);
-    const video = await ref.current?.recordAsync();
-    console.log({ video });
-  };
-
-  const toggleMode = () => {
-    setMode((prev) => (prev === "picture" ? "video" : "picture"));
+  const toggleFlash = () => {
+    setFlash((prev) => (prev === "off" ? "on" : "off"));
   };
 
   const toggleFacing = () => {
@@ -90,18 +86,18 @@ export default function camera() {
         ref={ref}
         mode={mode}
         facing={facing}
-        mute={false}
+        flash={flash}
         responsiveOrientationWhenOrientationLocked
       >
         <View style={styles.shutterContainer}>
-          <Pressable onPress={toggleMode}>
-            {mode === "picture" ? (
-              <AntDesign name="picture" size={32} color="white" />
+          <Pressable onPress={toggleFlash}>
+            {flash === "on" ? (
+              <MaterialCommunityIcons name="flash" size={32} color="white" />
             ) : (
-              <Feather name="video" size={32} color="white" />
+              <MaterialCommunityIcons name="flash-off" size={32} color="white" />
             )}
           </Pressable>
-          <Pressable onPress={mode === "picture" ? takePicture : recordVideo}>
+          <Pressable onPress={takePicture}>
             {({ pressed }) => (
               <View
                 style={[
@@ -115,7 +111,7 @@ export default function camera() {
                   style={[
                     styles.shutterBtnInner,
                     {
-                      backgroundColor: mode === "picture" ? "white" : "red",
+                      backgroundColor: "white"
                     },
                   ]}
                 />
@@ -132,7 +128,10 @@ export default function camera() {
 
   return (
     <View style={styles.container}>
-      {uri ? renderPicture() : renderCamera()}
+      {uri
+      ? renderPicture()
+      : isFocused && renderCamera() // only render camera when screen is focused
+    }
     </View>
   );
 }
