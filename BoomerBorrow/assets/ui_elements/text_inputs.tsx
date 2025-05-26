@@ -38,12 +38,13 @@ const styles = StyleSheet.create({
     },
     input: {
         width: "100%",
-        height: 50,
+        height: 70,
         backgroundColor: "#FFF",
         borderWidth: 1,
         borderColor: "#DDD",
         borderRadius: 10,
         paddingHorizontal: 15,
         marginVertical: 5,
+        fontSize: 18,
     },
 });

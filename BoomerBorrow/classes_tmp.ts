@@ -29,7 +29,6 @@ export class User {
     public demand_post_ids: string[];
 
     constructor(
-        // id: string,
         account_type: string,
         role: string,
         name: string,

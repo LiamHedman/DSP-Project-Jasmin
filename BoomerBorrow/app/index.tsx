@@ -208,17 +208,20 @@ export default function LoginScreen() {
 				<Input_common title="Lösenord" value={password} on_change_text={set_password} hide_input={true} />
 			</View>
 
+
+	
 			{/* Login button */}
 			<Button title="Logga in" on_press={handle_login} variant="visit" bottom_margin={10} />
+
 			{error_message ? <Text style={styles.error_text}>{error_message}</Text> : null}
 
 			{/* GOOGLE AUTH */}
 			<TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
-				<Text style={styles.buttonText}>Logga in/registrera med Google</Text>
+				<Text style={styles.buttonText}>Logga in eller registrera{"\n"}med Google</Text>
 			</TouchableOpacity>
 
 			{/* Register button */}
-			<Button title="Har du inget konto? Registera dig här" on_press={handle_register} variant="visit" bottom_margin={15} />
+			<Button title="Har du inget konto?    Registera dig här" on_press={handle_register} variant="visit" bottom_margin={15} />
 		</SafeAreaView>
 	);
 }
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		paddingTop: 20,
 		paddingBottom: 20,
+
 	},
 	icon: {
 		width: 200,
@@ -246,7 +250,7 @@ const styles = StyleSheet.create({
 		transform: [{ translateX: -100 }], // needs to be half the width
 	},
 	title: {
-		fontSize: 30,
+		fontSize: 36,
 		fontWeight: "bold",
 		color: "#333",
 		marginBottom: 0,
@@ -257,9 +261,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFF",
 		borderWidth: 1,
 		borderColor: "#DDD",
-		borderRadius: 10,
+		borderRadius: 12,
 		paddingHorizontal: 15,
 		marginVertical: 10,
+		fontSize: 20,
 	},
 	forgotPassword: {
 		color: "#007AFF",
@@ -269,15 +274,18 @@ const styles = StyleSheet.create({
 	button: {
 		width: "80%",
 		backgroundColor: "#007AFF",
-		paddingVertical: 12,
-		borderRadius: 10,
+		paddingVertical: 18,
+		borderRadius: 12,
 		alignItems: "center",
-		marginTop: 10,
+		marginTop: 15,
+		marginBottom: 15,
 	},
 	buttonText: {
 		color: "#FFF",
-		fontSize: 16,
+		fontSize: 22,
 		fontWeight: "bold",
+		textAlign: "center"
+
 	},
 	linkButton: {
 		marginTop: 15,

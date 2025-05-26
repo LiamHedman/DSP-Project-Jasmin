@@ -15,23 +15,23 @@ type TabItem = {
 const tabItems: TabItem[] = [
   {
     name: "(marketplace)",
-    label: "SE ANDRAS\nANONSER ",
-    icon: (color, size, marginLeft) => <FontAwesome name="shopping-cart" size={size} color={color} style={{marginLeft: marginLeft}}/>,
+    label: "Marknad",
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
     name: "(chat)",
     label: "Meddelanden",
-    icon: (color, size, marginLeft) => <FontAwesome name="wifi" size={size} color={color} style={{marginLeft: marginLeft}}/>,
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
     name: "(user_profile)",
-    label: "DIN \nPROFIL",
-    icon: (color, size, marginLeft) => <FontAwesome name="user-circle" size={size} color={color} style={{marginLeft: marginLeft}}/>,
+    label: "Min Profil",
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
     name: "(supply_posts)/create_supply_post",
-    label: "LÄGG\nUP\nANONS",
-    icon: (color, size, marginLeft) => <FontAwesome name="plus-square" size={size} color={color} style={{marginLeft: marginLeft}} />,
+    label: "Ny annons",
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}} />,
   },
 ];
 
@@ -52,13 +52,12 @@ export default function TabLayout() {
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const half = Math.ceil(tabItems.length / 2);
   const leftTabs = tabItems.slice(0, half);
-  const rightTabs = tabItems.slice(half);
+  const rightTabs = tabItems.slice(half, tabItems.length);
 
   const renderTabButton = (item: TabItem, index: number) => {
-    console.log(item);
+    //console.log(item);
     const route = state.routes.find(r => r.name === item.name);
     if (!route) return null;
-
     const isFocused = state.index === state.routes.findIndex(r => r.name === item.name);
 
     const onPress = () => {
@@ -95,7 +94,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
       {/* Right column */}
       <View style={{ flexDirection: "column", flex: 1 }}>
-        {rightTabs.map((item, index) => renderTabButton(item, index + half))}
+        {rightTabs.map((item, index) => renderTabButton(item, index))}
       </View>
     </View>
   );
@@ -105,37 +104,31 @@ const getButtonStyle = (color: ColorValue): ViewStyle => ({
   flex: 1,
   flexDirection: "row",
   alignItems: "center",
-  justifyContent: "flex-start",
-  paddingVertical: 15,
   backgroundColor: color,
-  margin: 8,
-  borderRadius: 55,
-  shadowColor: "black",
-  shadowRadius: 5
+  justifyContent: "center",
+
 });
 const getBackgroundStyle = (routeName: string): ViewStyle => ({
-  backgroundColor: getColor(routeName, false), 
-  height: "25%",
+  backgroundColor: "ffffff", 
+  height: "15%",
   flexDirection: "row", 
-  justifyContent: "center", 
-  borderTopLeftRadius: 25,  
-  borderTopRightRadius: 25,
-  shadowColor: "black", 
-  shadowRadius: 15 
+  justifyContent: "center",
+  borderTopWidth: 1,
+  borderColor: "#0C1013",
 });
 
 const getColor= (routeName: string, isFocused: boolean): ColorValue => {
   switch (routeName) {
     case "(supply_posts)":
-      return isFocused ? "#DDDA6F" : "#FFFB9F";
+      return isFocused ? "#007BFF" : "#007BFF";
     case "(login)":
-      return isFocused ? "#DDDA6F" : "#FFFB9F";
+      return isFocused ? "#007BFF" : "#007BFF";
     case "(marketplace)":
-      return isFocused ? "#91B788" : "#B8E4AE";
+      return isFocused ? "#007BFF" : "#007BFF";
     case "(chat)/ChatListScreen":
-      return isFocused ? "#91B788" : "#B8E4AE";
+      return isFocused ? "#007BFF" : "#007BFF";
     default:
-      return isFocused ? "#DDDA6F" : "#FFFB9F";
+      return isFocused ? "#007BFF" : "#007BFF";
   }
 }
 
@@ -157,10 +150,8 @@ const getBackgroundColor = (routeName: String): ColorValue => {
 */
 
 const getTextStyle = (): TextStyle => ({
-  color: "black",
+  color: "#fff",
   flexShrink: 0,
-  marginLeft: 8,
-  marginRight: 40,
   fontSize: 20,
   fontWeight: "bold",
 });
@@ -169,7 +160,7 @@ const getHeaderTitle = (routeName: string): string => {
   switch (routeName) {
     case "(marketplace)":
       return "Marketplace";
-    case "(login)":
+    case "(user_profile)":
       return "Profile";
     case "(chat)/connection":
       return "Connection";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import { get_user_id } from "@/auth_token";
+import { get_user_id, save_user_id, save_user_name } from "@/auth_token";
 import axios from "axios";
 import { Supply_post, User } from "@/classes_tmp";
 import { router } from "expo-router";
@@ -10,18 +10,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function UserProfilePage() {
 	const SERVER_URL = "http://localhost:3000";
 
-	const empty_user = new User("", "", "", "", "", "", "", "", "", "");
+	const empty_user = new User("", "","", "", "", "", "", "", "", "");
 	const [user, set_user] = useState<User>(empty_user);
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 
 	async function fetch_user() {
-		try {
-			const response = await axios.get(`${SERVER_URL}/fetch_user`, { headers: { auth: `${await get_user_id()}` } });
-			set_user(response.data);
-		} catch (error: any) {
-			console.error("Failed to fetch user info:", error.message);
-		}
+	try {
+		const user_id = await get_user_id();
+		const response = await axios.get(`${SERVER_URL}/fetch_user`, { headers: { auth: user_id } });
+		set_user(response.data);
+	} catch (error: any) {
+		console.error("Failed to fetch user info:", error.message);
 	}
+}
 
 	async function fetch_supply_posts() {
 		try {
@@ -56,6 +57,8 @@ export default function UserProfilePage() {
 	};
 
 	const handle_create_supply_post = async () => {
+		save_user_id(user.id);
+		save_user_name(user.name);
 		router.push("/(tabs)/(supply_posts)/create_supply_post");
 	};
 
@@ -99,7 +102,7 @@ export default function UserProfilePage() {
 					<TouchableOpacity style={styles.button} onPress={handle_edit_profile}>
 						<Text style={styles.buttonText}>Redigera profil</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
+					<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons</Text></TouchableOpacity>
 					<TouchableOpacity style={styles.logoutButton} onPress={handle_logout}><Text style={styles.buttonText}>Logga ut</Text></TouchableOpacity>
 				
 				</View>
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
 	logoutButton: {
 		width: "100%",
 		backgroundColor: "#ff0000",
-		paddingVertical: 12,
+		paddingVertical: 18,
 		borderRadius: 10,
 		alignItems: "center",
 		marginTop: 15,
@@ -270,14 +273,14 @@ const styles = StyleSheet.create({
 	button: {
 		width: "100%",
 		backgroundColor: "#007AFF",
-		paddingVertical: 12,
+		paddingVertical: 18,
 		borderRadius: 10,
 		alignItems: "center",
 		marginTop: 15,
 	},
 	buttonText: {
 		color: "#FFF",
-		fontSize: 16,
+		fontSize: 24,
 		fontWeight: "bold",
 	},
 });

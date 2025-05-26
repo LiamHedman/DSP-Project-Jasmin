@@ -22,7 +22,7 @@ async function mail_in_use(mail: string): Promise<boolean> {
     const conditions = {
         mail: mail
     };
-    const result = await retrieve_data(table_name_users, conditions, ["mail"]);
+    const result = await retrieve_data(table_name_users, conditions);
     return result.length;
 }
 
@@ -112,7 +112,7 @@ router.post("/modify_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" set up for modification`);
         const condition = { id: user_id };
-        await modify_data(table_name_users, new_user_data, condition);
+        await modify_data(table_name_users, new_user_data, condition, ["phone_number", "address"]);
 
         res.status(200).json();
     } catch (error) {
@@ -126,11 +126,34 @@ router.get("/fetch_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" fetch from client`);
         const condition = { id: user_id };
-        const users = await retrieve_data(table_name_users, condition, ["mail", "phone_number", "address"]);
+        const users = await retrieve_data(table_name_users, condition, ["phone_number", "address"]);
         if (users.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
         res.status(200).json(users[0]);
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
+router.post("/google_sign_in", async (req: Request, res: Response) => {
+    const mail = req.headers.auth;
+
+    try {
+        const conditions = { mail: mail };
+        console.log(`Mail rec in the server: ${mail}`);
+        const result = await retrieve_data(table_name_users, conditions);
+        console.log(`parsed result in server after retrieve:`, JSON.stringify(result));
+        const user_exists: boolean = result.length;
+        if (user_exists && result[0].account_type === "standard") {
+            // The user exists and is a standard account
+            // i.e. a log in that should be blocked
+            res.status(419).json();
+        } else {
+            // User doesnt exists or has a google account
+            res.status(200).json(result);
+        }
+
     } catch (error) {
         res.status(500).json();
     }
@@ -142,7 +165,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = req.body;
 
     try {
-        if (!await username_in_use(user.name)) { 
+        if (!await username_in_use(user.name)) {
             return res.status(418).json();
         }
 
