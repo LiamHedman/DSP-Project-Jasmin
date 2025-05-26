@@ -30,7 +30,7 @@ export default function CreateAd() {
 	const [title, set_title] = useState("");
 	const [description, set_description] = useState("");
 	const [price, set_price] = useState("");
-	const [category_type, set_category_type] = useState("Produkt");
+	const [category_type, set_category_type] = useState("Uthyrning");
 	const [category, set_category] = useState("");
 	const [location, set_location] = useState(`${defaultCoords[0]},${defaultCoords[1]}`); 
 	const [post_picture_url, set_post_picture_url] = useState("");
@@ -44,7 +44,7 @@ export default function CreateAd() {
 	
 
 	useEffect(() => {
-		console.log("Params received in CreateAd:", params);
+		// console.log("Params received in CreateAd:", params);
 		if (params.image_uri) set_post_picture_url(params.image_uri as string);
 		if (params.title) set_title(params.title as string);
 		if (params.description) set_description(params.description as string);
@@ -76,7 +76,7 @@ export default function CreateAd() {
 	};
 
 	const get_categories = () => {
-		return category_type === "Produkt"
+		return category_type === "Uthyrning"
 			? Object.entries(categories_product)
 			: Object.entries(categories_service);
 	};
@@ -125,7 +125,7 @@ export default function CreateAd() {
 			if (!owner_id || !owner_name) throw new Error("User not authenticated");
 
 			const newPost = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
-			await axios.post(`${SERVER_URL}/new_supply_post`, newPost, { headers: { auth: `${owner_id}` } });
+			await axios.post(`${SERVER_URL}/new_supply_post`, newPost, { headers: { auth: `${owner_id}` } }); 
 
 			const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
 			set_posts(response.data);
@@ -165,13 +165,16 @@ export default function CreateAd() {
 				<TextInput style={styles.input} value={title} onChangeText={set_title} placeholder="Ange en titel" />
 				{title_error ? <Text style={styles.errorText}>{title_error}</Text> : null}
 
-				<Text style={styles.label}>Produkt eller tjänst</Text>
-				<View style={styles.pickerContainer}>
-					<Picker selectedValue={category_type} style={styles.picker} onValueChange={set_category_type}>
-						<Picker.Item label="Produkt" value="Produkt" />
-						<Picker.Item label="Tjänst" value="Tjänst" />
-					</Picker>
-				</View>
+			<Text style={styles.label}>Uthyrning eller tjänst</Text>
+			<View style={styles.pickerContainer}>
+				<Picker
+					selectedValue={category_type}
+					style={styles.picker}
+					onValueChange={(itemValue) => set_category_type(itemValue)}>
+					<Picker.Item label="Uthyrning" value="Uthyrning" /> 
+					<Picker.Item label="Tjänst" value="Tjänst" />
+				</Picker>
+			</View>
 
 				<Text style={styles.label}>Kategori</Text>
 				<View style={styles.pickerContainer}>

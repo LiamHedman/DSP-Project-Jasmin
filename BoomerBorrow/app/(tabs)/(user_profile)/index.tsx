@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function UserProfilePage() {
 	const SERVER_URL = "http://localhost:3000";
 
-	const empty_user = new User("", "", "", "", "", "", "", "", "", "");
+	const empty_user = new User("", "","", "", "", "", "", "", "", "");
 	const [user, set_user] = useState<User>(empty_user);
 	const [posts, set_posts] = useState<Supply_post[]>([]);
 
@@ -102,7 +102,7 @@ export default function UserProfilePage() {
 					<TouchableOpacity style={styles.button} onPress={handle_edit_profile}>
 						<Text style={styles.buttonText}>Redigera profil</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons (temp)</Text></TouchableOpacity>
+					<TouchableOpacity style={styles.button} onPress={handle_create_supply_post}><Text style={styles.buttonText}>Skapa en annons</Text></TouchableOpacity>
 					<TouchableOpacity style={styles.logoutButton} onPress={handle_logout}><Text style={styles.buttonText}>Logga ut</Text></TouchableOpacity>
 				
 				</View>
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
 	logoutButton: {
 		width: "100%",
 		backgroundColor: "#ff0000",
-		paddingVertical: 12,
+		paddingVertical: 18,
 		borderRadius: 10,
 		alignItems: "center",
 		marginTop: 15,
@@ -273,14 +273,14 @@ const styles = StyleSheet.create({
 	button: {
 		width: "100%",
 		backgroundColor: "#007AFF",
-		paddingVertical: 12,
+		paddingVertical: 18,
 		borderRadius: 10,
 		alignItems: "center",
 		marginTop: 15,
 	},
 	buttonText: {
 		color: "#FFF",
-		fontSize: 16,
+		fontSize: 24,
 		fontWeight: "bold",
 	},
 });

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from "react-native";
 import axios from "axios";
 import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";
 import * as Location from "expo-location";
+import { button as Button, button_two_choice as Button_tc } from "@/assets/ui_elements/buttons";
 
 Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 import { Supply_post } from "./../../../classes_tmp";
@@ -76,6 +77,10 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 			console.error("Failed to store post ID:", error);
 		}
 	};
+
+	const [selected_category, set_selected_category] = useState("till uthyrning");
+	const [selected_sub_category, set_selected_sub_category] = useState("varor");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	function handleCitySearch() {
 		if (!searchText.trim()) return;
@@ -176,6 +181,24 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 			</MarkerView>
 		  )}
 		</MapView>
+				</View> */
+				<Text style={styles.title2}>{"Sortera annonser"}</Text>
+				<View style={button_styles.sorting_container}>
+					<View style={button_styles.sorting_button_container}>
+						<Button_tc title="Till uthyrning" onPress={() => set_selected_category("till uthyrning")} selected={selected_category === "till uthyrning"} variant="left" />
+						<Button_tc title="Efterfrågas" onPress={() => set_selected_category("efterfrågas")} selected={selected_category === "efterfrågas"} variant="right" />
+					</View>
+
+					<View style={button_styles.sorting_button_container}>
+						<Button_tc title="Varor" onPress={() => set_selected_sub_category("varor")} selected={selected_sub_category === "varor"} variant="left" />
+						<Button_tc title="Tjänster" onPress={() => set_selected_sub_category("tjänster")} selected={selected_sub_category === "tjänster"} variant="right" />
+					</View>
+					<TextInput
+						style={button_styles.searchBar}
+						placeholder="Sök..."
+						value={searchQuery}
+						onChangeText={setSearchQuery}
+					/>
 				</View>
 
 				<Text style={styles.title2}>{"Annonser"}</Text>
@@ -185,39 +208,67 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 					<ScrollView style={styles.postsContainer}>
 						{posts.map((post, index) => (
 							<View style={styles.post} key={index}>
-								<View style={styles.postInfo}>
-									<View style={styles.postIcon}>
-										<Image
-											//source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
-											source={{ uri: post.post_picture_url }}
-											style={styles.postIcon}
-										/>
+								<TouchableOpacity key={index} onPress={() => handle_visit_post(post.id, post.owner_id, post.owner_name)}>
+									<View style={styles.postInfo}>
+										<View style={styles.postIcon}>
+											<Image
+												source={{ uri: post?.post_picture_url }}
+												style={styles.postIcon}
+											/>
+										</View>
+										<View style={styles.postTexts}>
+											<Text style={styles.postCategoryType}>{post.category_type}</Text>
+											<Text style={styles.postTitle}>{post.title}</Text>
+											<Text style={styles.postCategory}>{post.category}</Text>
+											<Text style={styles.postDescription} numberOfLines={2} ellipsizeMode="tail">{post?.description}</Text>
+											<Text style={styles.postPrice}>{(Number(post.price)).toLocaleString("sv-SE") + " kr" + (post.category_type === "Uthyrning" ? "/dag" : "")}</Text>
+										</View>
 									</View>
-									<View style={styles.postTexts}>
-										<Text style={styles.postTitle}>{post.title}</Text>
-										<Text style={styles.postCategory}>{post.category}</Text>
-										<Text style={styles.postDescription}>{post.description}</Text>
-										<Text style={styles.postPrice}>{(Number(post.price)).toLocaleString("sv-SE") + " kr"}</Text>
-									</View>
-								</View>
-								<TouchableOpacity style={styles.saveButton}><Text style={styles.saveButtonText}>Spara annons</Text></TouchableOpacity>
-								<TouchableOpacity style={styles.visitButton} onPress={() => handle_visit_post(post?.id, post.owner_id, post.owner_name)}><Text style={styles.visitButtonText}>Besök annons</Text></TouchableOpacity>
+								</TouchableOpacity>
 							</View>
 						))}
 					</ScrollView>
 				</View>
 
 				{/* Action buttons */}
-				<TouchableOpacity style={styles.button} onPress={handle_temporary}><Text style={styles.buttonText}>temp</Text></TouchableOpacity>
+				<Button title="Användarprofil (temp)" on_press={handle_temporary} variant="visit" bottom_margin={15} />
 			</SafeAreaView>
 		</ScrollView>
 	);
 }
 
+const button_styles = StyleSheet.create({
+	sorting_container: {
+		flex: 1,
+		width: "90%",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	sorting_button_container: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: "100%",
+		marginBottom: 10,
+	},
+
+	searchBar: {
+		fontSize: 18,
+		height: 50,
+		width: "100%",
+		borderWidth: 2,
+		borderColor: "#000",
+		borderRadius: 50,
+		paddingHorizontal: 20,
+		marginBottom: 10,
+	},
+})
+
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 10,
+		paddingTop: 20,
 		backgroundColor: "#ffffff",
 		alignItems: "center",
 	},
@@ -287,17 +338,13 @@ const styles = StyleSheet.create({
 	},
 	title2: {
 		fontWeight: "bold",
-		fontSize: 24,
+		fontSize: 32,
 		marginBottom: 10,
 	},
+
 	postsWrapper: {
-		backgroundColor: "#EAEAEA",
-		padding: 15,
 		borderRadius: 10,
-		width: "90%",
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
+		width: "100%",
 		elevation: 5,
 		marginBottom: 20,
 	},
@@ -305,14 +352,11 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	post: {
+		borderColor: "#CFCECE",
+		borderBottomWidth: 1,
+		borderTopWidth: 1,
 		backgroundColor: "#FFF",
-		padding: 15,
-		marginVertical: 10,
-		borderRadius: 10,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		elevation: 5,
+		padding: 20,
 	},
 	postInfo: {
 		flexDirection: "row",
@@ -320,54 +364,37 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	postIcon: {
-		width: 100,
-		height: 100,
+		width: 150,
+		height: 150,
 		marginRight: 15,
 		borderRadius: 25,
 	},
 	postTexts: {
 		flexDirection: "column",
 		justifyContent: "flex-start",
-		width: "100%",
+		width: "60%",
+	},
+	postCategoryType: {
+		fontSize: 14,
+		marginBottom: -10,
 	},
 	postTitle: {
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 32,
+		marginBottom: -5,
 	},
 	postDescription: {
-		fontSize: 14,
+		fontSize: 16,
 		color: "#555",
 	},
 	postCategory: {
-		fontSize: 14,
+		fontSize: 20,
 		fontStyle: "italic",
 	},
 	postPrice: {
-		fontSize: 14,
-		fontStyle: "italic",
+		fontSize: 20,
+		fontWeight: "bold",
 		position: "absolute",
 		bottom: 0,
-	},
-	saveButton: {
-		backgroundColor: "#FF0022",
-		paddingVertical: 8,
-		borderRadius: 6,
-		alignItems: "center",
-		marginTop: 10,
-	},
-	saveButtonText: {
-		color: "#FFF",
-		fontWeight: "bold",
-	},
-	visitButton: {
-		backgroundColor: "#007AFF",
-		paddingVertical: 8,
-		borderRadius: 6,
-		alignItems: "center",
-		marginTop: 10,
-	},
-	visitButtonText: {
-		color: "#FFF",
-		fontWeight: "bold",
 	},
 });

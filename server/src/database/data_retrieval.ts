@@ -10,7 +10,9 @@ const retrieve_data = async (table: string, conditions: any = {}, sensitiveField
             : '';
 
         const query = `SELECT * FROM ${table} ${where_clause}`;
+        console.log(`res query`, query);
         const result = await pool.query(query, values);
+        console.log(`res result length`, result.rows.length);
 
         if (result.rows.length > 0) {
             // Decrypt only the specified fields

@@ -72,20 +72,33 @@ export default function LoginScreen() {
 	}
 
 	async function register_user() {
-			try {
-				user = new User("standard", role, name, mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
-				
-				console.log(role, name,	mail, phone_number,	bio, address, date_of_birth, profile_picture_url, password);
-				
-				await axios.post(`${SERVER_URL}/register_user`, user);
-				save_user_id(user.id);
-				save_user_name(user.name);
-				//router.push("/(tabs)/(marketplace)");
-			} catch (error: any) {
-				// TODO: NOTIFY the user upon failed attempt
-				console.error("Registration failed:", error.message);
+		try {
+			user = new User("standard", role, name, mail, phone_number, bio, address, date_of_birth, profile_picture_url, password);
+			await axios.post(`${SERVER_URL}/register_user`, user);
+			save_user_id(user.id);
+			save_user_name(user.name);
+			//router.push("/(tabs)/(marketplace)");
+			router.back();
+		} catch (error: any) {
+			if (error.response) {
+				switch (error.response.status) {
+					//case 418:
+						//set_error_message("Användarnamnet är redan registrerad.")
+						//break;
+					case 419:
+						set_error_message("Mailadressen är redan registrerad.");
+						break;
+					case 500:
+						set_error_message("Internt serverfel. Försök igen senare.");
+						break;
+					default:
+						set_error_message(`Registrering misslyckades: ${error.response.status}`);
+				}
+			} else {
+				set_error_message("Något gick fel. Kontrollera din anslutning.");
 			}
 		}
+	}
 
 	const handle_register = async () => {
 		if (validate_registration()) {
@@ -152,7 +165,7 @@ export default function LoginScreen() {
 
 			{/* Login button */}
 			<TouchableOpacity style={styles.button} onPress={handle_login}>
-				<Text style={styles.buttonText}>Har du redan ett konto? Logga in här</Text>
+				<Text style={styles.buttonText}>Logga in med befintligt konto</Text>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);
@@ -175,33 +188,36 @@ const styles = StyleSheet.create({
 		transform: [{ translateX: -100 }], // Centers horizontally
 	},
 	title: {
-		fontSize: 30,
+		fontSize: 36,
 		fontWeight: "bold",
 		color: "#333",
 		marginBottom: 0,
 	},
 	input: {
 		width: "80%",
-		height: 50,
+		height: 65,
 		backgroundColor: "#FFF",
 		borderWidth: 1,
 		borderColor: "#DDD",
 		borderRadius: 10,
 		paddingHorizontal: 15,
 		marginVertical: 10,
+		fontSize: 20,
 	},
 	button: {
 		width: "80%",
 		backgroundColor: "#007AFF",
-		paddingVertical: 12,
+		paddingVertical: 16,
 		borderRadius: 10,
 		alignItems: "center",
+		justifyContent: "center",
 		marginTop: 15,
 	},
 	buttonText: {
 		color: "#FFF",
-		fontSize: 16,
+		fontSize: 24,
 		fontWeight: "bold",
+		textAlign: "center"
 	},
 	linkButton: {
 		marginTop: 15,
@@ -212,7 +228,7 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		color: "red",
-		fontSize: 14,
+		fontSize: 18,
 		marginTop: 5,
 		fontStyle: "italic",
 	},
