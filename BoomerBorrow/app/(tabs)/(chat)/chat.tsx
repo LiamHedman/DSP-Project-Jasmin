@@ -189,23 +189,24 @@ const ChatScreen: React.FC = () => {
         onPress={handle_review}
         style={{
           position: "relative",
-          width: 100,
-          height: 50,
-          left: "72%",
+          width: 180,
+          left: "55%",
           top: "1%",
-          backgroundColor: "#007AFF",
+          backgroundColor: "#3823dc",
           paddingVertical: 10,
           paddingHorizontal: 16,
           borderRadius: 6,
+          shadowRadius: 5,
           elevation: 5, // for Android
         }}
       >
-        <Text style={{ color: "white", fontWeight: "bold" }}>
+        <Text style={{ color: "white", fontWeight: "bold", fontSize: 20, gridAutoRows: "true" }}>
           Ge {name} en recension
         </Text>
       </TouchableOpacity>
-      <View style={{flex: 0.1, height:20}}>
-        <Text>{Name}</Text>
+      <View style={styles.ownerBubble}>
+        <Text style={styles.ownerIcon}>👤</Text>
+        <Text style={styles.ownerText}>{name}</Text>
       </View>
       <FlatList
         data={messages[id]}
@@ -262,7 +263,8 @@ const styles = StyleSheet.create({
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
+    //backgroundColor: '#DCF8C6',
+    backgroundColor: '#9aa4ee',
   },
   botBubble: {
     alignSelf: 'flex-start',
@@ -287,13 +289,39 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#3823dc',
     borderRadius: 20,
     paddingHorizontal: 15,
     justifyContent: 'center',
   },
   sendButtonText: {
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  ownerBubble: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E6E6E6',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    zIndex: 10,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  ownerIcon: {
+    marginRight: 6,
+    fontSize: 16,
+  },
+  ownerText: {
+    color: '#2C3E50',
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });

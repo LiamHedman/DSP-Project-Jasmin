@@ -4,6 +4,7 @@ import { View, Text, Image, StyleSheet, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
+import { log } from "console";
 
 const MarketplaceProduct = () => {
     const SERVER_URL = "http://localhost:3000";
@@ -33,6 +34,7 @@ const MarketplaceProduct = () => {
     }
 
     useEffect(() => {
+        console.log("HOISDHDSHIODSHIODS");
         fetch_supply_post();
     }, []);
 

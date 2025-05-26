@@ -13,6 +13,8 @@ import {
   FieldValue,
   where,
   getDocs,
+  setDoc,
+  doc,
 } from 'firebase/firestore';
 import { db } from '@/firebase/firebaseConfig';
 import { log } from 'console';
@@ -42,7 +44,7 @@ const ChatListScreen: React.FC = () => {
   const fetch_user_name = async () => {
     const my_name = await get_user_name() as string;
     set_name(my_name);
-    console.log("actual name: " + name);
+    console.log("actual name: " + my_name);
     //set_id("me");
     //console.log("for testing: " + id);    
   }
@@ -66,13 +68,14 @@ const ChatListScreen: React.FC = () => {
   }, [id, name]);
 
   useEffect(() => {
+    console.log("IOSDHJOIDSHIODSHIO");
       
     if (!id) return; // Skip if id hasn't loaded yet
     if (!name) return; // Skip if name hasn't loaded yet
 
     const q = query(
       collection(db, 'chats'),
-      where("participants", "array-contains", id),
+      where("participants", "array-contains", id.trim()),
     );
 
     const setupChat = async () => {
@@ -98,12 +101,12 @@ const ChatListScreen: React.FC = () => {
       console.log(owner_name);
 
       if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id))) {
-        const newChatRef = await addDoc(collection(db, 'chats'), {
+        const newChatRef = await setDoc(doc(db, 'chats', id + "_" + owner_id), {
           id: id + "_" + owner_id,
           participants: [id, owner_id],
           names: [name, owner_name],
         });
-        console.log("Created new chat with id:", newChatRef.id);
+        console.log("Created new chat with id:", id + "_" + owner_id);
       }
     };
 
@@ -116,9 +119,10 @@ const ChatListScreen: React.FC = () => {
       setChats(fetchedChats);
     });
     setupChat();
-
+    
     return () => unsubscribe();
   }, [id]);
+  console.log(chats);
 
   return (
     <View style={styles.container}>
