@@ -56,7 +56,7 @@ export default function MarketplaceScreen() {
 
 
 	const handle_temporary = async () => {
-		router.push("/(tabs)/(user_profile)/user_profile_page");
+		router.push("/(tabs)/(user_profile)");
 	};
 
 const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
@@ -212,7 +212,7 @@ const handle_visit_post = async (post_id: string, owner_id: string, owner_name: 
 									<View style={styles.postInfo}>
 										<View style={styles.postIcon}>
 											<Image
-												source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+												source={{ uri: post?.post_picture_url }}
 												style={styles.postIcon}
 											/>
 										</View>

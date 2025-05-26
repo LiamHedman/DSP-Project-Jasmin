@@ -44,7 +44,7 @@ export default function CreateAd() {
 	
 
 	useEffect(() => {
-		console.log("Params received in CreateAd:", params);
+		// console.log("Params received in CreateAd:", params);
 		if (params.image_uri) set_post_picture_url(params.image_uri as string);
 		if (params.title) set_title(params.title as string);
 		if (params.description) set_description(params.description as string);
@@ -129,7 +129,7 @@ export default function CreateAd() {
 
 			const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
 			set_posts(response.data);
-			router.push("/(tabs)/(user_profile)/user_profile_page");
+			router.push("/(tabs)/(user_profile)");
 		} catch (error: any) {
 			console.error("new_supply_post failed:", error.message);
 		}

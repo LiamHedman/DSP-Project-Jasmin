@@ -24,8 +24,8 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(user_profile)/user_profile_page",
-    label: "Min \nProfil",
+    name: "(user_profile)",
+    label: "Min Profil",
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
@@ -55,11 +55,9 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
   const rightTabs = tabItems.slice(half, tabItems.length);
 
   const renderTabButton = (item: TabItem, index: number) => {
-    console.log("hej");
-    console.log(item);
+    //console.log(item);
     const route = state.routes.find(r => r.name === item.name);
     if (!route) return null;
-    console.log("hej");
     const isFocused = state.index === state.routes.findIndex(r => r.name === item.name);
 
     const onPress = () => {
@@ -162,7 +160,7 @@ const getHeaderTitle = (routeName: string): string => {
   switch (routeName) {
     case "(marketplace)":
       return "Marketplace";
-    case "(user_profile)/user_profile_page":
+    case "(user_profile)":
       return "Profile";
     case "(chat)/connection":
       return "Connection";
