@@ -166,6 +166,7 @@ export default function CreateAd() {
 				{title_error ? <Text style={styles.errorText}>{title_error}</Text> : null}
 
 			<Text style={styles.label}>Uthyrning eller tjänst</Text>
+			
 			<View style={styles.pickerContainer}>
 				<Picker
 					selectedValue={category_type}
@@ -205,22 +206,23 @@ export default function CreateAd() {
 				/>
 				{price_error ? <Text style={styles.errorText}>{price_error}</Text> : null}
 				
-								<TouchableOpacity style={styles.createButton} onPress={handle_add_images}>
-					<Text style={styles.createButtonText}>Ladda upp bilder</Text>
-				</TouchableOpacity>
-
-				<View style={styles.imagePreviewContainer}>
-					{post_picture_url ? (
-						<Image source={{ uri: post_picture_url }} style={styles.imagePreview} resizeMode="cover" />
-					) : (
-						<View style={styles.imagePlaceholder}>
-							<Text style={styles.placeholderText}>Ingen bild vald</Text>
-						</View>
-					)}
-				</View>
+				<TouchableOpacity style={styles.imagePreviewContainer} onPress={handle_add_images}>
+                    {post_picture_url ? (
+                        <Image
+                            source={{ uri: post_picture_url }}
+                            style={styles.imagePreview}
+                            resizeMode="cover"
+                        />
+                    ) : (
+                        <View style={styles.imagePlaceholder}>
+                            <Text style={styles.placeholderText}>Ladda upp bild</Text>
+                        </View>
+                    )}
+                </TouchableOpacity>
 
 				<Text style={styles.label}>Plats</Text>
-				<View style={styles.searchContainer}>
+
+				<View>
 					<TextInput
 						style={styles.input}
 						value={locationSearch}
@@ -228,8 +230,8 @@ export default function CreateAd() {
 						placeholder="Sök efter plats..."
 						onSubmitEditing={handleLocationSearch}
 					/>
-					<TouchableOpacity onPress={handleLocationSearch} style={styles.searchButton}>
-						<Text style={styles.searchButtonText}>Sök</Text>
+					<TouchableOpacity onPress={handleLocationSearch}>
+						<Text>Sök</Text>
 					</TouchableOpacity>
 				</View>
 				{location_error ? <Text style={styles.errorText}>{location_error}</Text> : null}

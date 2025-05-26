@@ -116,6 +116,7 @@ const containers = StyleSheet.create({
     container: {
         width: "100%",
         backgroundColor: "#ffffff",
+        marginTop: 10,
     },
     main_container: {
         width: "100%",

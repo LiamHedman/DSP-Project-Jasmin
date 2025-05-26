@@ -8,16 +8,17 @@ export default function MarketplaceLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#FFFB9F", // light yellow
+          backgroundColor: "#FF8400", 
         },headerTitleStyle: {
           fontSize: 28,
           fontWeight: "bold",
+          color: "white",
         },
         headerLeft: () => {
           const navigation = useNavigation();
           return (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <FontAwesome name="arrow-left" size={24} color="black" style={{ marginLeft: 15 }} />
+              <FontAwesome name="arrow-left" size={30} color="white" style={{ marginLeft: 15 }} />
             </TouchableOpacity>
           );
         },

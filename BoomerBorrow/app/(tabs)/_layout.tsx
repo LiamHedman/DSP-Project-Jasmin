@@ -19,9 +19,9 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(chat)",
-    label: "Meddelanden",
-    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
+    name: "(supply_posts)/create_supply_post",
+    label: "Ny annons",
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}} />,
   },
   {
     name: "(user_profile)",
@@ -29,9 +29,9 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(supply_posts)/create_supply_post",
-    label: "Ny annons",
-    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}} />,
+    name: "(chat)",
+    label: "Meddelanden",
+    icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
 ];
 
@@ -110,25 +110,26 @@ const getButtonStyle = (color: ColorValue): ViewStyle => ({
 });
 const getBackgroundStyle = (routeName: string): ViewStyle => ({
   backgroundColor: "ffffff", 
-  height: "15%",
+  height: "17%",
   flexDirection: "row", 
   justifyContent: "center",
   borderTopWidth: 1,
   borderColor: "#0C1013",
+  shadowRadius: 12,
 });
 
 const getColor= (routeName: string, isFocused: boolean): ColorValue => {
   switch (routeName) {
-    case "(supply_posts)":
-      return isFocused ? "#007BFF" : "#007BFF";
-    case "(login)":
-      return isFocused ? "#007BFF" : "#007BFF";
+    case "(supply_posts)/create_supply_post":
+      return isFocused ? "#003c7d" : "#007BFF";
+    case "(user_profile)":
+      return isFocused ? "#b96000" : "#FF8400";
     case "(marketplace)":
-      return isFocused ? "#007BFF" : "#007BFF";
-    case "(chat)/ChatListScreen":
-      return isFocused ? "#007BFF" : "#007BFF";
+      return isFocused ? "#003c7d" : "#007BFF";
+    case "(chat)":
+      return isFocused ? "#b96000" : "#FF8400";
     default:
-      return isFocused ? "#007BFF" : "#007BFF";
+      return isFocused ? "#0068D8" : "#007BFF";
   }
 }
 
@@ -152,7 +153,7 @@ const getBackgroundColor = (routeName: String): ColorValue => {
 const getTextStyle = (): TextStyle => ({
   color: "#fff",
   flexShrink: 0,
-  fontSize: 20,
+  fontSize: 25,
   fontWeight: "bold",
 });
 

@@ -12,7 +12,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import React from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -139,6 +139,11 @@ export default function camera() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.backButtonContainer}>
+        <Pressable onPress={() => router.push("/(tabs)/(supply_posts)/create_supply_post")}>
+          <Ionicons name="arrow-back" size={50} color="white" style = {{backgroundColor: "#2B2B2BDF", borderRadius: 8}} />
+        </Pressable>
+      </View>
       {uri
       ? renderPicture()
       : isFocused && renderCamera() // only render camera when screen is focused
@@ -183,4 +188,10 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 50,
   },
+  backButtonContainer: {
+  position: "absolute",
+  top: 50,
+  left: 20,
+  zIndex: 10,
+},
 });
