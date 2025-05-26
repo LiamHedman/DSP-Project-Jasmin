@@ -14,8 +14,8 @@ const MarketplaceProduct = () => {
 
     async function fetch_supply_post() {
         try {
-            const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
-            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${id}` } });
+            if (!post_id) return;
+            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: post_id } });
             set_post(response.data);
         } catch (error: any) {
             console.error("Failed to fetch supply_post:", error.message);
@@ -33,14 +33,16 @@ const MarketplaceProduct = () => {
     }
 
     useEffect(() => {
-        fetch_supply_post();
-    }, []);
+        if (post_id) {
+            fetch_supply_post();
+        }
+    }, [post_id]);
 
     useEffect(() => {
-        if (post?.owner_id) {
+        if (post && post.owner_id) {
             fetch_user();
         }
-    }, [post]);
+    }, [post?.owner_id]);
 
     return (
         <View style={styles.container}>
