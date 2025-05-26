@@ -12,11 +12,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import React from "react";
-import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
+import { router, useLocalSearchParams } from "expo-router";
 
 export default function camera() {
+  const params = useLocalSearchParams();
   const [permission, requestPermission] = useCameraPermissions();
   const ref = useRef<CameraView>(null);
   const [uri, setUri] = useState<string | null>(null);
@@ -46,10 +47,20 @@ export default function camera() {
   const takePicture = async () => {
     if (ref.current) {
       const photo = await ref.current.takePictureAsync();
-      if(photo){
-        
+      if (photo) {
+
         setUri(photo.uri);
         
+        
+        const title = params.title ?? "";
+        const description = params.description ?? "";
+        const price = params.price ?? "";
+        const category_type = params.category_type ?? "";
+        const category = params.category ?? "";
+        const location = params.location ?? "";
+        const post_picture_url = params.post_picture_url ?? "";
+
+        console.log("Params before navigate:", params);
         router.replace({
           pathname: "/(tabs)/(supply_posts)/create_supply_post",
           params: { image_uri: photo.uri },

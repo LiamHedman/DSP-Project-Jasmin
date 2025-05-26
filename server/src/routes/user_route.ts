@@ -112,7 +112,7 @@ router.post("/modify_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" set up for modification`);
         const condition = { id: user_id };
-        await modify_data(table_name_users, new_user_data, condition);
+        await modify_data(table_name_users, new_user_data, condition, ["phone_number", "address"]);
 
         res.status(200).json();
     } catch (error) {
@@ -126,7 +126,7 @@ router.get("/fetch_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" fetch from client`);
         const condition = { id: user_id };
-        const users = await retrieve_data(table_name_users, condition, ["mail", "phone_number", "address"]);
+        const users = await retrieve_data(table_name_users, condition, ["phone_number", "address"]);
         if (users.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
