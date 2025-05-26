@@ -59,6 +59,7 @@ const ChatListScreen: React.FC = () => {
 
   useEffect(() => {
     console.log("AAAAAAAAAAAAa");
+    console.log("I LIIIIIIIIST");
     console.log("owner_id: " + owner_id);
     console.log("owner_name: " + owner_name);
 

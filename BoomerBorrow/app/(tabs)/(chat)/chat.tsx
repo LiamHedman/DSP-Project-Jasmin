@@ -27,6 +27,7 @@ import {
 } from 'firebase/firestore';
 import { get_user_id } from '@/auth_token';
 import { log } from 'console';
+import { Stack } from 'expo-router';
 
 type Message = {
   id: number,
@@ -185,6 +186,10 @@ const ChatScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={90}
     >
+      <Stack.Screen options={{
+        title: "👤" + name,
+        headerTitleStyle: {color: "#59388C", fontWeight: "bold", fontSize: 28}
+      }}/>
       <TouchableOpacity
         onPress={handle_review}
         style={{
@@ -204,10 +209,6 @@ const ChatScreen: React.FC = () => {
           Ge {name} en recension
         </Text>
       </TouchableOpacity>
-      <View style={styles.ownerBubble}>
-        <Text style={styles.ownerIcon}>👤</Text>
-        <Text style={styles.ownerText}>{name}</Text>
-      </View>
       <FlatList
         data={messages[id]}
         renderItem={renderItem}

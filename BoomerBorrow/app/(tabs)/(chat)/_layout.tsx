@@ -8,6 +8,7 @@ import { title } from "process";
 export default function ChatLayout() {
   return (
     <Stack
+      initialRouteName="ChatListScreen"
       screenOptions={{
         headerStyle: {
           backgroundColor: "#FF8400", 

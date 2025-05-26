@@ -24,7 +24,7 @@ export default function MarketplaceLayout() {
         },
       }}
     >
-      <Stack.Screen name="edit_user_profile" options={{title: "Redigera din profil"}}/>
+      <Stack.Screen name="edit_user" options={{title: "Redigera din profil"}}/>
       <Stack.Screen name="index" options={{title: "Din profil"}}/>
     </Stack>
   );
