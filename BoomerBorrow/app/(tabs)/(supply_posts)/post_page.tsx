@@ -12,7 +12,7 @@ const MarketplaceProduct = () => {
 
     const [post, set_post] = useState<Supply_post>();
     const [owner, set_owner] = useState<User | null>(null); // Start as null
-    const { owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
+    const { post_id, owner_id, owner_name } = useLocalSearchParams<{ post_id: string; owner_id: string; owner_name: string; }>();
 
     async function fetch_supply_post() {
         try {

@@ -15,7 +15,6 @@ class ConstructorParameterError extends Error {
 export class User {
     public id: string;
     public account_type: string;
-    public account_type: string;
     public role: string;
     public name: string;
     public mail: string;
@@ -42,8 +41,6 @@ export class User {
         password: string,
     ) {
         this.id = uuidv4();
-
-        this.account_type = account_type;
 
         this.account_type = account_type;
 

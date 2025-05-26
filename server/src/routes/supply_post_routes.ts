@@ -25,14 +25,10 @@ router.post("/new_supply_post", async (req: Request, res: Response) => {
 
 router.post("/edit_supply_post", async (req: Request, res: Response) => {
     const { id, owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at } = req.body;
-    const { id, owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at } = req.body;
     const criteria = { id: id };
     
     try {
         const post_data = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
-        const post_data = new Supply_post(owner_id, owner_name, title, description, price, category, category_type, location, post_picture_url, created_at);
-        console.log(`ID of the edited suuply post: ${id}`);
-        console.log(`Title of edited supply post: ${title}`);
 
         await modify_data(table_name_supply_posts, post_data, criteria);
         res.status(200).json();

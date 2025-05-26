@@ -129,7 +129,7 @@ export default function CreateAd() {
 
 			const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
 			set_posts(response.data);
-			router.push("/(tabs)/(user_profile)");
+			router.push("/(tabs)/(user_profile)/user_profile_page");
 		} catch (error: any) {
 			console.error("new_supply_post failed:", error.message);
 		}

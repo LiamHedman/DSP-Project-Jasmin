@@ -2,7 +2,6 @@
 import React, { useLayoutEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ColorValue, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { router, Stack, Tabs } from "expo-router";
-import { router, Stack, Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useIsFocused, useNavigationState, useNavigation } from "@react-navigation/native";
@@ -25,12 +24,12 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(login)",
+    name: "(user_profile)/user_profile_page",
     label: "Min \nProfil",
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(supply_posts)",
+    name: "(supply_posts)/create_supply_post",
     label: "Ny annons",
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}} />,
   },
@@ -56,10 +55,11 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
   const rightTabs = tabItems.slice(half, tabItems.length);
 
   const renderTabButton = (item: TabItem, index: number) => {
+    console.log("hej");
     console.log(item);
     const route = state.routes.find(r => r.name === item.name);
     if (!route) return null;
-
+    console.log("hej");
     const isFocused = state.index === state.routes.findIndex(r => r.name === item.name);
 
     const onPress = () => {
@@ -162,7 +162,7 @@ const getHeaderTitle = (routeName: string): string => {
   switch (routeName) {
     case "(marketplace)":
       return "Marketplace";
-    case "(login)":
+    case "(user_profile)/user_profile_page":
       return "Profile";
     case "(chat)/connection":
       return "Connection";
