@@ -4,6 +4,7 @@ import { Text, TextInput, Button, StyleSheet, TouchableOpacity } from "react-nat
 import { router } from "expo-router";
 import axios from "axios";
 import { User } from "./../../../classes_tmp";
+import { save_user_id, save_user_name } from "@/auth_token";
 
 export default function LoginScreen() {
 	const SERVER_URL = "http://localhost:3000";
@@ -74,6 +75,9 @@ export default function LoginScreen() {
 		try {
 			user = new User("standard", role, name, mail, phone_number, bio, address, date_of_birth, profile_picture_url, password);
 			await axios.post(`${SERVER_URL}/register_user`, user);
+			save_user_id(user.id);
+			save_user_name(user.name);
+			//router.push("/(tabs)/(marketplace)");
 			router.back();
 		} catch (error: any) {
 			if (error.response) {

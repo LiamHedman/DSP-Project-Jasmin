@@ -41,8 +41,8 @@ export default function LoginScreen() {
 		try {
 			const user = { name: name, password: password }
 			const response = await axios.post(`${SERVER_URL}/login`, user);
-			await save_user_id(response.data);
-			await save_user_name(user.name);
+			await save_user_id(response.data[0].id)
+			await save_user_name(response.data[0].name)
 
 			console.log(`Retrieved user id: "${response.data}"`);
 
@@ -73,49 +73,52 @@ export default function LoginScreen() {
 	const handle_login = async () => {
 		console.log("Username:", name);
 		console.log("Password:", password);
-		await login();
+		router.push("/(tabs)/(marketplace)");
+		//await login();
 	};
 
 	const handle_register = async () => {
 		set_error_message("");
-		router.push("/(tabs)/(register)");
+		router.push("/(register)");
 	};
 
 	async function sign_in(user: any) {
-		const parsed_user = JSON.parse(user);
-		// To set a random, non-guessable password
-		set_password(uuidv4());
+        const parsed_user = JSON.parse(user);
+        // To set a random, non-guessable password
+        set_password(uuidv4());
 
-		try {
-			let response = await axios.post(`${SERVER_URL}/google_sign_in`, {}, { headers: { auth: `${parsed_user.email}` } });
-			const user_exists: boolean = response.data.length;
-			if (!user_exists) {
-				const new_user = new User("google", role, parsed_user.name, parsed_user.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
-				response = await axios.post(`${SERVER_URL}/register_user`, new_user);
-				console.log("response1; ", JSON.stringify(response));
-				console.log("response1 id; ",JSON.stringify(response.data));
+        try {
+            let response = await axios.post(`${SERVER_URL}/google_sign_in`, {}, { headers: { auth: `${parsed_user.email}` } });
+            const user_exists: boolean = response.data.length;
+            if (!user_exists) {
+                const new_user = new User("google", role, parsed_user.name, parsed_user.email, phone_number, bio, address, date_of_birth, profile_picture_url, password);
+                response = await axios.post(`${SERVER_URL}/register_user`, new_user);
+                console.log("response1; ", JSON.stringify(response));
+                console.log("response1 id; ",JSON.stringify(response.data));
 
-				save_user_id(response.data);
-			} else {
-				save_user_id(response.data[0].id)
-			}
-			router.push("/(tabs)/(marketplace)");
-		} catch (error: any) {
-			if (error.response) {
-				switch (error.response.status) {
-					case 419:
-						set_error_message("Mailaddressen finns registrerad, men är ej kopplad till Google");
-					case 500:
-						set_error_message("Internt serverfel. Försök igen senare.");
-						break;
-					default:
-						set_error_message(`Registrering misslyckades: ${error.response.status}`);
-				}
-			} else {
-				set_error_message("Något gick fel. Kontrollera din anslutning.");
-			}
-		}
-	}
+                await save_user_id(response.data[0].id)
+                await save_user_name(response.data[0].name)
+            } else {
+				await save_user_id(response.data[0].id)
+                await save_user_name(response.data[0].name)
+            }
+            router.push("/(tabs)/(marketplace)");
+        } catch (error: any) {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 419:
+                        set_error_message("Mailaddressen finns registrerad, men är ej kopplad till Google");
+                    case 500:
+                        set_error_message("Internt serverfel. Försök igen senare.");
+                        break;
+                    default:
+                        set_error_message(`Registrering misslyckades: ${error.response.status}`);
+                }
+            } else {
+                set_error_message("Något gick fel. Kontrollera din anslutning.");
+            }
+        }
+    }
 
 	// ** Google Auth **
 	// Currently logged-in user's info, once retrieved from Google or local storage.
@@ -143,7 +146,6 @@ export default function LoginScreen() {
 
 	// Checks if user info is already stored in AsyncStorage:
 	async function handleSignInWithGoogle() {
-
 		if (response?.type === "success") {
 			const token = response.authentication?.accessToken;
 			if (!token) {

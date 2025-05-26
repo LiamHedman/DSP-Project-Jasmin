@@ -10,8 +10,6 @@ import {
   StyleSheet,
   ListRenderItem,
 } from 'react-native';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-/* import { RootStackParamList } from './App'; */
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 
 import { db } from '../../firebaseConfig'; //Our private file with keys from firebase
@@ -38,7 +36,6 @@ type Message = {
   createdAt: Timestamp;
 };
 
-/* type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>; */
 
 type ChatParams = {
   id: string;
@@ -154,6 +151,10 @@ const ChatScreen: React.FC = () => {
     //clears the input field
     setInputText('');
   };
+
+  const handle_review = () => {
+    console.log("review");
+  }
   
   
 
@@ -184,6 +185,25 @@ const ChatScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={90}
     >
+      <TouchableOpacity
+        onPress={handle_review}
+        style={{
+          position: "relative",
+          width: 100,
+          height: 50,
+          left: "72%",
+          top: "1%",
+          backgroundColor: "#007AFF",
+          paddingVertical: 10,
+          paddingHorizontal: 16,
+          borderRadius: 6,
+          elevation: 5, // for Android
+        }}
+      >
+        <Text style={{ color: "white", fontWeight: "bold" }}>
+          Ge {name} en recension
+        </Text>
+      </TouchableOpacity>
       <View style={{flex: 0.1, height:20}}>
         <Text>{Name}</Text>
       </View>

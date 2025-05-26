@@ -44,6 +44,29 @@ async function retrieve_id(username: string): Promise<string> {
     return result[0].id;
 }
 
+router.post("/google_sign_in", async (req: Request, res: Response) => {
+    const mail = req.headers.auth;
+
+    try {
+        const conditions = { mail: mail };
+        console.log(`Mail rec in the server: ${mail}`);
+        const result = await retrieve_data(table_name_users, conditions);
+        console.log(`parsed result in server after retrieve:`, JSON.stringify(result));
+        const user_exists: boolean = result.length;
+        if (user_exists && result[0].account_type === "standard") {
+            // The user exists and is a standard account
+            // i.e. a log in that should be blocked
+            res.status(419).json();
+        } else {
+            // User doesnt exists or has a google account
+            res.status(200).json(result);
+        }
+
+    } catch (error) {
+        res.status(500).json();
+    }
+});
+
 // Handles register user request from the client
 // Listens to all axios.post(`${SERVER_URL}/register_user` from the client
 router.post("/register_user", async (req: Request, res: Response) => {
@@ -89,7 +112,7 @@ router.post("/modify_user", async (req: Request, res: Response) => {
     try {
         console.log(`User "${user_id}" set up for modification`);
         const condition = { id: user_id };
-        await modify_data(table_name_users, new_user_data, condition);
+        await modify_data(table_name_users, new_user_data, condition, ["phone_number", "address"]);
 
         res.status(200).json();
     } catch (error) {

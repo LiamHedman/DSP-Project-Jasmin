@@ -2,20 +2,27 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, StyleSheet, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from "react-native";
 import axios from "axios";
-import Mapbox, { MapView } from "@rnmapbox/maps";
+import Mapbox, { MapView, Camera, MarkerView } from "@rnmapbox/maps";
+import * as Location from "expo-location";
 import { button as Button, button_two_choice as Button_tc } from "@/assets/ui_elements/buttons";
 
-Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205Z3Q4azlpMXN6cTJrcXc3anNhN2d2eCJ9.gYQgEn_h2O1CGIxWkEpcdA");
+Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA");
 import { Supply_post } from "./../../../classes_tmp";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { log } from "console";
 
 export default function MarketplaceScreen() {
 	const SERVER_URL = "http://localhost:3000";
 
 	// All the supply posts gets stored here
 	const [posts, set_posts] = useState<Supply_post[]>([]);
-
+	//const [location, set_location] = useState<Location.LocationObject | null>(null);
+	const [location, set_location] = useState("");
+	const [user_location, set_user_location] = useState<[number, number] | null>(null);
+	const [searchText, setSearchText] = useState("");
+	const [cameraCoords, setCameraCoords] = useState<[number, number] | null>(null);
+	const [cameraKey, setCameraKey] = useState(0);
 	async function fetch_active_supply_posts() {
 		try {
 			const response = await axios.get(`${SERVER_URL}/fetch_all_supply_posts`);
@@ -28,46 +35,153 @@ export default function MarketplaceScreen() {
 	// Runs on page mount
 	useEffect(() => {
 		fetch_active_supply_posts();
+		fetchUserLocation();
 	}, []);
+	async function fetchUserLocation() {
+		try {
+			const { status } = await Location.requestForegroundPermissionsAsync();
+			if (status !== "granted") {
+				console.warn("Permission to access location was denied");
+				return;
+			}
+			const userLoc = await Location.getCurrentPositionAsync({});
+			const coords: [number, number] = [userLoc.coords.longitude, userLoc.coords.latitude];
+			set_user_location(coords);
+			setCameraCoords(coords);
+			setCameraKey((prev) => prev + 1); // force camera update on location fetch
+		} catch (error) {
+			console.error("Error getting user location:", error);
+		}
+	}
+
 
 	const handle_temporary = async () => {
-		router.push("/(tabs)/(user_profile)/user_profile_page");
+		router.push("/(tabs)/(user_profile)");
 	};
 
-	async function visit_post(post_id: string, owner_id: string, owner_name: string) {
-		try {
-			
-			const storedPostId = await AsyncStorage.getItem("post_id");
-			if (storedPostId !== post_id) {
-				throw new Error("Post ID was not stored correctly.");
-			}
-			console.log("Post ID stored:", storedPostId);
-			
-			router.push("/(tabs)/(supply_posts)/post_page");
+const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
+	console.log("owner_id: " + owner_id);
+	console.log("owner_name: " + owner_name);
+    try {
+        await AsyncStorage.setItem("post_id", post_id);
+        router.replace({
+                pathname: "/(tabs)/(supply_posts)/post_page",
+                params: {
+					post_id: post_id,
+					owner_id: owner_id,
+					owner_name: owner_name,
+				},
+			});
+
 		} catch (error) {
 			console.error("Failed to store post ID:", error);
 		}
-	}
-	
-	const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
-		console.log("pid stored: ", post_id);
-		await AsyncStorage.setItem("post_id", post_id);
-		await visit_post(post_id, owner_id, owner_name);
-		return undefined;
-	}
+	};
 
 	const [selected_category, set_selected_category] = useState("till uthyrning");
 	const [selected_sub_category, set_selected_sub_category] = useState("varor");
 	const [searchQuery, setSearchQuery] = useState("");
 
+	function handleCitySearch() {
+		if (!searchText.trim()) return;
+		// Use Mapbox Geocoding API to get coordinates for the city
+		const MAPBOX_TOKEN = "pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaTBqZ2s5MCJ9.2vZamz2nGj3EQgNRqTC4aA";
+		const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchText)}.json?access_token=${MAPBOX_TOKEN}&limit=1&country=SE`;
+		axios.get(url)
+			.then(res => {
+				const features = res.data.features;
+				if (features && features.length > 0) {
+					const [lng, lat] = features[0].center;
+					setCameraCoords([lng, lat]);
+					setCameraKey(prev => prev + 1); // force camera update
+				} else {
+					alert("Stad hittades inte.");
+				}
+			})
+			.catch(() => {
+				alert("Fel vid sökning av stad.");
+			});
+	}
+
 	return (
 		<ScrollView>
 			<SafeAreaView style={styles.container}>
 
-				{/* Map Section */}
-				{/* 				<View style={styles.mapContainer}>
-					<MapView />
-				</View> */}
+{/* Search Bar */}
+	  <View style={styles.searchContainer}>
+		<TextInput
+		  style={styles.searchInput}
+		  placeholder="Sök efter stad..."
+		  value={searchText}
+		  onChangeText={setSearchText}
+		  onSubmitEditing={handleCitySearch}
+		/>
+		<TouchableOpacity onPress={handleCitySearch} style={styles.searchButton}>
+		  <Text style={{ color: "white" }}>Sök</Text>
+		</TouchableOpacity>
+	  </View>
+	  {/* Your Location Button */}
+	  <TouchableOpacity
+		onPress={fetchUserLocation}
+		style={{
+		  backgroundColor: "#007AFF",
+		  padding: 10,
+		  borderRadius: 5,
+		  marginBottom: 10,
+		  alignSelf: "center",
+		  width: "90%",
+		  alignItems: "center",
+		}}
+	  >
+		<Text style={{ color: "white" }}>Your Location</Text>
+	  </TouchableOpacity>
+	  {/* Map Section */}
+	  <View style={styles.mapContainer}>
+		<MapView style={styles.map}>
+		  {cameraCoords && (
+			<Camera
+			  key={cameraKey}
+			  centerCoordinate={cameraCoords}
+			  zoomLevel={15}
+			  animationMode="flyTo"
+			  animationDuration={1000}
+			/>
+		  )}
+		  {posts.map((p, i) => {
+			const coords = p.location.split(",").map((n) => parseFloat(n));
+			const isValidCoords = coords.length === 2 && coords.every((c) => !isNaN(c));
+
+			return isValidCoords ? (
+				<MarkerView key={i} coordinate={[coords[0], coords[1]]}>
+					<TouchableOpacity
+						onPress={() =>
+							router.push({
+								pathname: "/(tabs)/(supply_posts)/post_page",
+								params: {
+									post_id: p.id,
+									owner_id: p.owner_id,
+									owner_name: p.owner_name,
+								},
+							})
+						}
+					>
+						<View style={{ backgroundColor: "blue", padding: 4, borderRadius: 6 }}>
+							<Text style={{ color: "white", fontSize: 10 }}>{p.title}</Text>
+						</View>
+					</TouchableOpacity>
+				</MarkerView>
+			) : null;
+		})}
+		  {/* Extra markers from second code */}
+		  {user_location && (
+			<MarkerView coordinate={user_location}>
+			  <View style={{ backgroundColor: "red", padding: 5, borderRadius: 10 }}>
+				<Text style={{ color: "white", fontSize: 1 }}>*</Text>
+			  </View>
+			</MarkerView>
+		  )}
+		</MapView>
+				</View> */
 				<Text style={styles.title2}>{"Sortera annonser"}</Text>
 				<View style={button_styles.sorting_container}>
 					<View style={button_styles.sorting_button_container}>
@@ -160,7 +274,7 @@ const styles = StyleSheet.create({
 	},
 	mapContainer: {
 		width: "90%",
-		height: 150,
+		height: 250,
 		margin: 12,
 		borderRadius: 5,
 		overflow: "hidden",
@@ -171,7 +285,57 @@ const styles = StyleSheet.create({
 	map: {
 		flex: 1,
 	},
-
+	minibutton: {
+		backgroundColor: "#007AFF",
+		padding: 10,
+		borderRadius: 5,
+		marginBottom: 10,
+		alignSelf: "center",
+	},
+	searchContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		width: "90%",
+		marginBottom: 10,
+	},
+	searchInput: {
+		flex: 1,
+		height: 40,
+		borderColor: "#ccc",
+		borderWidth: 1,
+		borderRadius: 5,
+		paddingHorizontal: 10,
+		marginRight: 10,
+	},
+	searchButton: {
+		backgroundColor: "#007AFF",
+		padding: 10,
+		borderRadius: 5,
+	},
+	input: {
+		width: "90%",
+		height: 35,
+		margin: 6,
+		borderWidth: 1,
+		color: "#949494",
+		padding: 10,
+		borderRadius: 5,
+		backgroundColor: "white",
+		alignSelf: "center",
+	},
+	button: {
+		width: "90%",
+		backgroundColor: '#007AFF',
+		paddingVertical: 6,
+		borderRadius: 5,
+		elevation: 5,
+		alignItems: 'center',
+		margin: 5,
+	},
+	buttonText: {
+		color: "#FFF",
+		fontSize: 14,
+	},
 	title2: {
 		fontWeight: "bold",
 		fontSize: 32,

@@ -1,10 +1,11 @@
+
 import React, { useLayoutEffect } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ColorValue, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { router, Stack, Tabs } from "expo-router";
+import { router, Stack, Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { useIsFocused } from "@react-navigation/native";
-
+import { useIsFocused, useNavigationState, useNavigation } from "@react-navigation/native";
 
 type TabItem = {
   name: string;
@@ -19,7 +20,7 @@ const tabItems: TabItem[] = [
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
   {
-    name: "(chat)/ChatListScreen",
+    name: "(chat)",
     label: "Meddelanden",
     icon: (color, size, marginLeft) => <FontAwesome size={size} color={color} style={{marginLeft: marginLeft}}/>,
   },
@@ -40,24 +41,11 @@ const topRowCount = 2;
 export default function TabLayout() {
   return (
       <Tabs
-      screenOptions={({ navigation, route }) => ({
-        headerStyle: {
-          //backgroundColor: getBackgroundColor(route.name),
-          backgroundColor: getColor(route.name, false),
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          color: "black"
-        },
-        headerTitle: getHeaderTitle(route.name),
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" size={24} color="black" style={{ marginLeft: 15 }} />
-          </TouchableOpacity>
-        )
+      screenOptions={() => ({
+        headerShown: false,
       })}
       tabBar={(props) => <CustomTabBar {...props} />}
+      
     />
   );
 }
@@ -68,6 +56,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
   const rightTabs = tabItems.slice(half, tabItems.length);
 
   const renderTabButton = (item: TabItem, index: number) => {
+    console.log(item);
     const route = state.routes.find(r => r.name === item.name);
     if (!route) return null;
 

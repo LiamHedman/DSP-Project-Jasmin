@@ -16,9 +16,8 @@ const MarketplaceProduct = () => {
 
     async function fetch_supply_post() {
         try {
-            const id = await AsyncStorage.getItem("post_id") ?? "ERROR: no post id";
-            console.log("rec pid in pager", id);
-            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: `${id}` } });
+            if (!post_id) return;
+            const response = await axios.get(`${SERVER_URL}/fetch_supply_post`, { headers: { auth: post_id } });
             set_post(response.data);
         } catch (error: any) {
             console.error("Failed to fetch supply_post:", error.message);
@@ -35,17 +34,17 @@ const MarketplaceProduct = () => {
         }
     }
 
-    useFocusEffect(
-        useCallback(() => {
-            console.log("Page re-entered / enterd");
+    useEffect(() => {
+        if (post_id) {
             fetch_supply_post();
-            fetch_user();
+        }
+    }, [post_id]);
 
-            return () => {
-                console.log("Leaving page");
-            };
-        }, [])
-    );
+    useEffect(() => {
+        if (post && post.owner_id) {
+            fetch_user();
+        }
+    }, [post?.owner_id]);
 
     return (
         <ScrollView>
@@ -53,7 +52,7 @@ const MarketplaceProduct = () => {
                 <View style={containers.container}>
                     <View style={containers.img_container}>
                         <Image
-                            source={{ uri: `https://api.dicebear.com/7.x/icons/svg?seed=${post?.id}` }}
+                            source={{ uri: post?.post_picture_url }}
                             style={styles.productImage}
                         />
                     </View>
