@@ -41,8 +41,8 @@ export default function LoginScreen() {
 		try {
 			const user = { name: name, password: password }
 			const response = await axios.post(`${SERVER_URL}/login`, user);
-			await save_user_id(response.data);
-			await save_user_name(user.name);
+			await save_user_id(response.data[0].id)
+			await save_user_name(response.data[0].name)
 
 			console.log(`Retrieved user id: "${response.data}"`);
 
@@ -73,12 +73,13 @@ export default function LoginScreen() {
 	const handle_login = async () => {
 		console.log("Username:", name);
 		console.log("Password:", password);
-		await login();
+		router.push("/(tabs)/(marketplace)");
+		//await login();
 	};
 
 	const handle_register = async () => {
 		set_error_message("");
-		router.push("/(tabs)/(register)");
+		router.push("/(register)");
 	};
 
 	async function sign_in(user: any) {
@@ -95,9 +96,11 @@ export default function LoginScreen() {
                 console.log("response1; ", JSON.stringify(response));
                 console.log("response1 id; ",JSON.stringify(response.data));
 
-                save_user_id(response.data);
+                await save_user_id(response.data[0].id)
+                await save_user_name(response.data[0].name)
             } else {
-                save_user_id(response.data[0].id)
+				await save_user_id(response.data[0].id)
+                await save_user_name(response.data[0].name)
             }
             router.push("/(tabs)/(marketplace)");
         } catch (error: any) {

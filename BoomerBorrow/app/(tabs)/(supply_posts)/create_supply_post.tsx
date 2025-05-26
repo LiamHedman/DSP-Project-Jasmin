@@ -12,7 +12,12 @@ Mapbox.setAccessToken("pk.eyJ1Ijoicm9zbzQ3ODUiLCJhIjoiY205dnRmb21tMGx0MzJpc20xaT
 export default function CreateAd() {
 	const params = useLocalSearchParams();
 	const SERVER_URL = "http://localhost:3000";
-	//const { image_uri } = useLocalSearchParams();
+	const { image_uri } = useLocalSearchParams();
+	useEffect(() => {
+    	if (image_uri && typeof image_uri === "string") {
+        	set_post_picture_url(image_uri);
+    	}
+    }, [image_uri]);
 
 	// ✅ Default Stockholm coords
 	const defaultCoords: [number, number] = [18.0686, 59.3293];
@@ -177,15 +182,15 @@ export default function CreateAd() {
 					</Picker>
 				</View>
 
-				<Text style={styles.label}>Beskrivning</Text>
-				<TextInput
-					style={styles.textarea}
-					value={description}
-					onChangeText={set_description}
-					placeholder="Beskriv din annons"
-					multiline
-				/>
-				{desc_error ? <Text style={styles.errorText}>{desc_error}</Text> : null}
+                <Text style={styles.label}>Beskrivning</Text>
+                <TextInput
+                    style={styles.textarea}
+                    value={description}
+                    onChangeText={set_description}
+                    placeholder="Beskriv din annons"
+                    multiline
+                />
+                {desc_error ? <Text style={styles.errorText}>{desc_error}</Text> : null}
 
 				<Text style={styles.label}>Pris</Text>
 				<TextInput
@@ -257,59 +262,59 @@ export default function CreateAd() {
 
 
 const styles = StyleSheet.create({
-	container: { flex: 1, padding: 20, justifyContent: "center" },
-	title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-	label: { fontSize: 16, fontWeight: "bold", marginBottom: 5 },
-	input: { borderWidth: 1, padding: 10, marginBottom: 10, borderRadius: 5, textAlign: "left" },
-	dropdown: { height: 50, width: "100%", marginBottom: 10 },
-	textarea: { height: 100, borderWidth: 1, padding: 10, marginBottom: 10, borderRadius: 5, textAlign: "left", textAlignVertical: "top" },
-	imageContainer: { alignItems: "center", marginVertical: 20 },
-	placeholderImage: { width: 150, height: 150, borderRadius: 10, opacity: 0.5 },
-	uploadText: { marginTop: 10, fontSize: 16, fontWeight: "bold" },
-	createButton: { backgroundColor: "#007AFF", paddingVertical: 8, borderRadius: 6, alignItems: "center", marginTop: 10 },
-	createButtonText: { color: "#FFF", fontWeight: "bold" },
-	pickerContainer: {
-		borderWidth: 1,
-		borderRadius: 5,
-		borderColor: "#999",
-		paddingVertical: 10,
-		paddingHorizontal: 10,
-		marginBottom: 10,
-		backgroundColor: "",
-	},
-	picker: {
-		width: "100%",
-		borderWidth: 0,
-		backgroundColor: "transparent",
-	},
-	errorText: {
-		color: "red",
-		fontSize: 14,
-		marginTop: 5,
-		fontStyle: "italic",
-	},
-	imagePreviewContainer: {
-		alignItems: "center",
-		marginVertical: 10,
-	},
-	imagePreview: {
-		width: 200,
-		height: 200,
-		borderRadius: 10,
-		borderWidth: 1,
-		borderColor: "#ccc",
-	},imagePlaceholder: {
-		width: 200,
-		height: 200,
-		borderRadius: 10,
-		borderWidth: 1,
-		borderColor: "#ccc",
-		backgroundColor: "#f0f0f0",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	placeholderText: {
-		color: "#888",
-		fontStyle: "italic",
-	},
+    container: { flex: 1, padding: 20, justifyContent: "center" },
+    title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+    label: { fontSize: 16, fontWeight: "bold", marginBottom: 5 },
+    input: { borderWidth: 1, padding: 10, marginBottom: 10, borderRadius: 5, textAlign: "left" },
+    dropdown: { height: 50, width: "100%", marginBottom: 10 },
+    textarea: { height: 100, borderWidth: 1, padding: 10, marginBottom: 10, borderRadius: 5, textAlign: "left", textAlignVertical: "top" },
+    imageContainer: { alignItems: "center", marginVertical: 20 },
+    placeholderImage: { width: 150, height: 150, borderRadius: 10, opacity: 0.5 },
+    uploadText: { marginTop: 10, fontSize: 16, fontWeight: "bold" },
+    createButton: { backgroundColor: "#007AFF", paddingVertical: 8, borderRadius: 6, alignItems: "center", marginTop: 10 },
+    createButtonText: { color: "#FFF", fontWeight: "bold" },
+    pickerContainer: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: "#999",
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        backgroundColor: "",
+    },
+    picker: {
+        width: "100%",
+        borderWidth: 0,
+        backgroundColor: "transparent",
+    },
+    errorText: {
+        color: "red",
+        fontSize: 14,
+        marginTop: 5,
+        fontStyle: "italic",
+    },
+    imagePreviewContainer: {
+        alignItems: "center",
+        marginVertical: 10,
+    },
+    imagePreview: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+    },imagePlaceholder: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        backgroundColor: "#f0f0f0",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    placeholderText: {
+        color: "#888",
+        fontStyle: "italic",
+    },
 });

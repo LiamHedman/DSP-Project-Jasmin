@@ -55,17 +55,17 @@ export default function MarketplaceScreen() {
 
 
 	const handle_temporary = async () => {
-		router.push("/(tabs)/(user_profile)/user_profile_page");
+		router.push("/(tabs)/(user_profile)");
 	};
 
-	const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
-		console.log("owner_id: " + owner_id);
-		console.log("owner_name: " + owner_name);
-		try {
-			await AsyncStorage.setItem("post_id", post_id);
-			router.push({
-				pathname: "/(tabs)/(supply_posts)/post_page",
-				params: {
+const handle_visit_post = async (post_id: string, owner_id: string, owner_name: string) => {
+	console.log("owner_id: " + owner_id);
+	console.log("owner_name: " + owner_name);
+    try {
+        await AsyncStorage.setItem("post_id", post_id);
+        router.replace({
+                pathname: "/(tabs)/(supply_posts)/post_page",
+                params: {
 					post_id: post_id,
 					owner_id: owner_id,
 					owner_name: owner_name,

@@ -97,7 +97,7 @@ const ChatListScreen: React.FC = () => {
       console.log(name);
       console.log(owner_name);
 
-      if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id))) {
+      if (owner_id && !fetchedChats.some(chat => chat.participants.includes(owner_id)) && owner_id !== id) {
         const newChatRef = await addDoc(collection(db, 'chats'), {
           id: id + "_" + owner_id,
           participants: [id, owner_id],

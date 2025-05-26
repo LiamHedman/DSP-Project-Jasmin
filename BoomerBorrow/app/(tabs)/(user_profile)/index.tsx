@@ -53,7 +53,7 @@ export default function UserProfilePage() {
 	};
 
 	const handle_edit_profile = async () => {
-		router.push("/(tabs)/(user_profile)/edit_user_profile");
+		router.push("/(tabs)/(user_profile)/edit_user");
 	};
 
 	const handle_create_supply_post = async () => {
